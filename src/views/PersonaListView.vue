@@ -6,6 +6,7 @@ const personas = ref([])
 
 const cargarPersonas = async () => {
   const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas`)
+  console.log( 'HOLAA' + res.data)
   personas.value = res.data
   console.log(personas.value)
 }
