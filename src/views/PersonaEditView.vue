@@ -35,18 +35,44 @@ const cargarPersona = async () => {
     form.value = data
   } catch (error) {
     console.error('Error al cargar persona:', error)
+    alert('No se pudo cargar la información del paciente.')
   }
 }
 
 const guardar = async () => {
+  const payload = {
+    perComunidad: form.value.perComunidad.trim(),
+    perZona: Number(form.value.perZona),
+    perGeorreferenciacion: form.value.perGeorreferenciacion.trim(),
+    perPrimernombre: form.value.perPrimernombre.trim(),
+    perSegundonombre: form.value.perSegundonombre.trim(),
+    perPrimerapellido: form.value.perPrimerapellido.trim(),
+    perSegundoapellido: form.value.perSegundoapellido.trim(),
+    perCedula: form.value.perCedula.trim(),
+    perFechanacimiento: form.value.perFechanacimiento,
+    perEdad: Number(form.value.perEdad),
+    perSexo: form.value.perSexo.trim(),
+    perEstadocivil: form.value.perEstadocivil.trim(),
+    perOcupacion: form.value.perOcupacion.trim(),
+    perInstruccion: form.value.perInstruccion.trim(),
+    perCuidador: form.value.perCuidador.trim(),
+    perPeso: Number(form.value.perPeso).toFixed(2),
+    perTalla: Number(form.value.perTalla).toFixed(2),
+    perDiscapacidad: Number(form.value.perDiscapacidad ?? 0),
+  }
+
   try {
+    console.log('Datos a enviar:', payload)
+
     await axios.patch(
       `${import.meta.env.VITE_URL_BACKEND}/api/personas/${route.params.id}`,
-      form.value,
+      payload,
     )
+    alert('Datos actualizados correctamente.')
     router.push('/personas')
   } catch (error) {
     console.error('Error al guardar persona:', error)
+    alert('Ocurrió un error al actualizar los datos del paciente.')
   }
 }
 
@@ -54,6 +80,8 @@ onMounted(() => {
   cargarPersona()
 })
 </script>
+
+
 
 <template>
   <div class="min-h-screen bg-blue-50 p-8">
