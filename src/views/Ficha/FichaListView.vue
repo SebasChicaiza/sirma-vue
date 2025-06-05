@@ -39,10 +39,10 @@ onMounted(() => {
   <div class="min-h-screen bg-blue-50 p-6">
     <h1 class="text-2xl font-bold text-blue-800 mb-6">Fichas de Pacientess</h1>
     <router-link
-      to="/fichas/crear"
+      to="/personas"
       class="inline-block mb-4 bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition"
     >
-      Crear
+      Crear ficha de un paciente
     </router-link>
 
     <div class="overflow-auto bg-white rounded-lg shadow-lg">
@@ -74,7 +74,7 @@ onMounted(() => {
             <td class="p-3">{{ pf.idficha2.pacObservaciones }}</td>
             <td class="p-3 space-x-2">
               <router-link
-                :to="`/fichas/editar/${pf.idficha}`"
+                :to="`/fichas/editar/${pf.idpersona2.idpersona}/${pf.idficha}`"
                 class="text-blue-600 hover:underline text-sm"
               >
                 Editar
