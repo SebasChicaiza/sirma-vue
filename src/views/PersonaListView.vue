@@ -80,6 +80,12 @@ onMounted(() => {
               >
                 Editar
               </router-link>
+              <router-link
+                :to="`/fichas/crear/${persona.idpersona}`"
+                class="text-green-600 hover:underline text-sm"
+              >
+                Crear Ficha
+              </router-link>
               <button
                 @click="eliminarPersona(persona.idpersona)"
                 class="text-red-600 hover:underline text-sm"
