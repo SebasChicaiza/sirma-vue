@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PersonaListView from '../views/PersonaListView.vue'
 import PersonaCreateView from '../views/PersonaCreateView.vue'
 import PersonaEditView from '../views/PersonaEditView.vue'
+import FichaGeneralView from '../views/Fichas/FichaGeneralView.vue'
+import FichaMedicaView from '@/views/Fichas/FichaMedicaView.vue'
+import FichaSeleccionView from '@/views/FichaSeleccionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,7 +16,10 @@ const router = createRouter({
     },
     { path: '/personas', component: PersonaListView },
     { path: '/personas/crear', component: PersonaCreateView },
-    { path: '/personas/editar/:id', component: PersonaEditView, props: true }
+    { path: '/personas/editar/:id', component: PersonaEditView, props: true },
+    { path: '/ficha/general', component: FichaGeneralView },
+    { path: '/ficha/medica', component: FichaMedicaView },
+    { path: '/fichas', component: FichaSeleccionView }
 
   ],
 })

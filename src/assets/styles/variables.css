@@ -1,0 +1,9 @@
+:root {
+  --color-primary-dark: #2a4d69; /* Azul oscuro sobrio */
+  --color-primary-medium: #4b86b4; /* Azul intermedio para acentos */
+  --color-accent-green: #7fd1b9; /* Verde menta suave para hover/activo */
+  --color-text-light: #e0e0e0; /* Gris claro para texto */
+  --color-text-lighter: #f8f8f8; /* Blanco casi puro */
+  --color-notification: #f44336; /* Rojo para notificaciones */
+  --color-background-body: #f7f9fc; /* Gris muy claro para el cuerpo de la página */
+}
