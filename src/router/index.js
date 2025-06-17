@@ -9,6 +9,8 @@ import ChatBot from '@/views/ChatBot.vue'
 import FichaGeneralView from '../views/Fichas/FichaGeneralView.vue'
 import FichaMedicaView from '@/views/Fichas/FichaMedicaView.vue'
 import FichaSeleccionView from '@/views/FichaSeleccionView.vue'
+import RegistroView from '@/views/Usuario/RegistroView.vue'
+import LoginView from '@/views/Usuario/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,13 +24,12 @@ const router = createRouter({
     { path: '/personas/crear', component: PersonaCreateView },
     { path: '/personas/editar/:id', component: PersonaEditView, props: true },
     //{ path: '/fichas', component: FichaListView },
-    { path: '/fichas/crear/:id', component: FichaCreateWithPersona, props: true }, //Create a Ficha With Persona id
-    { path: '/fichas/editar/:id/:ficha', component: FichaEditView },
     { path: '/chat', component: ChatBot },
-    { path: '/personas/editar/:id', component: PersonaEditView, props: true },
     { path: '/ficha/general', component: FichaGeneralView },
     { path: '/ficha/medica', component: FichaMedicaView },
-    { path: '/fichas', component: FichaSeleccionView }
+    { path: '/fichas', component: FichaSeleccionView },
+    { path: '/registro', component: RegistroView },
+    { path: '/login', component: LoginView }
 
   ],
 })
