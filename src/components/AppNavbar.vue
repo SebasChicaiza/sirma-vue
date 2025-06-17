@@ -1,6 +1,37 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue' // Asegúrate de importar onMounted y onUnmounted
 import logo from '../assets/images/puce-logo.png'
+
+// Importar Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// Importar solo los íconos 'solid' que necesitas
+import {
+  faHome,
+  faNotesMedical,
+  faUsers,
+  faCalendarAlt, // Usamos CalendarAlt ya que 'calendar' sin el 'Alt' puede ser ambiguo o no existir en free-solid
+  faChartBar,
+  faUserCircle,
+  faBell,
+  faSignOutAlt,
+} from '@fortawesome/free-solid-svg-icons'
+
+// Añadir los íconos a la biblioteca de Font Awesome
+// ¡IMPORTANTE! Esto debería estar idealmente en tu main.js una sola vez.
+// Lo incluyo aquí por si lo estás probando de forma aislada,
+// pero si ya lo tienes en main.js, puedes eliminar estas líneas.
+library.add(
+  faHome,
+  faNotesMedical,
+  faUsers,
+  faCalendarAlt,
+  faChartBar,
+  faUserCircle,
+  faBell,
+  faSignOutAlt,
+)
 
 const isMenuOpen = ref(false)
 const notificationCount = ref(3) // Ejemplo: podrías obtener esto de Vuex o una API
@@ -10,8 +41,8 @@ const toggleMenu = () => {
 }
 
 const closeMenu = () => {
-  if (window.innerWidth <= 768) {
-    // Cierra el menú solo en móviles
+  // Cierra el menú solo si está abierto y en vista móvil
+  if (window.innerWidth <= 768 && isMenuOpen.value) {
     isMenuOpen.value = false
   }
 }
@@ -19,31 +50,40 @@ const closeMenu = () => {
 const logout = () => {
   alert('Cerrando sesión...')
   // Aquí iría tu lógica de cierre de sesión (ej. limpiar token, redirigir)
+  closeMenu() // Cierra el menú después de la acción
 }
 
-// Se recomienda añadir un watcher para cerrar el menú si la ventana es redimensionada a desktop
-// import { onMounted, onUnmounted } from 'vue';
-// let resizeListener = null;
-// onMounted(() => {
-//   resizeListener = () => {
-//     if (window.innerWidth > 768 && isMenuOpen.value) {
-//       isMenuOpen.value = false;
-//     }
-//   };
-//   window.addEventListener('resize', resizeListener);
-// });
-// onUnmounted(() => {
-//   window.removeEventListener('resize', resizeListener);
-// });
+// Listener para cerrar el menú si la ventana es redimensionada a desktop
+const handleResize = () => {
+  if (window.innerWidth > 768 && isMenuOpen.value) {
+    isMenuOpen.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
+
 <template>
   <nav :class="['navbar', { 'navbar-expanded': isMenuOpen }]">
     <div class="navbar-brand">
-      <img :src="logo" alt="PUCE Logo" class="logo" />
-      <div class="navbar-title-group">
-        <div class="navbar-main-title">PONTIFICIA UNIVERSIDAD CATÓLICA DEL ECUADOR</div>
-        <div class="navbar-subtitle">Sistema de Fichas Médicas</div>
-      </div>
+      <router-link
+        to="/"
+        @click="closeMenu"
+        class="logo-link"
+        aria-label="Ir a la página de inicio"
+      >
+        <img :src="logo" alt="Logo PUCE" class="logo" />
+        <div class="navbar-title-group">
+          <div class="navbar-main-title">PONTIFICIA UNIVERSIDAD CATÓLICA DEL ECUADOR</div>
+          <div class="navbar-subtitle">Sistema de Fichas Médicas</div>
+        </div>
+      </router-link>
     </div>
 
     <button class="hamburger-menu" @click="toggleMenu" aria-label="Abrir menú de navegación">
@@ -54,59 +94,61 @@ const logout = () => {
 
     <ul :class="['navbar-links', { 'navbar-links-open': isMenuOpen }]">
       <li>
-        <router-link to="/" @click="closeMenu"> <i class="icon-home"></i> Inicio </router-link>
+        <router-link to="/" @click="closeMenu">
+          <font-awesome-icon icon="home" /> Inicio
+        </router-link>
       </li>
       <li>
         <router-link to="/fichas" @click="closeMenu">
-          <i class="icon-file-medical"></i> Fichas Médicas
+          <font-awesome-icon icon="notes-medical" /> Fichas
         </router-link>
       </li>
       <li>
         <router-link to="/usuarios" @click="closeMenu">
-          <i class="icon-users"></i> Usuarios
+          <font-awesome-icon icon="users" /> Usuarios
         </router-link>
       </li>
       <li>
         <router-link to="/calendario" @click="closeMenu">
-          <i class="icon-calendar"></i> Calendario
+          <font-awesome-icon icon="calendar-alt" /> Calendario
         </router-link>
       </li>
       <li>
         <router-link to="/reportes" @click="closeMenu">
-          <i class="icon-chart-bar"></i> Reportes
+          <font-awesome-icon icon="chart-bar" /> Reportes
         </router-link>
       </li>
-      <li class="navbar-separator"></li>
-      <li class="navbar-user-info">
+      <li class="navbar-separator mobile-only"></li>
+      <li class="navbar-user-info mobile-only">
         <router-link to="/perfil" @click="closeMenu">
-          <i class="icon-user-circle"></i> Mi Perfil
+          <font-awesome-icon icon="user-circle" /> Mi Perfil
         </router-link>
       </li>
-      <li>
+      <li class="mobile-only">
         <router-link to="/notificaciones" @click="closeMenu">
-          <i class="icon-bell"></i> Notificaciones
+          <font-awesome-icon icon="bell" /> Notificaciones
           <span v-if="notificationCount > 0" class="notification-badge">{{
             notificationCount
           }}</span>
         </router-link>
       </li>
-      <li>
+      <li class="mobile-only">
         <button @click="logout" class="logout-button">
-          <i class="icon-sign-out-alt"></i> Cerrar Sesión
+          <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
         </button>
       </li>
     </ul>
 
-    <div class="navbar-right">
+    <div class="navbar-right desktop-only">
       <router-link to="/notificaciones" class="navbar-icon-link" aria-label="Ver notificaciones">
-        <i class="icon-bell"></i>
+        <font-awesome-icon icon="bell" />
         <span v-if="notificationCount > 0" class="notification-badge">{{ notificationCount }}</span>
       </router-link>
       <router-link to="/perfil" class="navbar-user-avatar" aria-label="Ir a mi perfil">
-        <i class="icon-user-circle"></i>
+        <font-awesome-icon icon="user-circle" />
       </router-link>
-      <button @click="logout" class="logout-button desktop-only">
-        <i class="icon-sign-out-alt"></i> Cerrar Sesión
+      <button @click="logout" class="logout-button">
+        <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
       </button>
     </div>
   </nav>
@@ -114,18 +156,8 @@ const logout = () => {
 
 <style scoped>
 /*
-  IMPORTANTE: Para los íconos (ej. icon-home, icon-file-medical),
-  necesitarás una biblioteca como Font Awesome.
-  Instálala y configúrala en tu proyecto Vue:
-  npm install @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/vue-fontawesome
-  Luego, impórtala en tu main.js o componente base:
-  import { library } from '@fortawesome/fontawesome-svg-core'
-  import { faHome, faFileMedical, faUsers, faCalendarAlt, faChartBar, faUserCircle, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
-  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-  library.add(faHome, faFileMedical, faUsers, faCalendarAlt, faChartBar, faUserCircle, faBell, faSignOutAlt)
-  app.component('font-awesome-icon', FontAwesomeIcon)
-  Y luego úsala en el template como: <font-awesome-icon icon="home" /> o <i class="fas fa-home"></i> si usas la CDN.
-  Para este ejemplo, he usado nombres de clase genéricos como "icon-home".
+  IMPORTANTE: Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
+  en tu main.js o App.vue (sin scoped), como se explicó anteriormente, para que sean accesibles aquí.
 */
 
 /* --- Base del Navbar --- */
@@ -140,19 +172,27 @@ const logout = () => {
   position: sticky; /* Sticky para que siempre esté visible al hacer scroll */
   top: 0;
   z-index: 1000; /* Asegura que esté sobre otros elementos */
-  min-height: 60px; /* Altura mínima para estabilidad visual */
+  min-height: 65px; /* Altura mínima para estabilidad visual, ajustada un poco */
+  transition: all 0.3s ease-in-out; /* Animación para expansiones/contracciones */
 }
 
 /* --- Brand/Logo --- */
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 12px; /* Espacio entre logo y texto */
-  cursor: pointer;
+}
+
+.logo-link {
+  /* Agregado para hacer el logo y título clicable */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit; /* Hereda el color del navbar */
 }
 
 .logo {
-  height: 40px; /* Tamaño más balanceado para el logo */
+  height: 45px; /* Tamaño un poco más grande para el logo */
   width: auto;
   filter: brightness(0) invert(1); /* Si el logo es oscuro, lo vuelve blanco */
 }
@@ -162,22 +202,22 @@ const logout = () => {
 }
 
 .navbar-main-title {
-  font-size: 1rem; /* Un poco más pequeño para dejar espacio */
+  font-size: 1.05rem; /* Un poco más grande para mejor legibilidad */
   font-weight: 600; /* Semi-bold */
   color: var(--color-text-lighter);
 }
 
 .navbar-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 400; /* Normal */
   color: var(--color-accent-green); /* Con un toque de color para distinción */
 }
 
-/* --- Enlaces de Navegación --- */
+/* --- Enlaces de Navegación Principales --- */
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 28px; /* Mayor separación entre elementos */
+  gap: 30px; /* Mayor separación entre elementos */
   margin: 0;
   padding: 0;
   transition: transform 0.3s ease-in-out; /* Transición para menú hamburguesa */
@@ -195,11 +235,13 @@ const logout = () => {
   position: relative; /* Para la línea inferior */
   display: flex;
   align-items: center;
-  gap: 8px; /* Espacio entre ícono y texto */
+  gap: 10px; /* Espacio entre ícono y texto */
+  transition: color 0.3s ease;
 }
 
-.navbar-links a i {
-  font-size: 1.1rem; /* Tamaño de los íconos */
+/* Estilo para los iconos de Font Awesome dentro de los enlaces */
+.navbar-links a .fa-icon {
+  font-size: 1.15rem; /* Tamaño de los íconos */
   color: var(--color-text-light); /* Color base de los íconos */
   transition: color 0.3s ease;
 }
@@ -209,7 +251,7 @@ const logout = () => {
   color: var(--color-accent-green);
 }
 
-.navbar-links a:hover i {
+.navbar-links a:hover .fa-icon {
   color: var(--color-accent-green);
 }
 
@@ -234,7 +276,8 @@ const logout = () => {
   font-weight: 600 !important; /* Más énfasis en el activo */
 }
 
-.router-link-active i {
+.router-link-active .fa-icon {
+  /* Objetivo el ícono dentro del enlace activo */
   color: var(--color-accent-green) !important;
 }
 
@@ -243,18 +286,18 @@ const logout = () => {
   background-color: var(--color-accent-green) !important;
 }
 
-/* --- Notificaciones y Perfil --- */
+/* --- Notificaciones y Perfil (Desktop) --- */
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px; /* Mayor separación en el lado derecho */
 }
 
 .navbar-icon-link {
   color: var(--color-text-light);
   text-decoration: none;
   position: relative;
-  font-size: 1.3rem; /* Tamaño del ícono de campana */
+  font-size: 1.4rem; /* Tamaño del ícono de campana */
   transition: color 0.3s ease;
 }
 
@@ -266,9 +309,9 @@ const logout = () => {
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: var(--color-notification);
+  background-color: var(--color-notification); /* Rojo vibrante */
   color: var(--color-text-lighter);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: bold;
   border-radius: 50%;
   padding: 3px 7px;
@@ -292,35 +335,38 @@ const logout = () => {
   }
 }
 
-.navbar-user-avatar i {
-  font-size: 1.6rem; /* Tamaño del ícono de usuario */
+/* Estilo para el icono de usuario de Font Awesome */
+.navbar-user-avatar .fa-icon {
+  font-size: 1.8rem; /* Tamaño del ícono de usuario */
   color: var(--color-text-light);
   transition: color 0.3s ease;
 }
 
-.navbar-user-avatar:hover i {
+.navbar-user-avatar:hover .fa-icon {
   color: var(--color-accent-green);
 }
 
 .logout-button {
   background: none;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil para distinguirlo */
   color: var(--color-text-light);
-  font-size: 1rem;
+  font-size: 0.95rem; /* Un poco más pequeño que los enlaces */
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 8px 15px;
+  border-radius: 6px;
   transition:
     background-color 0.3s ease,
-    color 0.3s ease;
+    color 0.3s ease,
+    border-color 0.3s ease;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
 }
 
 /* Separador en el menú móvil */
@@ -328,21 +374,30 @@ const logout = () => {
   display: none; /* Oculto por defecto en desktop */
   height: 1px;
   background-color: rgba(255, 255, 255, 0.2);
-  margin: 15px 0;
+  margin: 20px 0;
 }
+
+/* Clases de utilidad para responsividad */
+.desktop-only {
+  display: flex;
+} /* Valor por defecto para desktop */
+.mobile-only {
+  display: none;
+} /* Valor por defecto para desktop */
 
 /* --- Responsividad: Menú Hamburguesa --- */
 .hamburger-menu {
   display: none; /* Oculto por defecto en desktop */
   flex-direction: column;
   justify-content: space-around;
-  width: 30px;
-  height: 25px;
+  width: 32px; /* Un poco más grande para mejor toque */
+  height: 28px;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   z-index: 1001; /* Para que esté por encima del menú desplegado */
+  margin-left: auto; /* Empuja la hamburguesa a la derecha si el navbar-brand es elástico */
 }
 
 .hamburger-menu .bar {
@@ -355,43 +410,57 @@ const logout = () => {
 
 /* Animación de la hamburguesa a X */
 .navbar-expanded .hamburger-menu .bar:nth-child(1) {
-  transform: translateY(11px) rotate(45deg);
+  transform: translateY(12px) rotate(45deg);
 }
 .navbar-expanded .hamburger-menu .bar:nth-child(2) {
   opacity: 0;
 }
 .navbar-expanded .hamburger-menu .bar:nth-child(3) {
-  transform: translateY(-11px) rotate(-45deg);
-}
-
-/* Ocultar elementos de escritorio en móvil y viceversa */
-.desktop-only {
-  display: none;
+  transform: translateY(-12px) rotate(-45deg);
 }
 
 /* Media Queries para Responsividad */
+@media (max-width: 992px) {
+  /* Tabletas y móviles grandes */
+  .navbar-links {
+    gap: 20px; /* Reduce un poco el gap en tabletas */
+  }
+}
+
 @media (max-width: 768px) {
+  /* Teléfonos Móviles */
   .navbar {
     padding: 10px 20px;
   }
 
-  .navbar-brand {
-    flex-grow: 1; /* Permite que el logo ocupe más espacio */
+  .navbar-brand .logo-link {
+    flex-grow: 1; /* Permite que el logo-link ocupe más espacio */
+    justify-content: flex-start;
+  }
+
+  .navbar-main-title {
+    font-size: 0.9rem;
+  }
+  .navbar-subtitle {
+    font-size: 0.75rem;
+  }
+  .logo {
+    height: 38px;
   }
 
   .navbar-links {
     position: fixed;
-    top: 0; /* Ajusta esto si tu navbar tiene una altura variable */
+    top: 0; /* Asegura que el menú empiece desde arriba */
     right: 0;
-    width: 250px; /* Ancho del menú lateral */
+    width: 280px; /* Ancho del menú lateral */
     height: 100%;
-    background-color: var(--color-primary-dark); /* Mismo fondo que el navbar */
+    background-color: var(--color-primary-dark);
     flex-direction: column;
-    padding: 80px 20px 20px; /* Padding para evitar el logo */
+    padding: 80px 25px 20px; /* Padding para evitar el logo */
     transform: translateX(100%); /* Oculto por defecto */
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: -6px 0 15px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
     z-index: 999; /* Por debajo de la hamburguesa */
-    gap: 15px; /* Espaciado en el menú vertical */
+    gap: 18px; /* Espaciado en el menú vertical */
     overflow-y: auto; /* Para menús largos */
   }
 
@@ -401,8 +470,13 @@ const logout = () => {
 
   .navbar-links li a {
     justify-content: flex-start; /* Alinea texto e íconos a la izquierda */
-    padding: 12px 10px; /* Mayor padding para toques */
-    border-radius: 6px; /* Bordes suaves */
+    padding: 12px 15px; /* Mayor padding para toques */
+    border-radius: 8px; /* Bordes suaves */
+    font-size: 1.05rem; /* Un poco más grande para móvil */
+  }
+
+  .navbar-links li a .fa-icon {
+    font-size: 1.25rem;
   }
 
   .navbar-links li a:hover,
@@ -410,31 +484,29 @@ const logout = () => {
     background-color: rgba(255, 255, 255, 0.08); /* Fondo sutil para hover/activo */
   }
 
-  .navbar-links a::after {
-    display: none; /* Ocultar la línea inferior en móvil */
-  }
+  .navbar-links a::after,
   .router-link-active::after {
-    display: none;
+    display: none; /* Ocultar la línea inferior en móvil */
   }
 
   .hamburger-menu {
     display: flex; /* Mostrar hamburguesa en móvil */
   }
 
-  .navbar-right {
-    display: none; /* Ocultar elementos de la derecha en móvil */
+  /* Oculta elementos de desktop en móvil y viceversa */
+  .desktop-only {
+    display: none;
   }
-
-  .navbar-separator {
-    display: block; /* Mostrar separador en móvil */
-  }
+  .mobile-only {
+    display: block;
+  } /* Asegúrate de que los elementos solo en móvil se muestren */
 
   /* Asegurarse de que el botón de cerrar sesión se vea bien en móvil */
   .logout-button {
     width: 100%;
     text-align: left;
     justify-content: flex-start;
-    padding: 12px 10px;
+    padding: 12px 15px;
     background-color: rgba(255, 255, 255, 0.05); /* Un poco de fondo para el botón */
   }
   .logout-button:hover {

@@ -20,10 +20,13 @@
 
       <div class="footer-section footer-contact">
         <h3>Contacto y Soporte</h3>
-        <p><i class="icon-map-marker-alt"></i> Av. 12 de Octubre 1076 y Roca, Quito, Ecuador</p>
-        <p><i class="icon-phone"></i> +593 2 299 1700</p>
         <p>
-          <i class="icon-envelope"></i> <a href="mailto:soporte@puce.edu.ec">soporte@puce.edu.ec</a>
+          <font-awesome-icon icon="map-marker-alt" /> Av. 12 de Octubre 1076 y Roca, Quito, Ecuador
+        </p>
+        <p><font-awesome-icon icon="phone" /> +593 2 299 1700</p>
+        <p>
+          <font-awesome-icon icon="envelope" />
+          <a href="mailto:soporte@puce.edu.ec">soporte@puce.edu.ec</a>
         </p>
         <p class="footer-schedule">Horario de atención: Lunes a Viernes, 8:00 - 17:00</p>
       </div>
@@ -49,10 +52,17 @@
 
 <script setup>
 import { ref } from 'vue'
-// Opcional: Si quieres Font Awesome para los iconos de contacto
+// Importar Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome' // ¡Importante: necesitas este componente!
+
+// Importar solo los íconos 'solid' que necesitas
 import { faMapMarkerAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
+// Añadir los íconos a la biblioteca de Font Awesome
+// ¡IMPORTANTE! Esto debería estar idealmente en tu main.js una sola vez.
+// Lo incluyo aquí por si lo estás probando de forma aislada,
+// pero si ya lo tienes en main.js, puedes eliminar estas líneas.
 library.add(faMapMarkerAlt, faPhone, faEnvelope)
 
 const currentYear = ref(new Date().getFullYear())
@@ -163,8 +173,8 @@ const currentYear = ref(new Date().getFullYear())
   text-decoration: underline;
 }
 
-.footer-contact .fa-icon {
-  /* Estilo para iconos de Font Awesome en contacto */
+/* Estilo para los iconos de Font Awesome dentro de los párrafos de contacto */
+.footer-contact p .fa-icon {
   color: var(--color-accent-green); /* Íconos en verde de acento */
   font-size: 1.1rem;
 }
