@@ -2,7 +2,7 @@
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-section footer-branding">
-        <img src="@/assets/puce-logo-white.png" alt="Logo PUCE" class="footer-logo" />
+        <img src="@/assets/images/puce-logo.png" alt="Logo PUCE" class="footer-logo" />
         <p class="footer-app-name">Sistema de Fichas Médicas</p>
         <p class="footer-university-name">Pontificia Universidad Católica del Ecuador</p>
       </div>
@@ -52,7 +52,6 @@ import { ref } from 'vue'
 // Opcional: Si quieres Font Awesome para los iconos de contacto
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMapMarkerAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faMapMarkerAlt, faPhone, faEnvelope)
 

@@ -6,6 +6,7 @@ const personas = ref([])
 
 const cargarPersonas = async () => {
   const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas`)
+  console.log( 'HOLAA' + res.data)
   personas.value = res.data
   console.log(personas.value)
 }
@@ -78,6 +79,12 @@ onMounted(() => {
                 class="text-blue-600 hover:underline text-sm"
               >
                 Editar
+              </router-link>
+              <router-link
+                :to="`/fichas/crear/${persona.idpersona}`"
+                class="text-green-600 hover:underline text-sm"
+              >
+                Crear Ficha
               </router-link>
               <button
                 @click="eliminarPersona(persona.idpersona)"
