@@ -135,14 +135,12 @@
 .button-icon-wrapper.general {
   background-color: var(--color-primary-medium); /* Azul intermedio para Ficha General */
 }
-
 .button-icon-wrapper.medical {
   background-color: var(--color-accent-green); /* Verde menta para Ficha Médica */
 }
 .button-icon-wrapper.enfermeria {
   background-color: var(--color-primary-dark); /* Verde menta para Ficha Médica */
 }
-
 .button-icon-wrapper.nutricion {
   background-color: coral; /* Verde menta para Ficha Médica */
 }

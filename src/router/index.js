@@ -35,7 +35,7 @@ const router = createRouter({
     { path: '/login', component: LoginView },
     { path: '/ficha/enfermeria', component: FichaEnfermeriaView },
     { path: '/ficha/nutricion', component: FichaNutricionView },
-    { path: '/ficha/fisio', component: FichaFisioterapiaView }
+    { path: '/ficha/fisioterapia', component: FichaFisioterapiaView }
 
   ],
 })
