@@ -23,6 +23,27 @@
           Historial clínico, diagnósticos, tratamientos, alergias, etc.
         </p>
       </router-link>
+      <router-link to="/ficha/enfermeria" class="selection-button">
+        <div class="button-icon-wrapper enfermeria"><i class="icon-nurse-cap"></i></div>
+        <span class="button-text">Ficha de Enfermería</span>
+        <p class="button-description">
+          Evaluación de enfermería, planes de cuidado, intervenciones y seguimiento.
+        </p>
+      </router-link>
+      <router-link to="/ficha/enfermeria" class="selection-button">
+        <div class="button-icon-wrapper nutricion"><i class="icon-nurse-cap"></i></div>
+        <span class="button-text">Ficha de Nutricion</span>
+        <p class="button-description">
+          Evaluación de nutrición, planes de alimentación, seguimiento de peso y salud.
+        </p>
+      </router-link>
+      <router-link to="/ficha/fisioterapia" class="selection-button">
+        <div class="button-icon-wrapper fisioterapia"><i class="icon-nurse-cap"></i></div>
+        <span class="button-text">Ficha de Fisioterapia</span>
+        <p class="button-description">
+          Evaluación de fisioterapia, planes de tratamiento, ejercicios y seguimiento.
+        </p>
+      </router-link>
     </div>
   </div>
 </template>
@@ -117,6 +138,16 @@
 
 .button-icon-wrapper.medical {
   background-color: var(--color-accent-green); /* Verde menta para Ficha Médica */
+}
+.button-icon-wrapper.enfermeria {
+  background-color: var(--color-primary-dark); /* Verde menta para Ficha Médica */
+}
+
+.button-icon-wrapper.nutricion {
+  background-color: coral; /* Verde menta para Ficha Médica */
+}
+.button-icon-wrapper.fisioterapia {
+  background-color: darkviolet; /* Verde menta para Ficha Médica */
 }
 
 .selection-button i {

@@ -19,12 +19,15 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden; /* Evita scroll horizontal global */
 }
+
 .app-wrapper {
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100%; /* Cambiado de min-width: 100vw */
   display: flex;
   flex-direction: column;
   background: #f5f5f5;
+  overflow-x: hidden; /* Evita scroll horizontal en el wrapper */
 }
 </style>
