@@ -14,14 +14,15 @@ import LoginView from '@/views/Usuario/LoginView.vue'
 import FichaEnfermeriaView from '@/views/Fichas/FichaEnfermeriaView.vue'
 import FichaNutricionView from '@/views/Fichas/FichaNutricionView.vue'
 import FichaFisioterapiaView from '@/views/Fichas/FichaFisioterapiaView.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'personas',
-      component: PersonaListView,
+      name: 'home',
+      component: HomeView,
     },
     { path: '/personas', component: PersonaListView },
     { path: '/personas/crear', component: PersonaCreateView },

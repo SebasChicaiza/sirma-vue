@@ -80,8 +80,8 @@ onUnmounted(() => {
       >
         <img :src="logo" alt="Logo PUCE" class="logo" />
         <div class="navbar-title-group">
-          <div class="navbar-main-title">PONTIFICIA UNIVERSIDAD CATÓLICA DEL ECUADOR</div>
-          <div class="navbar-subtitle">Sistema de Fichas Médicas</div>
+          <div class="navbar-main-title">SISTEMA INTEGRADO DE REGISTRO MÉDICO AVANZADO</div>
+          <div class="navbar-subtitle">Pontificia Universidad Católica del Ecuador</div>
         </div>
       </router-link>
     </div>
@@ -104,8 +104,8 @@ onUnmounted(() => {
         </router-link>
       </li>
       <li>
-        <router-link to="/usuarios" @click="closeMenu">
-          <font-awesome-icon icon="users" /> Usuarios
+        <router-link to="/personas" @click="closeMenu">
+          <font-awesome-icon icon="users" /> Personas
         </router-link>
       </li>
       <li>
