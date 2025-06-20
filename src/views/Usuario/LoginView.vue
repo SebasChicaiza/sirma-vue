@@ -114,7 +114,7 @@ const handleSubmit = async () => {
   isSubmitting.value = true
 
   try {
-    const response = await axios.post('http://localhost:3000/usuarios/login', {
+    const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/usuarios/login`, {
       correo: formData.email,
       clave: formData.password,
     })
@@ -124,7 +124,7 @@ const handleSubmit = async () => {
 
     submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
     submitStatus.value = 'success'
-    
+
     setTimeout(() => {
       if (usuario.rol === 'admin') {
         router.push('/dashboard')
@@ -133,7 +133,6 @@ const handleSubmit = async () => {
         router.push('/')
       }
     }, 1500)
-
   } catch (error) {
     if (error.response?.status === 401) {
       submitMessage.value = 'Correo o contraseña incorrectos.'
@@ -206,7 +205,9 @@ const handleSubmit = async () => {
   border-radius: 10px;
   font-size: 1.05rem;
   background-color: var(--color-input-background-default, #fff);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .form-group input.input-error {
