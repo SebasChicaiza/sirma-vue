@@ -85,10 +85,11 @@ const validateForm = () => {
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
     errors.email = 'Formato de correo inválido.'
     isValid = false
-  } else if (!formData.email.endsWith('@puce.edu.ec')) {
-    errors.email = 'El correo debe ser @puce.edu.ec.'
-    isValid = false
   }
+  // } else if (!formData.email.endsWith('@puce.edu.ec')) {
+  //   errors.email = 'El correo debe ser @puce.edu.ec.'
+  //   isValid = false
+  // }
 
   if (!formData.password) {
     errors.password = 'La contraseña es obligatoria.'
@@ -114,36 +115,41 @@ const handleSubmit = async () => {
   isSubmitting.value = true
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/usuarios/login`, {
-      correo: formData.email,
-      clave: formData.password,
-    })
+    const payload = {
+      userCorreo: formData.email,
+      userClave: formData.password,
+    }
+    console.log('Payload enviado al servidor:', payload)
 
-    const usuario = response.data
-    if (response.data == 'Credenciales incorrectas o usuario inactivo.') {
-      submitMessage.value = 'Credenciales incorrectas.'
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL_BACKEND}/usuarios/login`,
+      payload,
+      { validateStatus: () => true },
+    )
+    console.log('Respuesta del servidor:', response)
+
+    if (response.status === 401) {
+      submitMessage.value = response.data?.message || 'No se pudieron validar sus credenciales.'
       submitStatus.value = 'error'
+      isSubmitting.value = false
       return
-    } else {
-      localStorage.setItem('usuario', JSON.stringify(usuario))
+    }
 
-      submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
-      submitStatus.value = 'success'
-      setTimeout(() => {
-        if (usuario.rol === 'admin') {
-          router.push('/dashboard')
-          window.location.reload()
-        } else {
-          router.push('/')
-        }
-      }, 1500)
-    }
+    // Si llega aquí, el login fue exitoso
+    const usuario = response.data
+    localStorage.setItem('usuario', JSON.stringify(usuario))
+    submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
+    submitStatus.value = 'success'
+    setTimeout(() => {
+      if (usuario.rol === 'admin') {
+        router.push('/dashboard')
+        window.location.reload()
+      } else {
+        router.push('/')
+      }
+    }, 1500)
   } catch (error) {
-    if (error.response?.status === 401) {
-      submitMessage.value = 'Correo o contraseña incorrectos.'
-    } else {
-      submitMessage.value = 'Error de conexión con el servidor.'
-    }
+    submitMessage.value = 'Error de conexión con el servidor. '+ error
     submitStatus.value = 'error'
   } finally {
     isSubmitting.value = false
