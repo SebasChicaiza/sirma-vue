@@ -1,14 +1,30 @@
 <script setup>
+import { ref, computed, watchEffect } from 'vue'
 import AppNavbar from './components/AppNavbar.vue'
-import './assets/styles/variables.css'
+import AppNavbarUser from './components/AppNavbarUser.vue'
 import AppFooter from './components/AppFooter.vue'
+import AppFooterUser from './components/AppFooterUser.vue'
+import './assets/styles/variables.css'
+
+// Usuario reactivo
+const usuario = ref(null)
+
+// Reevaluar usuario cada vez que cambie el localStorage (ej: luego del login)
+watchEffect(() => {
+  const raw = localStorage.getItem('usuario')
+  usuario.value = raw ? JSON.parse(raw) : null
+})
+
+// Rol reactivo
+const isAdmin = computed(() => usuario.value?.userRol === 'admin')
+
 </script>
 
 <template>
   <div class="app-wrapper">
-    <AppNavbar />
+     <component :is="isAdmin ? AppNavbar : AppNavbarUser" />
     <RouterView />
-    <AppFooter />
+    <component :is="isAdmin ? AppFooter : AppFooterUser" />
   </div>
 </template>
 
