@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue'
 import AppNavbar from './components/AppNavbar.vue'
-import AppNavbarUser from './components/AppNavbarUser.vue'
+import AppNavbarUser from './components/AppNavBarUser.vue'
 import AppFooter from './components/AppFooter.vue'
 import AppFooterUser from './components/AppFooterUser.vue'
 import './assets/styles/variables.css'
@@ -17,12 +17,11 @@ watchEffect(() => {
 
 // Rol reactivo
 const isAdmin = computed(() => usuario.value?.userRol === 'admin')
-
 </script>
 
 <template>
   <div class="app-wrapper">
-     <component :is="isAdmin ? AppNavbar : AppNavbarUser" />
+    <component :is="isAdmin ? AppNavbar : AppNavbarUser" />
     <RouterView />
     <component :is="isAdmin ? AppFooter : AppFooterUser" />
   </div>
