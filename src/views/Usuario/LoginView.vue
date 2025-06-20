@@ -120,19 +120,24 @@ const handleSubmit = async () => {
     })
 
     const usuario = response.data
-    localStorage.setItem('usuario', JSON.stringify(usuario))
+    if (response.data == 'Credenciales incorrectas o usuario inactivo.') {
+      submitMessage.value = 'Credenciales incorrectas.'
+      submitStatus.value = 'error'
+      return
+    } else {
+      localStorage.setItem('usuario', JSON.stringify(usuario))
 
-    submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
-    submitStatus.value = 'success'
-
-    setTimeout(() => {
-      if (usuario.rol === 'admin') {
-        router.push('/dashboard')
-        window.location.reload()
-      } else {
-        router.push('/')
-      }
-    }, 1500)
+      submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
+      submitStatus.value = 'success'
+      setTimeout(() => {
+        if (usuario.rol === 'admin') {
+          router.push('/dashboard')
+          window.location.reload()
+        } else {
+          router.push('/')
+        }
+      }, 1500)
+    }
   } catch (error) {
     if (error.response?.status === 401) {
       submitMessage.value = 'Correo o contraseña incorrectos.'
