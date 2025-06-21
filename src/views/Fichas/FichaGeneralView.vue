@@ -10,255 +10,11 @@
       </div>
 
       <h2 class="form-title">FICHA GENERAL DEL PACIENTE</h2>
-
-      <div class="form-metadata">
-        <div class="form-group inline-group">
-          <label for="numeroFicha">Ficha N°:</label>
-          <input
-            id="numeroFicha"
-            v-model.trim="form.numeroFicha"
-            type="text"
-            placeholder="0001"
-            class="small-input"
-          />
-        </div>
-        <div class="form-group inline-group">
-          <label for="fechaContacto">Fecha de Contacto:</label>
-          <input id="fechaContacto" v-model="form.fechaContacto" type="date" class="small-input" />
-        </div>
-      </div>
       <SearchBar
-        placeholder="Buscar cliente por nombre..."
+        placeholder="Buscar cliente por nombre o cédula..."
         @search="handleSearch"
         class="w-full sm:w-auto ml-auto"
       />
-      <!-- <section class="form-section">
-        <h3 class="section-title">🧍 Datos del Paciente</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="comunidad">Comunidad:</label>
-            <input
-              id="comunidad"
-              v-model.trim="form.comunidad"
-              type="text"
-              placeholder="Ej. Chugchilán"
-            />
-          </div>
-          <div class="form-group">
-            <label for="zona">Zona:</label>
-            <input id="zona" v-model.trim="form.zona" type="text" placeholder="Rural / Urbana" />
-          </div>
-          <div class="form-group">
-            <label for="nombres">Nombres:</label>
-            <input id="nombres" v-model.trim="form.nombres" type="text" placeholder="Juan Carlos" />
-          </div>
-          <div class="form-group">
-            <label for="apellidos">Apellidos:</label>
-            <input
-              id="apellidos"
-              v-model.trim="form.apellidos"
-              type="text"
-              placeholder="Pérez Torres"
-            />
-          </div>
-          <div class="form-group">
-            <label for="cedula">Cédula:</label>
-            <input
-              id="cedula"
-              v-model.trim="form.cedula"
-              type="text"
-              inputmode="numeric"
-              maxlength="10"
-              placeholder="Ej: 17XXXXXXX"
-            />
-          </div>
-          <div class="form-group">
-            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-            <input id="fechaNacimiento" v-model="form.fechaNacimiento" type="date" />
-          </div>
-          <div class="form-group">
-            <label for="edad">Edad:</label>
-            <input
-              id="edad"
-              v-model.number="form.edad"
-              type="number"
-              min="0"
-              placeholder="Ej: 65"
-            />
-          </div>
-          <div class="form-group">
-            <label for="sexo">Sexo:</label>
-            <select id="sexo" v-model="form.sexo">
-              <option disabled value="">Seleccionar</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="estadoCivil">Estado Civil:</label>
-            <input
-              id="estadoCivil"
-              v-model.trim="form.estadoCivil"
-              type="text"
-              placeholder="Ej: Casado/a"
-            />
-          </div>
-          <div class="form-group">
-            <label for="ocupacion">Ocupación:</label>
-            <input
-              id="ocupacion"
-              v-model.trim="form.ocupacion"
-              type="text"
-              placeholder="Ej: Ama de casa"
-            />
-          </div>
-          <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input
-              id="telefono"
-              v-model.trim="form.telefono"
-              type="tel"
-              placeholder="Ej: 09XXXXXXXX"
-            />
-          </div>
-          <div class="form-group">
-            <label for="instruccion">Instrucción:</label>
-            <input
-              id="instruccion"
-              v-model.trim="form.instruccion"
-              type="text"
-              placeholder="Ej: Primaria completa"
-            />
-          </div>
-          <div class="form-group">
-            <label for="responsable">Responsable/Contacto de Emergencia:</label>
-            <input
-              id="responsable"
-              v-model.trim="form.responsable"
-              type="text"
-              placeholder="Nombre del responsable"
-            />
-          </div>
-          <div class="form-group checkbox-group">
-            <label>
-              <input type="checkbox" v-model="form.dependiente" />
-              Dependiente
-            </label>
-            <label>
-              <input type="checkbox" v-model="form.fragil" />
-              Frágil
-            </label>
-          </div>
-        </div>
-      </section> -->
-
-      <section class="form-section">
-        <h3 class="section-title">🩺 Signos Vitales</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="presionArterial">Presión Arterial:</label>
-            <input
-              id="presionArterial"
-              v-model.trim="form.presionArterial"
-              type="text"
-              placeholder="Ej. 120/80 mmHg"
-            />
-          </div>
-          <div class="form-group">
-            <label for="frecuenciaCardiaca">Frecuencia Cardiaca:</label>
-            <input
-              id="frecuenciaCardiaca"
-              v-model.trim="form.frecuenciaCardiaca"
-              type="text"
-              placeholder="Ej. 72 lpm"
-            />
-          </div>
-          <div class="form-group">
-            <label for="frecuenciaRespiratoria">Frecuencia Respiratoria:</label>
-            <input
-              id="frecuenciaRespiratoria"
-              v-model.trim="form.frecuenciaRespiratoria"
-              type="text"
-              placeholder="Ej. 18 rpm"
-            />
-          </div>
-          <div class="form-group">
-            <label for="temperatura">Temperatura:</label>
-            <input
-              id="temperatura"
-              v-model.trim="form.temperatura"
-              type="text"
-              placeholder="Ej. 36.5°C"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">📝 Consentimiento Informado</h3>
-        <div class="form-group full-width">
-          <label for="consentimiento">Texto del Consentimiento:</label>
-          <textarea
-            id="consentimiento"
-            v-model.trim="form.consentimiento"
-            rows="5"
-            placeholder="Escriba aquí el consentimiento informado completo, o haga referencia al documento adjunto..."
-          ></textarea>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="lugarFecha">Lugar y Fecha:</label>
-            <input
-              id="lugarFecha"
-              v-model.trim="form.lugarFecha"
-              type="text"
-              placeholder="Ej: Quito, 17/06/2025"
-            />
-          </div>
-          <div class="form-group">
-            <label for="firmaParticipante">Firma del Participante:</label>
-            <input
-              id="firmaParticipante"
-              v-model.trim="form.firmaParticipante"
-              type="text"
-              placeholder="Nombre y apellido del participante"
-            />
-          </div>
-          <div class="form-group">
-            <label for="firmaInvestigador">Firma del Investigador:</label>
-            <input
-              id="firmaInvestigador"
-              v-model.trim="form.firmaInvestigador"
-              type="text"
-              placeholder="Nombre y apellido del investigador"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">📋 Registro de Atención</h3>
-        <div class="stamp-grid">
-          <div class="stamp-box">
-            <strong>MEDICINA</strong>
-            <div class="sello">[Sello]</div>
-          </div>
-          <div class="stamp-box">
-            <strong>ENFERMERÍA</strong>
-            <div class="sello">[Sello]</div>
-          </div>
-          <div class="stamp-box">
-            <strong>NUTRICIÓN</strong>
-            <div class="sello">[Sello]</div>
-          </div>
-          <div class="stamp-box">
-            <strong>FISIOTERAPIA</strong>
-            <div class="sello">[Sello]</div>
-          </div>
-        </div>
-      </section>
-
       <!-- Tabla de resultados de búsqueda -->
       <table v-if="resultadosBusqueda.length" class="tabla-busqueda">
         <thead>
@@ -267,28 +23,228 @@
             <th>Apellidos</th>
             <th>Edad</th>
             <th>Cédula</th>
-            <th>Comunidad / Zona</th>
-            <th>Ocupación</th>
             <th>Seleccionar</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="persona in resultadosBusqueda" :key="persona.idpersona">
-            <td><strong>{{ persona.perPrimernombre }} {{ persona.perSegundonombre }}</strong></td>
+            <td>
+              <strong>{{ persona.perPrimernombre }} {{ persona.perSegundonombre }}</strong>
+            </td>
             <td>{{ persona.perPrimerapellido }} {{ persona.perSegundoapellido }}</td>
             <td>{{ persona.perEdad }} años</td>
             <td>{{ persona.perCedula }}</td>
             <td>
-              <span>{{ persona.perComunidad }}</span><br />
-              <span>{{ persona.perZona }}</span>
-            </td>
-            <td>{{ persona.perOcupacion }}</td>
-            <td>
-              <button @click="seleccionarPersona(persona)">Seleccionar</button>
+              <button
+                @click="seleccionarPersona(persona)"
+                :disabled="idPersonaSeleccionada == persona.idpersona"
+                :style="
+                  idPersonaSeleccionada == persona.idpersona
+                    ? 'background-color: #22c55e; color: white;'
+                    : ''
+                "
+              >
+                {{ idPersonaSeleccionada == persona.idpersona ? 'Seleccionado' : 'Seleccionar' }}
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
+      <!-- Si no hay resultados y se hizo una búsqueda, muestra el botón para agregar paciente solo si no hay idpersona en localStorage -->
+      <div v-else-if="busquedaRealizada && !idPersonaSeleccionada" class="mt-4 flex justify-center">
+        <button
+          @click="router.push('/personas/crear')"
+          class="submit-button"
+          style="background-color: coral"
+        >
+          Agregar paciente
+        </button>
+      </div>
+      <div class="form-metadata">
+        <div class="form-group inline-group">
+          <label for="idFicha">Ficha N°:</label>
+          <input
+            id="idFicha"
+            v-model.trim="form.idFicha"
+            type="text"
+            placeholder="Ej: FCH02"
+            class="small-input"
+          />
+        </div>
+        <div class="form-group inline-group">
+          <label for="pacFechaprimercontacto">Fecha de Contacto:</label>
+          <input
+            id="pacFechaprimercontacto"
+            v-model="form.pacFechaprimercontacto"
+            type="date"
+            class="small-input"
+          />
+        </div>
+      </div>
+
+      <section class="form-section">
+        <h3 class="section-title">🧍 Estado y Observaciones</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="pacEstadogeneral">Estado General:</label>
+            <input
+              id="pacEstadogeneral"
+              v-model.trim="form.pacEstadogeneral"
+              type="text"
+              placeholder="Ej: Estable"
+            />
+          </div>
+          <div class="form-group">
+            <label for="pacObservaciones">Observaciones:</label>
+            <textarea
+              id="pacObservaciones"
+              v-model.trim="form.pacObservaciones"
+              rows="3"
+              placeholder="Observaciones del paciente"
+            ></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-title">👤 Datos del Encuestador</h3>
+        <div class="form-group">
+          <label for="dgNombreencuestador">Nombre del Encuestador:</label>
+          <input
+            id="dgNombreencuestador"
+            v-model.trim="form.dgNombreencuestador"
+            type="text"
+            placeholder="Ej: David Pérez"
+          />
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-title">🩺 Signos Vitales y Diagnósticos</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="dgPasAcostado">PAS Acostado:</label>
+            <input
+              id="dgPasAcostado"
+              v-model.trim="form.dgPasAcostado"
+              type="number"
+              step="0.01"
+              placeholder="Ej: 120.50"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgPadAcostado">PAD Acostado:</label>
+            <input
+              id="dgPadAcostado"
+              v-model.trim="form.dgPadAcostado"
+              type="number"
+              step="0.01"
+              placeholder="Ej: 80.25"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgPasSentado">PAS Sentado:</label>
+            <input
+              id="dgPasSentado"
+              v-model.trim="form.dgPasSentado"
+              type="number"
+              step="0.01"
+              placeholder="Ej: 122.00"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgPadSentado">PAD Sentado:</label>
+            <input
+              id="dgPadSentado"
+              v-model.trim="form.dgPadSentado"
+              type="number"
+              step="0.01"
+              placeholder="Ej: 82.00"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgDiagnosticoha">Diagnóstico HA:</label>
+            <input
+              id="dgDiagnosticoha"
+              v-model.trim="form.dgDiagnosticoha"
+              type="text"
+              placeholder="Ej: Hipertensión controlada"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgPulsopormin">Pulso por Minuto:</label>
+            <input
+              id="dgPulsopormin"
+              v-model.number="form.dgPulsopormin"
+              type="number"
+              placeholder="Ej: 72"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgDiagnosticopulso">Diagnóstico Pulso:</label>
+            <input
+              id="dgDiagnosticopulso"
+              v-model.trim="form.dgDiagnosticopulso"
+              type="text"
+              placeholder="Ej: Normal"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgFrecrespiratoria">Frecuencia Respiratoria:</label>
+            <input
+              id="dgFrecrespiratoria"
+              v-model.number="form.dgFrecrespiratoria"
+              type="number"
+              placeholder="Ej: 18"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgDiagnosticofr">Diagnóstico FR:</label>
+            <input
+              id="dgDiagnosticofr"
+              v-model.trim="form.dgDiagnosticofr"
+              type="text"
+              placeholder="Ej: Normal"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgSaturacion">Saturación:</label>
+            <input
+              id="dgSaturacion"
+              v-model.number="form.dgSaturacion"
+              type="number"
+              placeholder="Ej: 98"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgDiagnosticosaturacion">Diagnóstico Saturación:</label>
+            <input
+              id="dgDiagnosticosaturacion"
+              v-model.trim="form.dgDiagnosticosaturacion"
+              type="text"
+              placeholder="Ej: Óptima"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgTemperatura">Temperatura:</label>
+            <input
+              id="dgTemperatura"
+              v-model.trim="form.dgTemperatura"
+              type="text"
+              placeholder="Ej: 36.7"
+            />
+          </div>
+          <div class="form-group">
+            <label for="dgDiagnosticotemperatura">Diagnóstico Temperatura:</label>
+            <input
+              id="dgDiagnosticotemperatura"
+              v-model.trim="form.dgDiagnosticotemperatura"
+              type="text"
+              placeholder="Ej: Normal"
+            />
+          </div>
+        </div>
+      </section>
 
       <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
         {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha General' }}
@@ -307,84 +263,73 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import SearchBar from '@/components/SearchBar.vue'
 
+const idPersonaSeleccionada = ref(localStorage.getItem('idpersona'))
+
 const router = useRouter()
 
 const form = reactive({
-  numeroFicha: '',
-  fechaContacto: '',
-  comunidad: '',
-  zona: '',
-  nombres: '',
-  apellidos: '',
-  cedula: '',
-  fechaNacimiento: '',
-  edad: '',
-  sexo: '',
-  estadoCivil: '',
-  ocupacion: '',
-  telefono: '',
-  instruccion: '',
-  responsable: '',
-  dependiente: false,
-  fragil: false,
-  presionArterial: '',
-  frecuenciaCardiaca: '',
-  frecuenciaRespiratoria: '',
-  temperatura: '',
-  consentimiento: '',
-  lugarFecha: '',
-  firmaParticipante: '',
-  firmaInvestigador: '',
+  idFicha: '', // Ejemplo: FCH02
+  idpersona: null, // Se llena al seleccionar persona
+  pacFechaprimercontacto: '', // Fecha de contacto
+  pacEstadogeneral: '', // Estado general
+  pacObservaciones: '', // Observaciones
+  dgNombreencuestador: '', // Nombre encuestador
+  dgPasAcostado: '', // Presión sistólica acostado
+  dgPadAcostado: '', // Presión diastólica acostado
+  dgPasSentado: '', // Presión sistólica sentado
+  dgPadSentado: '', // Presión diastólica sentado
+  dgDiagnosticoha: '', // Diagnóstico hipertensión arterial
+  dgPulsopormin: '', // Pulso por minuto
+  dgDiagnosticopulso: '', // Diagnóstico pulso
+  dgFrecrespiratoria: '', // Frecuencia respiratoria
+  dgDiagnosticofr: '', // Diagnóstico frecuencia respiratoria
+  dgSaturacion: '', // Saturación
+  dgDiagnosticosaturacion: '', // Diagnóstico saturación
+  dgTemperatura: '', // Temperatura
+  dgDiagnosticotemperatura: '', // Diagnóstico temperatura
+  dgFirmaconcentimiento: false,
+  dgFirmamedicina: false,
+  dgFirmaenfermeria: false,
+  dgFirmanutricion: false,
+  dgFirmafisioterapia: false,
 })
 
 const isSubmitting = ref(false)
 const submitMessage = ref('')
-const submitStatus = ref('') // 'success' o 'error'
+const submitStatus = ref('')
 const resultadosBusqueda = ref([])
+const busquedaRealizada = ref(false)
 
-// FUNCIÓN PARA BUSCAR PERSONA POR CÉDULA
-const handleSearch = async (cedula) => {
-  if (!cedula) return
+const handleSearch = async (busqueda) => {
+  localStorage.removeItem('idpersona') // Limpia el idpersona en localStorage al iniciar una nueva búsqueda
+  idPersonaSeleccionada.value = null // Limpia la variable reactiva
+
+  busquedaRealizada.value = false
+  resultadosBusqueda.value = []
+  if (!busqueda) return
   try {
-    const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${cedula}`)
-    // Si tu API retorna un array de personas:
+    const res = await axios.get(
+      `${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${busqueda}`,
+    )
     if (Array.isArray(res.data) && res.data.length > 0) {
       resultadosBusqueda.value = res.data
-      submitMessage.value = ''
-      submitStatus.value = ''
     } else if (res.data && res.data.idpersona) {
-      // Si retorna un solo objeto
       resultadosBusqueda.value = [res.data]
-      submitMessage.value = ''
-      submitStatus.value = ''
-    } else {
-      resultadosBusqueda.value = []
-      router.push('/personas/crear')
     }
+    // Marca que la búsqueda se realizó
+    busquedaRealizada.value = true
   } catch {
     resultadosBusqueda.value = []
-    router.push('/personas/crear')
+    busquedaRealizada.value = true
+    alert('No se encontraron resultados para la búsqueda.')
   }
 }
 
 const seleccionarPersona = (persona) => {
-  form.comunidad = persona.perComunidad || ''
-  form.zona = persona.perZona || ''
-  form.nombres = `${persona.perPrimernombre || ''} ${persona.perSegundonombre || ''}`.trim()
-  form.apellidos = `${persona.perPrimerapellido || ''} ${persona.perSegundoapellido || ''}`.trim()
-  form.cedula = persona.perCedula || ''
-  form.fechaNacimiento = persona.perFechanacimiento || ''
-  form.edad = persona.perEdad || ''
-  form.sexo = persona.perSexo || ''
-  form.estadoCivil = persona.perEstadocivil || ''
-  form.ocupacion = persona.perOcupacion || ''
-  form.telefono = persona.perTelefono || ''
-  form.instruccion = persona.perInstruccion || ''
-  form.responsable = persona.perResponsable || ''
-  form.dependiente = !!persona.perDependiente
-  form.fragil = !!persona.perFragil
+  form.idpersona = persona.idpersona
   localStorage.setItem('idpersona', persona.idpersona)
-  resultadosBusqueda.value = [] // Oculta la tabla después de seleccionar
+  idPersonaSeleccionada.value = persona.idpersona // Actualiza la variable reactiva
+  //resultadosBusqueda.value = []
 }
 
 const handleSubmit = async () => {
@@ -392,30 +337,11 @@ const handleSubmit = async () => {
   submitStatus.value = ''
   isSubmitting.value = true
 
-  // Aquí podrías añadir validación similar a la de los formularios anteriores
-  // if (!validateForm()) {
-  //   submitMessage.value = 'Por favor, corrige los errores en el formulario.';
-  //   submitStatus.value = 'error';
-  //   isSubmitting.value = false;
-  //   return;
-  // }
-
   try {
-    // Simular una llamada a API para guardar la ficha
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    console.log('Datos de la Ficha General:', JSON.parse(JSON.stringify(form)))
-
+    // Envía el formulario al backend
+    await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/fichas`, { ...form })
     submitMessage.value = 'Ficha general guardada exitosamente.'
     submitStatus.value = 'success'
-    // Opcional: resetear el formulario
-    // Object.keys(form).forEach(key => {
-    //   if (typeof form[key] === 'boolean') {
-    //     form[key] = false;
-    //   } else {
-    //     form[key] = '';
-    //   }
-    // });
   } catch (error) {
     submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
     submitStatus.value = 'error'
@@ -739,7 +665,8 @@ const handleSubmit = async () => {
   background: #fff;
   box-shadow: 0 2px 8px #0001;
 }
-.tabla-busqueda th, .tabla-busqueda td {
+.tabla-busqueda th,
+.tabla-busqueda td {
   padding: 10px 8px;
   border: 1px solid #e0e0e0;
   text-align: left;

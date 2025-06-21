@@ -4,25 +4,24 @@
       type="text"
       :placeholder="placeholder"
       v-model="searchTerm"
-      @input="emitSearch"
       class="search-input"
     />
-  <button @click="emitSearch" class="search-btn flex items-center justify-center">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-5 w-5 text-white"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-3.85z"
-    />
-  </svg>
-</button>
+    <button @click="emitSearch" class="search-btn flex items-center justify-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-3.85z"
+        />
+      </svg>
+    </button>
   </div>
 </template>
 
