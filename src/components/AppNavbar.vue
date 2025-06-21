@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue' // Asegúrate de importar onMounted y onUnmounted
+import { ref, onMounted, onUnmounted } from 'vue'
 import logo from '../assets/images/puce-logo.png'
 
 // Importar Font Awesome
@@ -16,6 +16,7 @@ import {
   faUserCircle,
   faBell,
   faSignOutAlt,
+  faSignInAlt, // Icono para iniciar sesión
 } from '@fortawesome/free-solid-svg-icons'
 
 // Añadir los íconos a la biblioteca de Font Awesome
@@ -31,10 +32,14 @@ library.add(
   faUserCircle,
   faBell,
   faSignOutAlt,
+  faSignInAlt, // Añadido aquí también
 )
 
 const isMenuOpen = ref(false)
 const notificationCount = ref(3) // Ejemplo: podrías obtener esto de Vuex o una API
+
+// Estado para saber si hay usuario logueado
+const usuarioLogueado = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -47,10 +52,26 @@ const closeMenu = () => {
   }
 }
 
+const checkLogin = () => {
+  usuarioLogueado.value = !!localStorage.getItem('usuario')
+}
+
+onMounted(() => {
+  checkLogin()
+  window.addEventListener('storage', checkLogin)
+  window.addEventListener('focus', checkLogin)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', checkLogin)
+  window.removeEventListener('focus', checkLogin)
+})
+
 const logout = () => {
-  alert('Cerrando sesión...')
-  // Aquí iría tu lógica de cierre de sesión (ej. limpiar token, redirigir)
-  closeMenu() // Cierra el menú después de la acción
+  localStorage.removeItem('usuario')
+  usuarioLogueado.value = false
+  closeMenu()
+  window.location.href = '/login'
 }
 
 // Listener para cerrar el menú si la ventana es redimensionada a desktop
@@ -133,9 +154,16 @@ onUnmounted(() => {
         </router-link>
       </li>
       <li class="mobile-only">
-        <button @click="logout" class="logout-button">
-          <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
-        </button>
+        <template v-if="usuarioLogueado">
+          <button @click="logout" class="logout-button">
+            <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
+          </button>
+        </template>
+        <template v-else>
+          <router-link to="/login" class="logout-button" @click="closeMenu">
+            <font-awesome-icon icon="sign-in-alt" /> Iniciar Sesión
+          </router-link>
+        </template>
       </li>
     </ul>
 
@@ -147,9 +175,16 @@ onUnmounted(() => {
       <router-link to="/perfil" class="navbar-user-avatar" aria-label="Ir a mi perfil">
         <font-awesome-icon icon="user-circle" />
       </router-link>
-      <button @click="logout" class="logout-button">
-        <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
-      </button>
+      <template v-if="usuarioLogueado">
+        <button @click="logout" class="logout-button">
+          <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
+        </button>
+      </template>
+      <template v-else>
+        <router-link to="/login" class="logout-button">
+          <font-awesome-icon icon="sign-in-alt" /> Iniciar Sesión
+        </router-link>
+      </template>
     </div>
   </nav>
 </template>

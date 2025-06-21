@@ -27,8 +27,12 @@
           <input id="fechaContacto" v-model="form.fechaContacto" type="date" class="small-input" />
         </div>
       </div>
-
-      <section class="form-section">
+      <SearchBar
+        placeholder="Buscar cliente por nombre..."
+        @search="handleSearch"
+        class="w-full sm:w-auto ml-auto"
+      />
+      <!-- <section class="form-section">
         <h3 class="section-title">🧍 Datos del Paciente</h3>
         <div class="form-grid">
           <div class="form-group">
@@ -147,7 +151,7 @@
             </label>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <section class="form-section">
         <h3 class="section-title">🩺 Signos Vitales</h3>
@@ -255,6 +259,37 @@
         </div>
       </section>
 
+      <!-- Tabla de resultados de búsqueda -->
+      <table v-if="resultadosBusqueda.length" class="tabla-busqueda">
+        <thead>
+          <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Edad</th>
+            <th>Cédula</th>
+            <th>Comunidad / Zona</th>
+            <th>Ocupación</th>
+            <th>Seleccionar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="persona in resultadosBusqueda" :key="persona.idpersona">
+            <td><strong>{{ persona.perPrimernombre }} {{ persona.perSegundonombre }}</strong></td>
+            <td>{{ persona.perPrimerapellido }} {{ persona.perSegundoapellido }}</td>
+            <td>{{ persona.perEdad }} años</td>
+            <td>{{ persona.perCedula }}</td>
+            <td>
+              <span>{{ persona.perComunidad }}</span><br />
+              <span>{{ persona.perZona }}</span>
+            </td>
+            <td>{{ persona.perOcupacion }}</td>
+            <td>
+              <button @click="seleccionarPersona(persona)">Seleccionar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
       <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
         {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha General' }}
       </button>
@@ -268,6 +303,11 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import SearchBar from '@/components/SearchBar.vue'
+
+const router = useRouter()
 
 const form = reactive({
   numeroFicha: '',
@@ -300,6 +340,52 @@ const form = reactive({
 const isSubmitting = ref(false)
 const submitMessage = ref('')
 const submitStatus = ref('') // 'success' o 'error'
+const resultadosBusqueda = ref([])
+
+// FUNCIÓN PARA BUSCAR PERSONA POR CÉDULA
+const handleSearch = async (cedula) => {
+  if (!cedula) return
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${cedula}`)
+    // Si tu API retorna un array de personas:
+    if (Array.isArray(res.data) && res.data.length > 0) {
+      resultadosBusqueda.value = res.data
+      submitMessage.value = ''
+      submitStatus.value = ''
+    } else if (res.data && res.data.idpersona) {
+      // Si retorna un solo objeto
+      resultadosBusqueda.value = [res.data]
+      submitMessage.value = ''
+      submitStatus.value = ''
+    } else {
+      resultadosBusqueda.value = []
+      router.push('/personas/crear')
+    }
+  } catch {
+    resultadosBusqueda.value = []
+    router.push('/personas/crear')
+  }
+}
+
+const seleccionarPersona = (persona) => {
+  form.comunidad = persona.perComunidad || ''
+  form.zona = persona.perZona || ''
+  form.nombres = `${persona.perPrimernombre || ''} ${persona.perSegundonombre || ''}`.trim()
+  form.apellidos = `${persona.perPrimerapellido || ''} ${persona.perSegundoapellido || ''}`.trim()
+  form.cedula = persona.perCedula || ''
+  form.fechaNacimiento = persona.perFechanacimiento || ''
+  form.edad = persona.perEdad || ''
+  form.sexo = persona.perSexo || ''
+  form.estadoCivil = persona.perEstadocivil || ''
+  form.ocupacion = persona.perOcupacion || ''
+  form.telefono = persona.perTelefono || ''
+  form.instruccion = persona.perInstruccion || ''
+  form.responsable = persona.perResponsable || ''
+  form.dependiente = !!persona.perDependiente
+  form.fragil = !!persona.perFragil
+  localStorage.setItem('idpersona', persona.idpersona)
+  resultadosBusqueda.value = [] // Oculta la tabla después de seleccionar
+}
 
 const handleSubmit = async () => {
   submitMessage.value = ''
@@ -643,6 +729,40 @@ const handleSubmit = async () => {
   background-color: var(--color-error-light);
   color: var(--color-error);
   border: 1px solid var(--color-error);
+}
+
+/* Nuevos estilos para la tabla de búsqueda */
+.tabla-busqueda {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 2px 8px #0001;
+}
+.tabla-busqueda th, .tabla-busqueda td {
+  padding: 10px 8px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+.tabla-busqueda th {
+  background: #e6f0ff;
+  color: #174ea6;
+  font-weight: bold;
+}
+.tabla-busqueda tr:hover {
+  background: #f0f8ff;
+}
+.tabla-busqueda button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.tabla-busqueda button:hover {
+  background: #174ea6;
 }
 
 /* Responsividad */

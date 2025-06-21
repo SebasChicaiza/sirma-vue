@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-
+import SearchBar from '@/components/SearchBar.vue'
 const personas = ref([])
 const router = useRouter()
 const isLoading = ref(false)
@@ -22,7 +22,25 @@ const cargarPersonas = async () => {
     isLoading.value = false
   }
 }
-
+const handleSearch = async (cedula) => {
+  if (!cedula) {
+    cargarPersonas()
+    return
+  }
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${cedula}`)
+    // Si tu API retorna un solo objeto, conviértelo en array
+    personas.value = Array.isArray(res.data) ? res.data : [res.data]
+  } catch (error) {
+    errorMessage.value = 'No se encontró la persona con esa cédula.'
+    personas.value = []
+    console.error('Error en búsqueda por cédula:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
 const eliminarPersona = async (id) => {
   if (confirm('¿Estás seguro de que deseas eliminar esta persona? Esta acción es irreversible.')) {
     try {
@@ -57,7 +75,8 @@ onMounted(() => {
         Gestión de Personas
       </h1>
 
-      <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+
         <router-link
           to="/personas/crear"
           class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 ease-in-out transform hover:scale-105"
@@ -76,6 +95,11 @@ onMounted(() => {
           </svg>
           Registrar nueva persona
         </router-link>
+        <SearchBar
+          placeholder="Buscar cliente por cédula..."
+          @search="handleSearch"
+          class="w-full sm:w-auto ml-auto"
+        />
       </div>
 
       <div v-if="isLoading" class="text-center py-10">
