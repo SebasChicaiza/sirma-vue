@@ -337,9 +337,31 @@ const handleSubmit = async () => {
   submitStatus.value = ''
   isSubmitting.value = true
 
+  // Mapea los campos del formulario a los nombres que espera la API
+  const payload = {
+    p_IDFICHA: form.idFicha,
+    p_FECHAPRIMERCONTACTO: form.pacFechaprimercontacto,
+    p_ESTADOGENERAL: form.pacEstadogeneral,
+    p_OBSERVACIONES: form.pacObservaciones,
+    p_IDPERSONA: Number(form.idpersona),
+    p_NOMBREENCUESTADOR: form.dgNombreencuestador,
+    p_PAS_ACOSTADO: Number(form.dgPasAcostado),
+    p_PAD_ACOSTADO: Number(form.dgPadAcostado),
+    p_PAS_SENTADO: Number(form.dgPasSentado),
+    p_PAD_SENTADO: Number(form.dgPadSentado),
+    p_DIAGNOSTICOHA: form.dgDiagnosticoha,
+    p_PULSOPORMIN: Number(form.dgPulsopormin),
+    p_DIAGNOSTICOPULSO: form.dgDiagnosticopulso,
+    p_FRECRESPIRATORIA: Number(form.dgFrecrespiratoria),
+    p_DIAGNOSTICOFR: form.dgDiagnosticofr,
+    p_SATURACION: Number(form.dgSaturacion),
+    p_DIAGNOSTICOSATURACION: form.dgDiagnosticosaturacion,
+    p_TEMPERATURA: Number(form.dgTemperatura),
+    p_DIAGNOSTICOTEMPERATURA: form.dgDiagnosticotemperatura,
+  }
+
   try {
-    // Envía el formulario al backend
-    await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/fichas`, { ...form })
+    await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/pacientes/insertar-ficha-general`, payload)
     submitMessage.value = 'Ficha general guardada exitosamente.'
     submitStatus.value = 'success'
   } catch (error) {
