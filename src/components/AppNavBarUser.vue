@@ -36,7 +36,6 @@ library.add(
 )
 
 const isMenuOpen = ref(false)
-const notificationCount = ref(3) // Ejemplo: podrías obtener esto de Vuex o una API
 
 // Estado para saber si hay usuario logueado
 const usuarioLogueado = ref(false)
@@ -121,38 +120,24 @@ onUnmounted(() => {
       </li>
       <li>
         <router-link to="/fichas" @click="closeMenu">
-          <font-awesome-icon icon="notes-medical" /> Acerca Del Proyecto
+          <font-awesome-icon icon="notes-medical" /> Acerca del <br />
+          Sistema
         </router-link>
       </li>
       <li>
         <router-link to="/personas" @click="closeMenu">
-          <font-awesome-icon icon="users" /> Miembros del Equipo
+          <font-awesome-icon icon="users" /> Miembros del <br />
+          Equipo
         </router-link>
       </li>
-      <li>
-        <router-link to="/calendario" @click="closeMenu">
-          <font-awesome-icon icon="calendar-alt" /> Calendario
-        </router-link>
-      </li>
+
       <li>
         <router-link to="/reportes" @click="closeMenu">
           <font-awesome-icon icon="chart-bar" /> Reportes
         </router-link>
       </li>
       <li class="navbar-separator mobile-only"></li>
-      <li class="navbar-user-info mobile-only">
-        <router-link to="/perfil" @click="closeMenu">
-          <font-awesome-icon icon="user-circle" /> Mi Perfil
-        </router-link>
-      </li>
-      <li class="mobile-only">
-        <router-link to="/notificaciones" @click="closeMenu">
-          <font-awesome-icon icon="bell" /> Notificaciones
-          <span v-if="notificationCount > 0" class="notification-badge">{{
-            notificationCount
-          }}</span>
-        </router-link>
-      </li>
+
       <li class="mobile-only">
         <template v-if="usuarioLogueado">
           <button @click="logout" class="logout-button">
@@ -168,13 +153,6 @@ onUnmounted(() => {
     </ul>
 
     <div class="navbar-right desktop-only">
-      <router-link to="/notificaciones" class="navbar-icon-link" aria-label="Ver notificaciones">
-        <font-awesome-icon icon="bell" />
-        <span v-if="notificationCount > 0" class="notification-badge">{{ notificationCount }}</span>
-      </router-link>
-      <router-link to="/perfil" class="navbar-user-avatar" aria-label="Ir a mi perfil">
-        <font-awesome-icon icon="user-circle" />
-      </router-link>
       <template v-if="usuarioLogueado">
         <button @click="logout" class="logout-button">
           <font-awesome-icon icon="sign-out-alt" /> Cerrar Sesión
@@ -190,11 +168,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/*
-  IMPORTANTE: Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
-  en tu main.js o App.vue (sin scoped), como se explicó anteriormente, para que sean accesibles aquí.
-*/
-
 /* --- Base del Navbar --- */
 .navbar {
   display: flex;
@@ -221,7 +194,7 @@ onUnmounted(() => {
   /* Agregado para hacer el logo y título clicable */
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
   text-decoration: none;
   color: inherit; /* Hereda el color del navbar */
 }
@@ -231,8 +204,17 @@ onUnmounted(() => {
   width: auto;
   filter: brightness(0) invert(1); /* Si el logo es oscuro, lo vuelve blanco */
 }
-
+.navbar-brand,
+.navbar-links,
+.navbar-right {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
 .navbar-title-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
   line-height: 1.3;
 }
 
@@ -252,7 +234,7 @@ onUnmounted(() => {
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 30px; /* Mayor separación entre elementos */
+  gap: 40px; /* Mayor separación entre elementos */
   margin: 0;
   padding: 0;
   transition: transform 0.3s ease-in-out; /* Transición para menú hamburguesa */
@@ -325,7 +307,7 @@ onUnmounted(() => {
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 25px; /* Mayor separación en el lado derecho */
+  gap: 10px; /* Mayor separación en el lado derecho */
 }
 
 .navbar-icon-link {

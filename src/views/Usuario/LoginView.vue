@@ -58,8 +58,10 @@
 import { ref, reactive } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const formData = reactive({
   email: '',
@@ -137,19 +139,19 @@ const handleSubmit = async () => {
 
     // Si llega aquí, el login fue exitoso
     const usuario = response.data
-    localStorage.setItem('usuario', JSON.stringify(usuario))
+    userStore.setUsuario(usuario) // <-- Actualiza el store y localStorage
+
     submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
     submitStatus.value = 'success'
     setTimeout(() => {
       if (usuario.rol === 'admin') {
         router.push('/dashboard')
-        window.location.reload()
       } else {
         router.push('/')
       }
     }, 1500)
   } catch (error) {
-    submitMessage.value = 'Error de conexión con el servidor. '+ error
+    submitMessage.value = 'Error de conexión con el servidor. ' + error
     submitStatus.value = 'error'
   } finally {
     isSubmitting.value = false
