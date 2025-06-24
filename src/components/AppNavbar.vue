@@ -130,11 +130,6 @@ onUnmounted(() => {
         </router-link>
       </li>
       <li>
-        <router-link to="/calendario" @click="closeMenu">
-          <font-awesome-icon icon="calendar-alt" /> Calendario
-        </router-link>
-      </li>
-      <li>
         <router-link to="/reportes" @click="closeMenu">
           <font-awesome-icon icon="chart-bar" /> Reportes
         </router-link>
