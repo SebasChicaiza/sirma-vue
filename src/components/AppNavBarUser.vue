@@ -119,20 +119,20 @@ onUnmounted(() => {
         </router-link>
       </li>
       <li>
-        <router-link to="/fichas" @click="closeMenu">
+        <router-link to="/acerca-del-sistema" @click="closeMenu">
           <font-awesome-icon icon="notes-medical" /> Acerca del <br />
           Sistema
         </router-link>
       </li>
       <li>
-        <router-link to="/personas" @click="closeMenu">
+        <router-link to="/miembros-del-equipo" @click="closeMenu">
           <font-awesome-icon icon="users" /> Miembros del <br />
           Equipo
         </router-link>
       </li>
 
       <li>
-        <router-link to="/reportes" @click="closeMenu">
+        <router-link to="/reportes-view" @click="closeMenu">
           <font-awesome-icon icon="chart-bar" /> Reportes
         </router-link>
       </li>

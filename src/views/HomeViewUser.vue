@@ -1,13 +1,16 @@
 <template>
   <div class="landing-view">
-    <section class="hero">
-      <h1 class="title">
-        Bienvenido al
-        <span class="highlight">Sistema de Registro Médico Avanzado</span>
-      </h1>
-      <p class="subtitle">
-        Una herramienta para mejorar la atención médica en comunidades rurales.
-      </p>
+    <section class="hero hero-img">
+      <img class="hero-bg" src="@/assets/images/landing-page-inicio.jpg" alt="Imagen de portada SIRMA" />
+      <div class="hero-content">
+        <h1 class="title">
+          Bienvenido al
+          <span class="highlight">Sistema de Registro Médico Avanzado</span>
+        </h1>
+        <p class="subtitle">
+          Una herramienta para mejorar la atención médica en comunidades rurales.
+        </p>
+      </div>
     </section>
 
     <section class="estadisticas">
@@ -63,30 +66,56 @@ const integrantes = [
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
   color: #333;
-  padding: 2rem 1rem;
+  padding: 0;
   line-height: 1.6;
 }
 
-.hero {
-  text-align: center;
-  padding: 2rem 1rem;
-  background: #f0f4f8;
+.hero-img {
+  position: relative;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 2rem;
+  overflow: hidden;
+  border-radius: 0 0 24px 24px;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.65);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  color: #fff;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: bold;
-  color: #1e3a5f;
+  color: #fff;
+  text-shadow: 0 2px 8px #0005;
 }
 
 .highlight {
   color: #41b883;
+  text-shadow: 0 2px 8px #0005;
 }
 
 .subtitle {
   font-size: 1.1rem;
-  color: #555;
+  color: #e0e0e0;
+  margin-top: 1rem;
+  text-shadow: 0 2px 8px #0005;
 }
 
 .section-title {

@@ -16,6 +16,9 @@ import FichaNutricionView from '@/views/Fichas/FichaNutricionView.vue'
 import FichaFisioterapiaView from '@/views/Fichas/FichaFisioterapiaView.vue'
 import HomeView from '@/views/HomeView.vue'
 import HomeViewUser from '@/views/HomeViewUser.vue'
+import AcercaProyecto from '@/views/AcercaProyecto.vue'
+import ReportesViewUser from '@/views/ReportesViewUser.vue'
+import MiembrosEquipo from '@/views/MiembrosEquipo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,8 +42,10 @@ const router = createRouter({
     { path: '/ficha/enfermeria', component: FichaEnfermeriaView,meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/ficha/nutricion', component: FichaNutricionView,meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/ficha/fisioterapia', component: FichaFisioterapiaView,meta: { requiresAuth: true, requiresAdmin: true } },
-    {path: '/Gestion', component: HomeView,meta: { requiresAuth: true, requiresAdmin: true }}
-
+    {path: '/Gestion', component: HomeView,meta: { requiresAuth: true, requiresAdmin: true }},
+    {path: '/acerca-del-sistema', component: AcercaProyecto, meta: { public: true } },
+    {path: '/miembros-del-equipo', component: MiembrosEquipo, meta: { public: true } },
+    {path: '/reportes-view',component: ReportesViewUser, meta: { public: true }}
   ],
 })
 
