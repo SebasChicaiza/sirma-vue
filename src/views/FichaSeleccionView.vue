@@ -30,7 +30,7 @@
           Evaluación de enfermería, planes de cuidado, intervenciones y seguimiento.
         </p>
       </router-link>
-      <router-link to="/ficha/enfermeria" class="selection-button">
+      <router-link to="/ficha/nutricion" class="selection-button">
         <div class="button-icon-wrapper nutricion"><i class="icon-nurse-cap"></i></div>
         <span class="button-text">Ficha de Nutricion</span>
         <p class="button-description">

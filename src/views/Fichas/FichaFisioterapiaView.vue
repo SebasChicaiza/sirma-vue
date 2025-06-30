@@ -28,95 +28,8 @@
         </div>
       </div>
 
-      <section class="form-section">
-        <h3 class="section-title">👤 Datos de Identificación del Paciente</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="nombres">Nombres:</label>
-            <input id="nombres" v-model.trim="form.nombres" type="text" placeholder="Francisco" />
-          </div>
-          <div class="form-group">
-            <label for="apellidos">Apellidos:</label>
-            <input
-              id="apellidos"
-              v-model.trim="form.apellidos"
-              type="text"
-              placeholder="Chaquillan"
-            />
-          </div>
-          <div class="form-group">
-            <label for="cedula">Cédula:</label>
-            <input
-              id="cedula"
-              v-model.trim="form.cedula"
-              type="text"
-              inputmode="numeric"
-              maxlength="10"
-              placeholder="Ej: 17XXXXXXX"
-            />
-          </div>
-          <div class="form-group">
-            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-            <input id="fechaNacimiento" v-model="form.fechaNacimiento" type="date" />
-          </div>
-          <div class="form-group">
-            <label for="edad">Edad:</label>
-            <input
-              id="edad"
-              v-model.number="form.edad"
-              type="number"
-              min="0"
-              placeholder="Ej: 75"
-            />
-          </div>
-          <div class="form-group">
-            <label for="sexo">Sexo:</label>
-            <select id="sexo" v-model="form.sexo">
-              <option disabled value="">Seleccionar</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="peso">Peso (kg):</label>
-            <input
-              id="peso"
-              v-model.number="form.peso"
-              type="number"
-              step="0.1"
-              placeholder="Ej: 62.15"
-            />
-          </div>
-          <div class="form-group">
-            <label for="talla">Talla (cm):</label>
-            <input
-              id="talla"
-              v-model.number="form.talla"
-              type="number"
-              step="0.1"
-              placeholder="Ej: 160"
-            />
-          </div>
-          <div class="form-group">
-            <label for="discapacidad">Discapacidad:</label>
-            <div class="radio-group horizontal-group">
-              <label><input type="radio" value="si" v-model="form.discapacidad" /> SI</label>
-              <label><input type="radio" value="no" v-model="form.discapacidad" /> NO</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="tipoDiscapacidad">Tipo Discapacidad:</label>
-            <input
-              id="tipoDiscapacidad"
-              v-model.trim="form.tipoDiscapacidad"
-              type="text"
-              :disabled="form.discapacidad !== 'si'"
-              placeholder="Ej. Visual, Motora"
-            />
-          </div>
-        </div>
-      </section>
+      <FichaSelector v-model:idficha="selectedFichaId" />
+
 
       <section class="form-section">
         <h3 class="section-title">🤸 Problemas Actuales Fisioterapia (Funcional)</h3>
@@ -620,19 +533,13 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
 
+import FichaSelector from '@/components/FichaSelector.vue'
+
+const selectedFichaId = ref(null)
+
 const form = reactive({
   fechaContacto: '',
   nombreFisioterapeuta: '',
-  nombres: '',
-  apellidos: '',
-  cedula: '',
-  fechaNacimiento: '',
-  edad: null,
-  sexo: '',
-  peso: null,
-  talla: null,
-  discapacidad: '',
-  tipoDiscapacidad: '',
 
   problemasActuales: '',
   marcha: {

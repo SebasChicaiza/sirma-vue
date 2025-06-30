@@ -33,66 +33,8 @@
         </div>
       </div>
 
-      <section class="form-section">
-        <h3 class="section-title">👤 Datos de Identificación del Paciente</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="nombres">Nombres:</label>
-            <input id="nombres" v-model.trim="form.nombres" type="text" placeholder="Juan" />
-          </div>
-          <div class="form-group">
-            <label for="apellidos">Apellidos:</label>
-            <input id="apellidos" v-model.trim="form.apellidos" type="text" placeholder="Pérez" />
-          </div>
-          <div class="form-group">
-            <label for="cedula">Cédula:</label>
-            <input
-              id="cedula"
-              v-model.trim="form.cedula"
-              type="text"
-              inputmode="numeric"
-              maxlength="10"
-              placeholder="Ej: 17XXXXXXX"
-            />
-          </div>
-          <div class="form-group">
-            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-            <input id="fechaNacimiento" v-model="form.fechaNacimiento" type="date" />
-          </div>
-          <div class="form-group">
-            <label for="edad">Edad:</label>
-            <input
-              id="edad"
-              v-model.number="form.edad"
-              type="number"
-              min="0"
-              placeholder="Ej: 65"
-            />
-          </div>
-          <div class="form-group">
-            <label for="sexo">Sexo:</label>
-            <select id="sexo" v-model="form.sexo">
-              <option disabled value="">Seleccionar</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="comunidad">Comunidad:</label>
-            <input
-              id="comunidad"
-              v-model.trim="form.comunidad"
-              type="text"
-              placeholder="Ej. Chugchilán"
-            />
-          </div>
-          <div class="form-group">
-            <label for="zona">Zona:</label>
-            <input id="zona" v-model.trim="form.zona" type="text" placeholder="Rural / Urbana" />
-          </div>
-        </div>
-      </section>
+      <FichaSelector v-model:idficha="selectedFichaId" />
+
 
       <section class="form-section">
         <h3 class="section-title">📊 Escalas Geriátricas</h3>
@@ -694,18 +636,15 @@
 
 <script setup>
 import { reactive, ref, computed, watch } from 'vue'
+import FichaSelector from '@/components/FichaSelector.vue'
+
+const selectedFichaId = ref(null)
+
+
 
 const form = reactive({
   fechaAplicacion: '',
   lugarAplicacion: '',
-  nombres: '',
-  apellidos: '',
-  cedula: '',
-  fechaNacimiento: '',
-  edad: '',
-  sexo: '',
-  comunidad: '',
-  zona: '',
 
   // TIMULAR RÁPIDO - Actividades Básicas
   timularRapido: [
@@ -1262,7 +1201,7 @@ const handleSubmit = async () => {
 
 /* Estilos del botón de envío y mensajes de estado - reutilizados */
 .submit-button {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
   color: var(--color-text-light);
   padding: 15px 25px;
   border: none;

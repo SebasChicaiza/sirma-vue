@@ -13,125 +13,51 @@
 
       <h2 class="form-title">FICHA MÉDICA DE ENFERMERÍA</h2>
 
-      <section class="form-section">
-        <h3 class="section-title">1. DATOS DE IDENTIFICACIÓN DEL PACIENTE</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="nombres">Nombres:</label>
-            <input
-              type="text"
-              id="nombres"
-              v-model.trim="fichaData.nombres"
-              placeholder="Ej: Ana María"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="apellidos">Apellidos:</label>
-            <input
-              type="text"
-              id="apellidos"
-              v-model.trim="fichaData.apellidos"
-              placeholder="Ej: Rodríguez López"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="lugar_aplicacion">Lugar de aplicación:</label>
-            <input
-              type="text"
-              id="lugar_aplicacion"
-              v-model.trim="fichaData.lugar_aplicacion"
-              placeholder="Lugar"
-            />
-          </div>
-          <div class="form-group">
-            <label for="comunidad_zona">Comunidad / Zona:</label>
-            <input
-              type="text"
-              id="comunidad_zona"
-              v-model.trim="fichaData.comunidad_zona"
-              placeholder="Comunidad"
-            />
-          </div>
-          <div class="form-group">
-            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
-            <input type="date" id="fecha_nacimiento" v-model="fichaData.fecha_nacimiento" />
-          </div>
-          <div class="form-group">
-            <label for="cedula">Cédula No.:</label>
-            <input
-              type="text"
-              id="cedula"
-              v-model.trim="fichaData.cedula"
-              placeholder="Ej: 17XXXXXXXX"
-              maxlength="10"
-            />
-          </div>
-          <div class="form-group">
-            <label>Sexo:</label>
-            <div class="radio-group">
-              <input type="radio" id="sexo_m" value="Masculino" v-model="fichaData.sexo" />
-              <label for="sexo_m">Masculino</label>
-              <input type="radio" id="sexo_f" value="Femenino" v-model="fichaData.sexo" />
-              <label for="sexo_f">Femenino</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="cod_pno">COD. PNo.:</label>
-            <input type="text" id="cod_pno" v-model.trim="fichaData.cod_pno" />
-          </div>
-          <div class="form-group">
-            <label for="fecha_aplicacion">Fecha de Aplicación:</label>
-            <input type="date" id="fecha_aplicacion" v-model="fichaData.fecha_aplicacion" />
-          </div>
-          <div class="form-group">
-            <label for="firma_verificacion">Firma de Verificación:</label>
-            <input
-              type="text"
-              id="firma_verificacion"
-              v-model.trim="fichaData.firma_verificacion"
-              placeholder="Firma/Nombre del verificador"
-            />
-          </div>
-        </div>
-      </section>
+      <FichaSelector v-model:idficha="selectedFichaId" />
 
       <section class="form-section">
         <h3 class="section-title">2. ESCALAS GERIÁTRICAS</h3>
 
         <div class="subsection">
-          <h4 class="subsection-title">ACTIVIDADES BÁSICAS (BARTHEL)</h4>
+          <h4 class="subsection-title">ACTIVIDADES BÁSICAS (ÍNDICE DE BARTHEL)</h4>
           <p class="subsection-description">
-            Puntuación: 0 = Independiente, 5 = Ayuda mínima, 10 = Dependiente
+            Puntuación:
+            <span class="score-legend">0 = Totalmente dependiente</span>,
+            <span class="score-legend">5 = Necesita ayuda</span>,
+            <span class="score-legend">10 = Independiente</span>
+            (Nota: Algunas actividades tienen puntuaciones específicas intermedias).
           </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.actividades_basicas" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input type="radio" :name="`barthel_${key}`" :value="val" v-model="item.value" />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
-              <label>TOTAL ACTIVIDADES BÁSICAS:</label>
+              <label>TOTAL ACTIVIDADES BÁSICAS (Barthel):</label>
               <input type="number" v-model="scales.total_actividades_basicas" readonly />
             </div>
           </div>
         </div>
 
         <div class="subsection">
-          <h4 class="subsection-title">ACTIVIDAD INSTRUMENTAL (LAWTON Y BRODY)</h4>
-          <p class="subsection-description">Puntuación: 0 = No, 1 = Sí</p>
+          <h4 class="subsection-title">ACTIVIDAD INSTRUMENTAL (ESCALA DE LAWTON Y BRODY)</h4>
+          <p class="subsection-description">
+            Puntuación: <span class="score-legend">0 = No puede/Dependiente</span>,
+            <span class="score-legend">1 = Independiente/Realiza</span>
+            (Puntuación máxima para mujeres: 8, para hombres: 5, debido a diferencias en ítems).
+          </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.actividad_instrumental" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input type="radio" :name="`lawton_${key}`" :value="val" v-model="item.value" />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
@@ -143,52 +69,59 @@
         </div>
 
         <div class="subsection">
-          <h4 class="subsection-title">ESTADO COGNITIVO (MINI-MENTAL)</h4>
-          <p class="subsection-description">Puntuación: 0 = No, 1 = Sí</p>
+          <h4 class="subsection-title">ESTADO COGNITIVO (MINI-MENTAL STATE EXAMINATION - MMSE)</h4>
+          <p class="subsection-description">
+            Puntuación: Se asigna 1 punto por cada respuesta correcta, a menos que se indique lo
+            contrario.
+          </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.estado_cognitivo" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input
                     type="radio"
                     :name="`cognitivo_${key}`"
                     :value="val"
                     v-model="item.value"
                   />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
-              <label>TOTAL ESTADO COGNITIVO:</label>
+              <label>TOTAL ESTADO COGNITIVO (MMSE):</label>
               <input type="number" v-model="scales.total_estado_cognitivo" readonly />
             </div>
           </div>
         </div>
 
         <div class="subsection">
-          <h4 class="subsection-title">DEPRESIÓN (ESCALA DE YESAVAGE)</h4>
+          <h4 class="subsection-title">DEPRESIÓN (ESCALA DE DEPRESIÓN GERIÁTRICA DE YESAVAGE)</h4>
           <p class="subsection-description">
-            Puntuación: 0 = No, 1 = Sí. Más de 6 puntos = Depresión
+            Puntuación: <span class="score-legend">1 punto por cada respuesta indicativa de
+            depresión</span>.
+            <span class="score-legend">Normal: 0-5 puntos</span>;
+            <span class="score-legend">Depresión leve: 6-10 puntos</span>;
+            <span class="score-legend">Depresión establecida: 11-15 puntos</span>.
           </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.depresion" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input
                     type="radio"
                     :name="`depresion_${key}`"
                     :value="val"
                     v-model="item.value"
                   />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
-              <label>TOTAL DEPRESIÓN:</label>
+              <label>TOTAL DEPRESIÓN (Yesavage):</label>
               <input type="number" v-model="scales.total_depresion" readonly />
             </div>
           </div>
@@ -197,25 +130,28 @@
         <div class="subsection">
           <h4 class="subsection-title">RIESGO SOCIAL (ESCALA DE GÉNOVA)</h4>
           <p class="subsection-description">
-            Puntuación: 0 = No, 1 = Sí. Más de 20 puntos = Necesita mucha ayuda
+            Puntuación:
+            <span class="score-legend">0 = No presente</span>,
+            <span class="score-legend">1 = Sí presente</span>.
+            Una puntuación total más alta indica mayor riesgo social.
           </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.riesgo_social" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input
                     type="radio"
                     :name="`riesgo_social_${key}`"
                     :value="val"
                     v-model="item.value"
                   />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
-              <label>TOTAL RIESGO SOCIAL:</label>
+              <label>TOTAL RIESGO SOCIAL (Génova):</label>
               <input type="number" v-model="scales.total_riesgo_social" readonly />
             </div>
           </div>
@@ -223,42 +159,46 @@
 
         <div class="subsection">
           <h4 class="subsection-title">RECURSO SOCIAL</h4>
+          <p class="subsection-description">
+            Valoración de los recursos sociales disponibles para el adulto mayor.
+          </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.recurso_social" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input
                     type="radio"
                     :name="`recurso_social_${key}`"
                     :value="val"
                     v-model="item.value"
                   />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
               <label>TOTAL RECURSO SOCIAL:</label>
-              <input type="number" v-model="scales.total_recurso_social" readonly />
+              <input type="text" v-model="scales.total_recurso_social" readonly />
             </div>
           </div>
         </div>
 
         <div class="subsection">
           <h4 class="subsection-title">OTROS RIESGOS</h4>
+          <p class="subsection-description">Identificación de riesgos adicionales relevantes.</p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.otros_riesgos" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input
                     type="radio"
                     :name="`otros_riesgos_${key}`"
                     :value="val"
                     v-model="item.value"
                   />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
@@ -270,20 +210,25 @@
         </div>
 
         <div class="subsection">
-          <h4 class="subsection-title">ESCALAS RÁPIDAS - TINNET (EQUILIBRIO Y MARCHA)</h4>
-          <p class="subsection-description">Puntuación: 0 = Anormal / 1 = Normal</p>
+          <h4 class="subsection-title">ESCALAS RÁPIDAS - TINNETTI (EQUILIBRIO Y MARCHA)</h4>
+          <p class="subsection-description">
+            Puntuación: <span class="score-legend">0 = Riesgo de caída / Anormal</span>,
+            <span class="score-legend">1 = Sin riesgo de caída / Normal</span>.
+            Puntuación total máxima: 28 (Equilibrio: 16, Marcha: 12).
+            <span class="score-legend">Puntuación de 19 o menos: Riesgo alto de caídas</span>.
+          </p>
           <div class="scale-grid">
             <div class="scale-item" v-for="(item, key) in scales.escalas_rapidas_tinnet" :key="key">
               <label>{{ item.label }}:</label>
               <div class="radio-options">
-                <label v-for="(option, val) in item.options" :key="val">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
                   <input type="radio" :name="`tinnet_${key}`" :value="val" v-model="item.value" />
-                  {{ option }}
+                  {{ optionLabel }}
                 </label>
               </div>
             </div>
             <div class="scale-total form-group">
-              <label>TOTAL TINNET:</label>
+              <label>TOTAL TINNETTI:</label>
               <input type="number" v-model="scales.total_escalas_rapidas_tinnet" readonly />
             </div>
           </div>
@@ -299,119 +244,98 @@
 
         <div class="info-grid">
           <div class="info-block">
-            <h4>SABES FECHA: AÑO, MES, DÍA, SEMANA</h4>
+            <h4>MMSE - ORIENTACIÓN (TIEMPO)</h4>
             <ul>
-              <li>4 AÑO, MES, DÍA, SEMANA</li>
-              <li>3 AÑO, MES, DÍA</li>
-              <li>2 AÑO, MES</li>
-              <li>1 AÑO</li>
-              <li>0 NO PUEDE</li>
+              <li>5 puntos: Día, fecha, mes, año, estación.</li>
+              <li>Menos de 5 puntos: Fallo en alguna categoría.</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>REPITE NOMBRE DE 3 OBJETOS</h4>
+            <h4>MMSE - ORIENTACIÓN (ESPACIO)</h4>
             <ul>
-              <li>3 OBJETOS</li>
-              <li>2 OBJETOS</li>
-              <li>1 OBJETO</li>
-              <li>0 NO PUEDE</li>
+              <li>5 puntos: País, provincia, ciudad, centro, piso.</li>
+              <li>Menos de 5 puntos: Fallo en alguna categoría.</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>COGNITIVO - NIMEROS, DIBUJO DE 2</h4>
+            <h4>MMSE - FIJACIÓN (REGISTRO)</h4>
             <ul>
-              <li>2 DIBUJO DE 2</li>
-              <li>1 SI PUEDE</li>
-              <li>0 NO PUEDE</li>
+              <li>3 puntos: Repite correctamente los 3 objetos.</li>
+              <li>Menos de 3 puntos: No repite todos.</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>SERIE - REPITE PALABRAS</h4>
+            <h4>MMSE - ATENCIÓN Y CÁLCULO</h4>
             <ul>
-              <li>3, 2, 1 PALABRAS</li>
-              <li>2 PALABRAS</li>
-              <li>1 PALABRA</li>
-              <li>0 NO PUEDE</li>
+              <li>5 puntos: Resta de 7 en 7 cinco veces, o deletrea mundo al revés.</li>
+              <li>Menos de 5 puntos: Fallo en las restas/deletreo.</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>TOMA, DOBLA Y COLOCA PAPEL</h4>
+            <h4>MMSE - MEMORIA (RECUERDO)</h4>
             <ul>
-              <li>3 TOMA, DOBLA, COLOCA</li>
-              <li>2 TOMA, DOBLA</li>
-              <li>1 TOMA</li>
-              <li>0 NO PUEDE</li>
+              <li>3 puntos: Recuerda los 3 objetos previamente nombrados.</li>
+              <li>Menos de 3 puntos: No recuerda todos.</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>DETERIORO COGNITIVO</h4>
+            <h4>MMSE - LENGUAJE Y PRAXIS</h4>
             <ul>
-              <li>14-19 = Ausente</li>
-              <li>Menos de 14 = Presente</li>
+              <li>2 puntos: Denomina dos objetos.</li>
+              <li>1 punto: Repite una frase.</li>
+              <li>3 puntos: Cumple orden de 3 pasos.</li>
+              <li>1 punto: Escribe una frase.</li>
+              <li>1 punto: Copia un dibujo (pentágonos).</li>
             </ul>
           </div>
         </div>
 
         <div class="info-grid mt-4">
           <div class="info-block">
-            <h4>NUTRICIONAL</h4>
+            <h4>ÍNDICE DE BARTHEL</h4>
             <ul>
-              <li>0 &lt; 19 kg (MODERADA)</li>
-              <li>1 19-20</li>
-              <li>2 21 a 24</li>
-              <li>3 > 25 kg (OBESIDAD)</li>
+              <li>< 20: Dependencia Total</li>
+              <li>20 - 35: Dependencia Severa</li>
+              <li>40 - 55: Dependencia Moderada</li>
+              <li>60 - 95: Dependencia Leve</li>
+              <li>100: Independencia Total</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>PÉRDIDA DE PESO LOS ÚLTIMOS 3 MESES</h4>
+            <h4>ESCALA DE LAWTON Y BRODY (IADL)</h4>
             <ul>
-              <li>0 MODERADA</li>
-              <li>1 SÍ PIERDE</li>
-              <li>2 NO PIERDE</li>
-              <li>3 > 2 kg</li>
-            </ul>
-          </div>
-          <div class="info-block">
-            <h4>DISMINUCIÓN DE INGESTA LOS ÚLTIMOS 3 MESES</h4>
-            <ul>
-              <li>0 SEVERA</li>
-              <li>1 MODERADA</li>
-              <li>2 AUSENTE</li>
+              <li>Mujeres: Max 8 puntos (Independencia)</li>
+              <li>Hombres: Max 5 puntos (Independencia, excluye ítems femeninos)</li>
+              <li>Puntuación baja: Mayor dependencia en actividades instrumentales.</li>
             </ul>
           </div>
         </div>
 
         <div class="info-grid mt-4">
           <div class="info-block">
-            <h4>GRUPO DE EDAD</h4>
+            <h4>ESCALA DE DEPRESIÓN GERIÁTRICA DE YESAVAGE</h4>
             <ul>
-              <li>1 65-74</li>
-              <li>2 75-84</li>
-              <li>3 85-94</li>
-              <li>4 > 95</li>
+              <li>0 - 5 puntos: Normal</li>
+              <li>6 - 10 puntos: Depresión leve</li>
+              <li>11 - 15 puntos: Depresión establecida</li>
             </ul>
           </div>
           <div class="info-block">
-            <h4>VIVE CON</h4>
+            <h4>ESCALA DE RIESGO SOCIAL DE GÉNOVA</h4>
             <ul>
-              <li>1 FAMILIAR</li>
-              <li>2 NO FAMILIAR</li>
-              <li>3 SOLO</li>
-              <li>4 INSTITUCIÓN</li>
+              <li>Puntuación más alta: Mayor riesgo social y necesidad de ayuda.</li>
+              <li>Interpretación específica requiere tabla de referencia.</li>
             </ul>
           </div>
         </div>
 
         <div class="info-grid mt-4">
           <div class="info-block">
-            <h4>APOYO DE LA RED SOCIAL</h4>
+            <h4>ESCALA DE TINNETTI (EQUILIBRIO Y MARCHA)</h4>
             <ul>
-              <li>1 NO NECESITA</li>
-              <li>2 DE FAMILIA O VECINOS</li>
-              <li>3 FORMAL SUFICIENTE</li>
-              <li>4 INFORMAL SUFICIENTE</li>
-              <li>5 INFORMAL</li>
-              <li>6 NO RECIBE NI NECESITA</li>
+              <li>26 - 28 puntos: No hay riesgo de caídas.</li>
+              <li>19 - 25 puntos: Riesgo leve de caídas.</li>
+              <li>Menos de 19 puntos: Riesgo alto de caídas.</li>
             </ul>
           </div>
         </div>
@@ -430,76 +354,71 @@
 
 <script setup>
 import { reactive, ref, computed } from 'vue'
+import FichaSelector from '@/components/FichaSelector.vue'
+
+const selectedFichaId = ref(null)
 
 const fichaData = reactive({
-  nombres: '',
-  apellidos: '',
-  lugar_aplicacion: '',
-  comunidad_zona: '',
-  fecha_nacimiento: '',
-  cedula: '',
-  sexo: '', // Masculino, Femenino
   cod_pno: '',
   fecha_aplicacion: '',
   firma_verificacion: '',
 })
 
-// Estructura de datos para las escalas, basada en tus imágenes
+// Estructura de datos para las escalas con opciones médicas sensatas
 const scales = reactive({
-  // ACT. BÁSICAS (Barthel)
+  // ACT. BÁSICAS (Barthel) - Puntuaciones estándar de Barthel
   actividades_basicas: {
     comer: {
       label: 'COMER',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
     lavarse: {
       label: 'LAVARSE',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
     vestirse: {
       label: 'VESTIRSE',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
     arreglarse: {
-      label: 'ARREGLARSE',
+      label: 'ARREGLARSE (Aseo personal)',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
     deposiciones: {
-      label: 'DEPOSICIONES',
+      label: 'CONTROL DE DEPOSICIONES',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Incontinente', 5: 'Accidente ocasional', 10: 'Continente' },
     },
     micciones: {
-      label: 'MICCIONES',
+      label: 'CONTROL DE MICCIONES',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Incontinente', 5: 'Accidente ocasional', 10: 'Continente' },
     },
     usar_inodoro: {
       label: 'USAR INODORO',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
     trasladarse: {
-      label: 'TRASLADARSE',
+      label: 'TRASLADARSE (Sillón-cama)',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Gran ayuda', 10: 'Poca ayuda', 15: 'Independiente' },
     },
     deambular: {
-      label: 'DEAMBULAR',
+      label: 'DEAMBULAR (Marcha)',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'En silla de ruedas', 10: 'Ayuda de 1 persona', 15: 'Independiente' },
     },
     escaleras: {
-      label: 'ESCALERAS',
+      label: 'SUBIR/BAJAR ESCALERAS',
       value: null,
-      options: { 0: 'Independiente', 5: 'Ayuda mínima', 10: 'Dependiente' },
+      options: { 0: 'Dependiente', 5: 'Necesita ayuda', 10: 'Independiente' },
     },
   },
-  // Computed property para sumar los valores de Actividades Básicas
   total_actividades_basicas: computed(() => {
     return Object.values(scales.actividades_basicas).reduce(
       (sum, item) => sum + (Number(item.value) || 0),
@@ -507,22 +426,49 @@ const scales = reactive({
     )
   }),
 
-  // ACT. INSTRUMENTAL (Lawton y Brody)
+  // ACT. INSTRUMENTAL (Lawton y Brody) - Puntuación 0 o 1
   actividad_instrumental: {
-    uso_telefono: { label: 'USO DEL TELÉFONO', value: null, options: { 0: 'No', 1: 'Sí' } },
-    ir_lugares: { label: 'IR A LUGARES', value: null, options: { 0: 'No', 1: 'Sí' } },
-    hacer_compras: { label: 'HACER COMPRAS', value: null, options: { 0: 'No', 1: 'Sí' } },
-    preparar_comida: { label: 'PREPARAR COMIDA', value: null, options: { 0: 'No', 1: 'Sí' } },
-    manejo_medicamentos: {
-      label: 'MANEJO MEDICAMENTOS',
+    uso_telefono: {
+      label: 'USO DEL TELÉFONO',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No usa/Dependiente', 1: 'Independiente' },
     },
-    manejo_dinero: { label: 'MANEJO DINERO', value: null, options: { 0: 'No', 1: 'Sí' } },
-    manejo_ropa: { label: 'MANEJO ROPA', value: null, options: { 0: 'No', 1: 'Sí' } },
-    manejo_transporte: { label: 'MANEJO TRANSPORTE', value: null, options: { 0: 'No', 1: 'Sí' } },
+    ir_lugares: {
+      label: 'IR A LUGARES (Transporte)',
+      value: null,
+      options: { 0: 'No se desplaza/Dependiente', 1: 'Independiente' },
+    },
+    hacer_compras: {
+      label: 'HACER COMPRAS',
+      value: null,
+      options: { 0: 'No hace/Dependiente', 1: 'Independiente' },
+    },
+    preparar_comida: {
+      label: 'PREPARAR COMIDA',
+      value: null,
+      options: { 0: 'No prepara/Dependiente', 1: 'Independiente' },
+    },
+    manejo_medicamentos: {
+      label: 'MANEJO DE MEDICAMENTOS',
+      value: null,
+      options: { 0: 'No maneja/Dependiente', 1: 'Independiente' },
+    },
+    manejo_dinero: {
+      label: 'MANEJO DEL DINERO',
+      value: null,
+      options: { 0: 'No maneja/Dependiente', 1: 'Independiente' },
+    },
+    manejo_ropa: {
+      label: 'MANEJO DE LAVADO DE ROPA',
+      value: null,
+      options: { 0: 'No lava/Dependiente', 1: 'Independiente' },
+    },
+    manejo_transporte: {
+      label: 'USO DE MEDIOS DE TRANSPORTE',
+      value: null,
+      options: { 0: 'No usa/Dependiente', 1: 'Independiente' },
+    },
   },
-  // Computed property para sumar los valores de Actividad Instrumental
   total_actividad_instrumental: computed(() => {
     return Object.values(scales.actividad_instrumental).reduce(
       (sum, item) => sum + (Number(item.value) || 0),
@@ -530,160 +476,185 @@ const scales = reactive({
     )
   }),
 
-  // ESTADO COGNITIVO (Mini-Mental) - Basado en la primera imagen
+  // ESTADO COGNITIVO (Mini-Mental) - Puntuación de cada ítem
   estado_cognitivo: {
     orientacion_tiempo: {
-      label: 'ORIENTACIÓN TIEMPO (5)',
+      label: 'ORIENTACIÓN TIEMPO (Día, Mes, Año, Estación, Día Semana) - Max 5 pts',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: '0-4 puntos', 1: '5 puntos' }, // Simplificado para capturar si lo sabe todo o no
     },
     orientacion_espacio: {
-      label: 'ORIENTACIÓN ESPACIO (5)',
+      label: 'ORIENTACIÓN ESPACIO (País, Provincia, Ciudad, Lugar, Planta) - Max 5 pts',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: '0-4 puntos', 1: '5 puntos' }, // Simplificado
     },
-    fijacion: { label: 'FIJACIÓN (3)', value: null, options: { 0: 'No', 1: 'Sí' } },
+    fijacion: {
+      label: 'FIJACIÓN (Repetir 3 palabras) - Max 3 pts',
+      value: null,
+      options: { 0: '0-2 palabras', 1: '3 palabras' },
+    },
     atencion_calculo: {
-      label: 'ATENCIÓN Y CÁLCULO (5)',
+      label: 'ATENCIÓN Y CÁLCULO (Restar 7 de 100 cinco veces o deletrear mundo al revés) - Max 5 pts',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: '0-4 aciertos', 1: '5 aciertos' },
     },
-    memoria: { label: 'MEMORIA (3)', value: null, options: { 0: 'No', 1: 'Sí' } },
-    lenguaje_denominacion: {
-      label: 'LENGUAJE DENOMINACIÓN (2)',
+    memoria: {
+      label: 'MEMORIA (Recordar 3 palabras) - Max 3 pts',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: '0-2 palabras', 1: '3 palabras' },
+    },
+    lenguaje_denominacion: {
+      label: 'LENGUAJE DENOMINACIÓN (Nombrar 2 objetos) - Max 2 pts',
+      value: null,
+      options: { 0: '0-1 objeto', 1: '2 objetos' },
     },
     lenguaje_repeticion: {
-      label: 'LENGUAJE REPETICIÓN (1)',
+      label: 'LENGUAJE REPETICIÓN (Repetir frase) - Max 1 pt',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'Incorrecto', 1: 'Correcto' },
     },
-    lenguaje_orden: { label: 'LENGUAJE ORDEN (3)', value: null, options: { 0: 'No', 1: 'Sí' } },
+    lenguaje_orden: {
+      label: 'LENGUAJE ORDEN (Orden de 3 pasos) - Max 3 pts',
+      value: null,
+      options: { 0: '0-2 pasos', 1: '3 pasos' },
+    },
     lenguaje_escritura: {
-      label: 'LENGUAJE ESCRITURA (1)',
+      label: 'LENGUAJE ESCRITURA (Escribir frase) - Max 1 pt',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'Incorrecto', 1: 'Correcto' },
     },
-    lenguaje_lectura: { label: 'LENGUAJE LECTURA (1)', value: null, options: { 0: 'No', 1: 'Sí' } },
-    dibujo: { label: 'DIBUJO (1)', value: null, options: { 0: 'No', 1: 'Sí' } },
+    lenguaje_lectura: {
+      label: 'LENGUAJE LECTURA (Leer y ejecutar orden) - Max 1 pt',
+      value: null,
+      options: { 0: 'Incorrecto', 1: 'Correcto' },
+    },
+    dibujo: {
+      label: 'DIBUJO (Copiar pentágonos) - Max 1 pt',
+      value: null,
+      options: { 0: 'Incorrecto', 1: 'Correcto' },
+    },
   },
   total_estado_cognitivo: computed(() => {
+    // Para MMSE, cada '1' en nuestra simplificación corresponde a que el usuario obtuvo el máximo puntaje en esa categoría.
+    // Para un cálculo preciso, los 'value' deberían ser los puntos reales obtenidos (0-5, 0-3, etc.).
+    // Aquí sumamos los '1's asumiendo que un '1' significa que completó la tarea satisfactoriamente para ese ítem.
+    // **Nota importante**: Para una aplicación real, se necesitaría un manejo más granular de los puntos del MMSE.
+    // Esta implementación solo sumará 1 si la opción '1' (que representa 'Correcto' o 'Máx Puntos') es seleccionada.
     return Object.values(scales.estado_cognitivo).reduce(
       (sum, item) => sum + (Number(item.value) || 0),
       0,
     )
   }),
 
-  // DEPRESIÓN (Yesavage)
+  // DEPRESIÓN (Yesavage) - Invertir 0 y 1 según la pregunta para el conteo de depresión
   depresion: {
     satisfecho_vida: {
       label: '¿Está satisfecho con su vida?',
       value: null,
-      options: { 0: 'Sí', 1: 'No' },
+      options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     actividades_interes: {
       label: '¿Ha disminuido su interés por actividades o aficiones?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     vida_vacia: {
       label: '¿Siente que su vida está vacía?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     aburrido: {
       label: '¿Se siente aburrido con frecuencia?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     animado: {
       label: '¿Está de buen ánimo la mayor parte del tiempo?',
       value: null,
-      options: { 0: 'Sí', 1: 'No' },
+      options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     preocupado: {
       label: '¿Está preocupado o tiene miedo de que le pase algo?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     feliz_mayor_parte: {
       label: '¿Se siente feliz la mayor parte del tiempo?',
       value: null,
-      options: { 0: 'Sí', 1: 'No' },
+      options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     abandonado: {
       label: '¿Se siente a menudo abandonado o desamparado?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     prefiere_casa: {
       label: '¿Prefiere quedarse en casa a salir y hacer cosas nuevas?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     problemas_memoria: {
       label: '¿Cree que tiene más problemas de memoria que la mayoría de la gente?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     estar_vivo: {
       label: '¿Cree que es maravilloso estar vivo?',
       value: null,
-      options: { 0: 'Sí', 1: 'No' },
+      options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     util_valioso: {
       label: '¿Le cuesta iniciar nuevos proyectos?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     lleno_energia: {
       label: '¿Se siente lleno de energía?',
       value: null,
-      options: { 0: 'Sí', 1: 'No' },
+      options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     sin_esperanza: {
       label: '¿Siente que su situación es desesperada?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
     mejor_gente: {
       label: '¿Cree que la mayoría de la gente está mejor que usted?',
       value: null,
-      options: { 0: 'No', 1: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
   },
   total_depresion: computed(() => {
     return Object.values(scales.depresion).reduce((sum, item) => sum + (Number(item.value) || 0), 0)
   }),
 
-  // RIESGO SOCIAL (Génova) - Ajustado a lo que se ve en la imagen
+  // RIESGO SOCIAL (Génova) - 0 o 1
   riesgo_social: {
     problemas_psicologico_emocional: {
-      label: 'Prob. psicológico o emocional (GHQ-12 > 6 / GDS > 6 / MMSE < 24)',
+      label: 'Problemas psicológicos/emocionales (GHQ-12 > 6 / GDS > 6 / MMSE < 24)',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
     act_diarias_limitadas: {
-      label: 'Act. Diarias limitadas (Barthel < 90 / Lawton < 8)',
+      label: 'Actividades diarias limitadas (Barthel < 90 / Lawton < 8)',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
     enfermedad_cronica: {
-      label: 'Enfermedad crónica (Charlson > 3)',
+      label: 'Enfermedad crónica grave o multimorbilidad (Charlson > 3)',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
     hospitalizacion_reciente: {
-      label: 'Hospitalización en el último trimestre (Sí)',
+      label: 'Hospitalización en el último trimestre',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
     dism_autonomia: {
-      label: 'Disminución de autonomía (Sí)',
+      label: 'Disminución reciente de autonomía funcional',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
-    }, // Esto no está claro en la imagen, asumo una opción
+    },
   },
   total_riesgo_social: computed(() => {
     return Object.values(scales.riesgo_social).reduce(
@@ -692,161 +663,169 @@ const scales = reactive({
     )
   }),
 
-  // RECURSO SOCIAL - Adaptado de la segunda imagen
+  // RECURSO SOCIAL - Opciones categóricas
   recurso_social: {
     situacion_familiar: {
       label: 'SITUACIÓN FAMILIAR',
       value: null,
       options: {
-        1: 'FAMILIA O PAREJA SON CONFLICTOS',
-        2: 'FAMILIA O PAREJA SIN CONFLICTOS',
-        3: 'FAMILIA NO CUBRE NECESIDADES',
-        4: 'SOLO, FAMILIA O SIN PAREJA',
-        5: 'SOLO, DESATENDIDO, SIN FAMILIA',
+        1: 'Vive solo, sin apoyo familiar cercano',
+        2: 'Vive solo, pero con apoyo familiar/vecinal a distancia',
+        3: 'Vive con familia, relación conflictiva',
+        4: 'Vive con familia, relación sin conflictos, apoyo adecuado',
+        5: 'Vive en institución/residencia',
       },
     },
     relaciones_contactos_sociales: {
       label: 'RELACIONES Y CONTACTOS SOCIALES',
       value: null,
       options: {
-        1: 'CON TODOS, SALE',
-        2: 'CON FAMILIA Y VECINOS SALE',
-        3: 'CON FAMILIA Y VECINOS NO SALE',
-        4: 'CON NADIE, NO SALE',
-        5: 'CON AMIGOS DE TRANSPORTE',
-        6: 'A PASEAR',
-        7: 'NO CAMINA MUCHO, COGE ROPA',
-        8: 'ASOCIACIÓN',
+        1: 'Aislado, sin contactos frecuentes',
+        2: 'Solo contacto familiar cercano',
+        3: 'Contactos limitados (vecinos, conocidos)',
+        4: 'Participa en actividades sociales/grupos',
+        5: 'Red social amplia y activa',
       },
     },
     apoyo_red_social: {
       label: 'APOYO DE LA RED SOCIAL',
       value: null,
       options: {
-        1: 'NO NECESITA',
-        2: 'DE FAMILIA O VECINOS',
-        3: 'FORMAL SUFICIENTE',
-        4: 'INFORMAL SUFICIENTE',
-        5: 'INFORMAL',
-        6: 'NO RECIBE NI NECESITA',
+        1: 'No recibe apoyo y lo necesita',
+        2: 'Recibe apoyo informal insuficiente',
+        3: 'Recibe apoyo informal suficiente (familia, amigos)',
+        4: 'Recibe apoyo formal (servicios sociales, sanitarios)',
+        5: 'No necesita apoyo o lo tiene cubierto totalmente',
       },
     },
     vive_con: {
       label: 'VIVE CON',
       value: null,
       options: {
-        1: 'FAMILIAR',
-        2: 'NO FAMILIAR',
-        3: 'SOLO',
-        4: 'INSTITUCIÓN',
+        1: 'Solo',
+        2: 'Cónyuge/Pareja',
+        3: 'Hijos/Familiares directos',
+        4: 'Otros familiares/No familiares',
+        5: 'Institución/Residencia',
       },
     },
     grupo_edad: {
-      label: 'GRUPO EDAD',
+      label: 'GRUPO DE EDAD',
       value: null,
       options: {
-        1: '65-74',
-        2: '75-84',
-        3: '85-94',
-        4: '> 95',
+        1: '65-74 años',
+        2: '75-84 años',
+        3: '85-94 años',
+        4: '95 o más años',
       },
     },
   },
   total_recurso_social: computed(() => {
-    // Para Recurso Social, no hay un "total" numérico como en otras escalas,
-    // es más bien una selección de categorías. Dejamos el computed para evitar errores
-    // pero su valor real dependerá de cómo se quiera "sumar" esta sección.
-    // Podríamos devolver un objeto con los valores seleccionados.
-    return 'N/A'
+    // Este total es más conceptual, no una suma directa. Podría ser un objeto resumen.
+    return 'Ver categorías' // O un objeto con los valores seleccionados.
   }),
 
-  // OTROS RIESGOS - Adaptado de la segunda imagen, parece que es un checkmark list, pero la primera imagen tiene radios.
-  // Me baso en la primera imagen que tiene 4 checkboxes que suman a un total. Asumo que son radio buttons.
+  // OTROS RIESGOS - Opciones categóricas/binarias
   otros_riesgos: {
-    grupo_de_edad: {
-      label: 'GRUPO DE EDAD',
-      value: null,
-      options: { 1: '1-64', 2: '65-74', 3: '75-84', 4: '85-94', 5: '>95' },
-    },
-    vive_con_quien: {
-      label: 'VIVE CON',
-      value: null,
-      options: { 1: 'Solo', 2: 'Hijos', 3: 'Otros familiares', 4: 'Solo', 5: 'Institución' },
-    },
     antecedentes_caidas: {
-      label: 'ANTECEDENTES CAIDAS',
+      label: 'ANTECEDENTES DE CAÍDAS EN EL ÚLTIMO AÑO',
       value: null,
-      options: { 1: 'No', 2: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' },
     },
     polifarmacia: {
-      label: 'POLIFARMACIA', // Asumo este nombre por contexto
+      label: 'POLIFARMACIA (Uso de ≥ 5 medicamentos crónicos)',
       value: null,
-      options: { 1: 'No', 2: 'Sí' },
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    deficit_sensorial: {
+      label: 'DÉFICIT SENSORIAL (Visual/Auditivo no corregido)',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    incontinencia: {
+      label: 'INCONTINENCIA (Urinaria/Fecal)',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
     },
   },
   total_otros_riesgos: computed(() => {
-    // Similar al recurso social, este parece más cualitativo. Sumamos los valores si son numéricos.
     return Object.values(scales.otros_riesgos).reduce(
       (sum, item) => sum + (Number(item.value) || 0),
       0,
     )
   }),
 
-  // ESCALAS RÁPIDAS - TINNET
+  // ESCALAS RÁPIDAS - TINNETTI (Equilibrio y Marcha) - 0 o 1
   escalas_rapidas_tinnet: {
     equilibrio_sentado: {
-      label: 'EQUILIBRIO SENTADO',
+      label: '1. EQUILIBRIO SENTADO',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Inestable/Necesita apoyo', 1: 'Estable' },
     },
-    levantarse: { label: 'LEVANTARSE', value: null, options: { 0: 'Anormal', 1: 'Normal' } },
-    equilibrio_bipedestacion_inmediata: {
-      label: 'EQUILIBRIO BIPEDESTACIÓN INMEDIATA (Primeros 5 segundos)',
+    levantarse: {
+      label: '2. LEVANTARSE (De la silla)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Imposible/Necesita ayuda', 1: 'Posible sin ayuda' },
+    },
+    equilibrio_bipedestacion_inmediata: {
+      label: '3. EQUILIBRIO BIPEDESTACIÓN INMEDIATA (Primeros 5 segundos)',
+      value: null,
+      options: { 0: 'Inestable', 1: 'Estable' },
     },
     equilibrio_bipedestacion_pie: {
-      label: 'EQUILIBRIO BIPEDESTACIÓN PIE (Con los pies juntos)',
+      label: '4. EQUILIBRIO BIPEDESTACIÓN PIE (Pies juntos)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Inestable', 1: 'Estable' },
     },
     empuje_estrenal: {
-      label: 'EMPUJE ESTRENAL (Sentarse)',
+      label: '5. EMPUJE ESTERNAL (Con los pies juntos, resiste leve empuje)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Cae/Da pasos', 1: 'Estable' },
     },
-    giro_360: { label: 'GIRO 360°', value: null, options: { 0: 'Anormal', 1: 'Normal' } },
-    equilibrio_tandem: {
-      label: 'EQUILIBRIO TÁNDEM',
+    giro_360: {
+      label: '6. GIRO 360° (En redondo)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Inestable/Discontinuo', 1: 'Continuo y estable' },
+    },
+    equilibrio_tandem: {
+      label: '7. EQUILIBRIO TÁNDEM (Un pie delante del otro)',
+      value: null,
+      options: { 0: 'Incapaz/Inestable', 1: 'Capaz' },
     },
     caminar: {
-      label: 'CAMINAR (Normal y seguro)',
+      label: '8. INICIO DE LA MARCHA (Sin vacilación)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Vacilante/Múltiples intentos', 1: 'No vacilante' },
     },
-    paso: {
-      label: 'PASO (Longitud, elevación)',
+    longitud_paso: {
+      label: '9. LONGITUD Y ALTURA DEL PASO (Pie derecho/izquierdo)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Pasos cortos/Arrastra', 1: 'Normal' },
     },
-    simetria_paso: { label: 'SIMETRÍA PASO', value: null, options: { 0: 'Anormal', 1: 'Normal' } },
+    simetria_paso: {
+      label: '10. SIMETRÍA DEL PASO',
+      value: null,
+      options: { 0: 'Asimétrico', 1: 'Simétrico' },
+    },
     continuidad_paso: {
-      label: 'CONTINUIDAD PASO',
+      label: '11. CONTINUIDAD DEL PASO',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Discontinuo', 1: 'Continuo' },
     },
     trayectoria: {
-      label: 'TRAYECTORIA (Recta)',
+      label: '12. TRAYECTORIA (Desviación en línea recta)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Desviación/Ayuda', 1: 'Recta sin ayuda' },
     },
-    tronco: { label: 'TRONCO (Balanceo)', value: null, options: { 0: 'Anormal', 1: 'Normal' } },
-    tiempo_marcha: {
-      label: 'TIEMPO MARCHA (Segundos)',
+    tronco: {
+      label: '13. TRONCO (Oscilación al caminar)',
       value: null,
-      options: { 0: 'Anormal', 1: 'Normal' },
+      options: { 0: 'Balanceo excesivo/Ausente', 1: 'No balanceo' },
+    },
+    separacion_talones: {
+      label: '14. SEPARACIÓN DE TALONES AL CAMINAR',
+      value: null,
+      options: { 0: 'Separación excesiva', 1: 'Normal' },
     },
   },
   total_escalas_rapidas_tinnet: computed(() => {
@@ -867,29 +846,14 @@ const handleSubmit = async () => {
   submitStatus.value = ''
   isSubmitting.value = true
 
-  // Aquí puedes añadir validaciones adicionales si es necesario antes de enviar
-  // Por ejemplo, verificar que todos los campos requeridos estén llenos.
-
   try {
-    // Simular una llamada a API
-    await new Promise((resolve) => setTimeout(resolve, 2000)) // Espera 2 segundos
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     console.log('Datos de la Ficha Médica:', JSON.parse(JSON.stringify(fichaData)))
     console.log('Resultados de Escalas:', JSON.parse(JSON.stringify(scales)))
 
     submitMessage.value = 'Ficha médica guardada exitosamente.'
     submitStatus.value = 'success'
-    // Opcional: limpiar el formulario después de un envío exitoso
-    // Object.keys(fichaData).forEach(key => fichaData[key] = '');
-    // Object.keys(scales).forEach(scaleKey => {
-    //   if (typeof scales[scaleKey] === 'object') {
-    //     Object.keys(scales[scaleKey]).forEach(itemKey => {
-    //       if (scales[scaleKey][itemKey].value !== undefined) {
-    //         scales[scaleKey][itemKey].value = null;
-    //       }
-    //     });
-    //   }
-    // });
   } catch (error) {
     submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
     submitStatus.value = 'error'
@@ -901,8 +865,7 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-/*
-  IMPORTANTE: Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
+/* Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
   en tu main.js o App.vue (sin scoped), como se explicó anteriormente, para que sean accesibles aquí.
   Asegúrate de que las variables para los inputs que definimos en RegistroForm.vue también estén disponibles:
   --color-input-border-default, --color-input-background-default, --color-input-placeholder
@@ -911,7 +874,7 @@ const handleSubmit = async () => {
 .ficha-container {
   display: flex;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 30px 15px; /* Reducir padding vertical */
   background-color: var(--color-background-light);
 }
 
@@ -919,287 +882,212 @@ const handleSubmit = async () => {
   background-color: var(--color-card-background, #ffffff);
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  padding: 40px 50px;
+  padding: 30px 40px; /* Reducir padding interno */
   width: 100%;
-  max-width: 900px; /* Ancho máximo más amplio para la ficha */
+  max-width: 1100px; /* **Aumentado para ser más ancho** */
   font-family: 'Montserrat', sans-serif;
 }
 
 .ficha-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrar el encabezado */
-  margin-bottom: 30px;
-  gap: 20px;
-  flex-wrap: wrap; /* Permitir que el logo y el texto se envuelvan */
+  justify-content: center;
+  margin-bottom: 25px; /* Reducir margen inferior */
+  gap: 15px; /* Reducir espacio entre elementos */
+  flex-wrap: wrap;
 }
 
 .puce-logo {
-  height: 80px; /* Ajusta el tamaño del logo */
+  height: 70px; /* Ligeramente más pequeño */
   width: auto;
 }
 
 .header-text {
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3; /* Espaciado de línea más compacto */
 }
 
 .university-name {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 5px;
+  margin-bottom: 3px; /* Reducir margen */
 }
 .faculty-name,
 .program-name,
 .department-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Ligeramente más pequeño */
   color: var(--color-text-secondary);
   font-weight: 500;
 }
 .department-name {
   font-weight: 600;
-  margin-top: 10px; /* Espacio antes del título de la ficha */
+  margin-top: 8px; /* Reducir margen */
   text-transform: uppercase;
 }
 
 .form-title {
   color: var(--color-primary-dark);
-  font-size: 2.5rem;
+  font-size: 2.2rem; /* Ligeramente más pequeño */
   font-weight: 800;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 35px; /* Reducir margen */
   border-bottom: 3px solid var(--color-accent-green);
-  padding-bottom: 15px;
+  padding-bottom: 12px; /* Reducir padding */
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .form-section {
-  margin-bottom: 40px;
+  margin-bottom: 30px; /* Reducir margen */
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  padding: 25px;
-  background-color: var(--color-input-background-default); /* Fondo suave para la sección */
+  padding: 20px; /* Reducir padding */
+  background-color: var(--color-input-background-default);
 }
 
 .section-title {
-  font-size: 1.8rem;
+  font-size: 1.6rem; /* Ligeramente más pequeño */
   color: var(--color-primary);
   font-weight: 700;
-  margin-bottom: 25px;
+  margin-bottom: 20px; /* Reducir margen */
   text-align: left;
   border-bottom: 2px solid rgba(var(--color-primary-rgb), 0.2);
-  padding-bottom: 10px;
+  padding-bottom: 8px; /* Reducir padding */
 }
 
 .subsection {
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 25px; /* Reducir margen */
+  padding: 18px; /* Reducir padding */
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background-color: #ffffff;
 }
 
 .subsection-title {
-  font-size: 1.3rem;
+  font-size: 1.2rem; /* Ligeramente más pequeño */
   color: var(--color-text-primary);
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Reducir margen */
   text-align: left;
 }
 
 .subsection-description {
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Ligeramente más pequeño */
   color: var(--color-text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reducir margen */
   text-align: left;
   font-style: italic;
+  line-height: 1.4;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 2 columnas en pantallas grandes */
-  gap: 25px;
-}
-
-.form-group {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.9rem;
-  color: var(--color-text-primary);
-  margin-bottom: 6px;
+.score-legend {
   font-weight: 600;
-  letter-spacing: 0.02em;
+  color: var(--color-primary-dark);
 }
 
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group input[type="number"],
-.form-group input[type="email"], /* aunque no hay email en la ficha, mantener consistencia */
-.form-group input[type="password"], /* aunque no hay password en la ficha, mantener consistencia */
-.form-group textarea {
-  width: 100%;
-  padding: 12px 15px; /* Menor padding para inputs simples de la ficha */
-  border: 1px solid var(--color-input-border-default);
-  border-radius: 8px; /* Ligeramente menos redondeado para más contenido */
-  font-size: 1rem;
-  color: var(--color-text-primary);
-  background-color: var(--color-input-background-default);
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.form-group input[type='text']::placeholder,
-.form-group input[type='date']::placeholder,
-.form-group input[type='number']::placeholder,
-.form-group textarea::placeholder {
-  color: var(--color-input-placeholder);
-  opacity: 1;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.25);
-  outline: none;
-  background-color: #ffffff;
-}
-
-/* Estilos específicos para radio groups */
-.radio-group {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding-top: 5px; /* Pequeño padding para alinear con labels */
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  font-weight: 500; /* Menor peso para las opciones de radio */
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-.radio-group input[type='radio'] {
-  margin-right: 8px;
-  accent-color: var(--color-accent-green); /* Color del radio button */
-  width: 18px; /* Tamaño del radio button */
-  height: 18px;
-  cursor: pointer;
-}
-
-/* Estilos para las escalas (grids de opciones) */
+/* New: Flexbox for scale-grid for better horizontal use */
 .scale-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Dos o más columnas */
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+  gap: 15px 25px; /* Vertical and horizontal gap */
+  justify-content: flex-start; /* Align items to the start */
 }
 
 .scale-item {
   display: flex;
   flex-direction: column;
-  background-color: var(--color-background-light); /* Fondo para cada item de la escala */
-  border-radius: 6px;
-  padding: 15px;
-  border: 1px solid var(--color-border);
+  flex: 1 1 300px; /* Allow items to grow/shrink, with a base width for 2-3 columns */
+  min-width: 280px; /* Minimum width for each item */
+  padding-bottom: 5px; /* Reduce internal padding */
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.scale-item:last-of-type {
+  border-bottom: none; /* No border for the last item in grid */
 }
 
 .scale-item label {
+  font-size: 0.9rem; /* Ligeramente más pequeño */
+  color: var(--color-text-primary);
+  margin-bottom: 8px; /* Reducir margen */
   font-weight: 600;
-  margin-bottom: 10px;
-  color: var(--color-primary-dark);
-  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
-.scale-item .radio-options {
+.radio-options {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap; /* Allow radio options to wrap */
+  gap: 8px 15px; /* Smaller gap between options */
+  font-size: 0.85rem; /* Smaller font for options */
 }
 
-.scale-item .radio-options label {
+.radio-options label {
   display: flex;
   align-items: center;
-  font-weight: 400; /* Más ligero para las opciones */
-  color: var(--color-text-primary);
   cursor: pointer;
-  margin-bottom: 0;
+  margin-bottom: 0; /* Remove default label margin */
+  font-weight: 400; /* Regular font weight */
+}
+
+.radio-options input[type='radio'] {
+  margin-right: 6px; /* Smaller margin */
+  transform: scale(0.9); /* Ligeramente más pequeño */
 }
 
 .scale-total {
-  grid-column: 1 / -1; /* Ocupa todo el ancho en la última fila */
-  background-color: var(--color-primary-light); /* Fondo diferente para el total */
-  padding: 15px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
+  margin-top: 20px; /* Espacio para el total */
+  flex-basis: 100%; /* Make total span full width */
+  text-align: right;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
 }
 
 .scale-total label {
-  margin-bottom: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--color-primary-dark);
-  font-weight: 700;
 }
 
-.scale-total input {
-  max-width: 100px;
+.scale-total input[type='number'] {
+  width: 100px; /* Ancho fijo para el input total */
   text-align: center;
-  font-size: 1.1rem;
   font-weight: 700;
-  background-color: #ffffff;
-  border: 1px solid var(--color-primary);
   color: var(--color-primary);
-  pointer-events: none; /* No permitir edición manual */
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-primary);
+  cursor: default; /* No editable */
 }
 
-/* Sección de Referencias de Puntajes */
+/* Scoring Info Section */
 .scoring-info-section {
-  background-color: var(
-    --color-primary-lightest
-  ); /* Fondo muy claro para la sección de información */
-  border-left: 5px solid var(--color-accent-green); /* Borde de acento */
-  padding-right: 30px;
-}
-
-.scoring-info-section .section-title {
-  color: var(--color-accent-green);
-  border-bottom-color: rgba(var(--color-accent-green-rgb), 0.2);
+  padding-top: 20px;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Más columnas para info */
+  gap: 20px; /* Reducir gap */
+  margin-top: 20px;
 }
 
 .info-block {
-  background-color: #ffffff;
+  background-color: var(--color-background-light);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 20px;
-  text-align: left;
+  padding: 15px; /* Reducir padding */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .info-block h4 {
-  font-size: 1.1rem;
-  color: var(--color-primary-dark);
-  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-primary);
   margin-bottom: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  padding-bottom: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.1);
+  padding-bottom: 5px;
 }
 
 .info-block ul {
@@ -1209,151 +1097,114 @@ const handleSubmit = async () => {
 }
 
 .info-block ul li {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
   margin-bottom: 5px;
+  line-height: 1.3;
 }
 
-.mt-4 {
-  margin-top: 25px;
+.info-block ul li:last-child {
+  margin-bottom: 0;
 }
 
-/* Estilos del botón de envío y mensajes de estado - reutilizados */
 .submit-button {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  padding: 15px 25px;
+  display: block;
+  width: auto; /* Ajusta el ancho al contenido */
+  min-width: 250px;
+  padding: 15px 30px;
+  margin: 40px auto 20px auto; /* Centrar y añadir margen */
+  background-color: var(--color-accent-green);
+  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition:
     background-color 0.3s ease,
-    transform 0.2s ease,
-    box-shadow 0.3s ease;
-  margin-top: 30px; /* Más espacio antes del botón */
-  box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
-  width: auto; /* Ajustar al contenido */
-  display: block; /* Ocupar su propia línea */
-  margin-left: auto;
-  margin-right: auto;
+    transform 0.2s ease;
+  box-shadow: 0 6px 15px rgba(var(--color-accent-green-rgb), 0.3);
 }
 
-.submit-button:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
+.submit-button:hover {
+  background-color: var(--color-accent-green-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .submit-button:disabled {
-  background-color: var(--color-disabled);
+  background-color: var(--color-gray-light);
   cursor: not-allowed;
-  opacity: 0.8;
-  transform: none;
   box-shadow: none;
+  transform: none;
 }
 
 .submit-info {
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 500;
   text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .submit-info.success {
   background-color: var(--color-success-light);
-  color: var(--color-success);
+  color: var(--color-success-dark);
   border: 1px solid var(--color-success);
 }
 
 .submit-info.error {
   background-color: var(--color-error-light);
-  color: var(--color-error);
+  color: var(--color-error-dark);
   border: 1px solid var(--color-error);
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
+/* Media Queries para responsividad */
+@media (max-width: 992px) {
   .ficha-card {
-    padding: 30px 20px;
+    padding: 25px 30px;
+    max-width: 800px;
   }
-
-  .form-title {
-    font-size: 2rem;
+  .scale-grid {
+    gap: 15px; /* Reducir gap en pantallas medianas */
   }
-
-  .section-title {
-    font-size: 1.5rem;
+  .scale-item {
+    flex: 1 1 45%; /* Dos columnas más consistentes */
   }
-
-  .subsection-title {
-    font-size: 1.2rem;
-  }
-
-  .form-grid,
-  .scale-grid,
   .info-grid {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-  }
-
-  .ficha-header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .puce-logo {
-    margin-bottom: 15px;
-  }
-
-  .scale-total {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .scale-total input {
-    width: 100%;
-    max-width: unset;
-    margin-top: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
 }
 
-@media (max-width: 480px) {
-  .ficha-card {
-    padding: 20px 15px;
+@media (max-width: 768px) {
+  .ficha-header {
+    flex-direction: column;
   }
-
-  .form-title {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
+  .puce-logo {
+    height: 60px;
   }
   .university-name {
     font-size: 1.2rem;
   }
-  .faculty-name,
-  .program-name,
-  .department-name {
-    font-size: 0.8rem;
+  .form-title {
+    font-size: 2rem;
   }
   .section-title {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
+    font-size: 1.4rem;
   }
   .subsection-title {
     font-size: 1.1rem;
   }
-  .form-group input[type='text'],
-  .form-group input[type='date'],
-  .form-group input[type='number'],
-  .form-group textarea {
-    padding: 10px 12px;
-    font-size: 0.9rem;
+  .scale-item {
+    flex: 1 1 100%; /* Una columna en pantallas pequeñas */
+    min-width: unset; /* Remove min-width for full flexibility */
   }
-  .form-group label {
-    font-size: 0.85rem;
+  .radio-options {
+    flex-direction: column; /* Apilar opciones de radio */
+    gap: 5px;
+  }
+  .info-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas muy pequeñas */
   }
 }
 </style>
