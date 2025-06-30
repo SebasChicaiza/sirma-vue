@@ -53,11 +53,12 @@ export default {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  margin: 0 auto;
 }
 
 .search-input {
-  width: 250px;
+  width: 400px;
   padding: 0.5rem;
   font-size: 1rem;
   border: 2px solid #ccc;
