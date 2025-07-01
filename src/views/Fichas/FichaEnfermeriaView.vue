@@ -15,6 +15,26 @@
 
       <FichaSelector v-model:idficha="selectedFichaId" />
 
+      <div class="form-group full-width mt-4 form-group-highlight">
+        <label for="enfNombreencuestador">Nombre del Encuestador:<span class="required">*</span></label>
+        <input
+          id="enfNombreencuestador"
+          v-model.trim="fichaData.enfNombreencuestador"
+          type="text"
+          placeholder="Ej. Lic. María Pérez"
+          required
+        />
+      </div>
+      <div class="form-group full-width form-group-highlight">
+        <label for="enfObservaciones">Observaciones Generales:</label>
+        <textarea
+          id="enfObservaciones"
+          v-model.trim="fichaData.enfObservaciones"
+          rows="3"
+          placeholder="Observaciones adicionales sobre el paciente o el proceso."
+        ></textarea>
+      </div>
+
       <section class="form-section">
         <h3 class="section-title">2. ESCALAS GERIÁTRICAS</h3>
 
@@ -59,6 +79,14 @@
                   <input type="radio" :name="`lawton_${key}`" :value="val" v-model="item.value" />
                   {{ optionLabel }}
                 </label>
+              </div>
+            </div>
+            <!-- New item for aiCuidaCasa -->
+            <div class="scale-item">
+              <label>CUIDADO DE LA CASA:</label>
+              <div class="radio-options">
+                <label><input type="radio" name="lawton_aiCuidaCasa" :value="0" v-model="scales.actividad_instrumental.aiCuidaCasa.value" /> No hace/Dependiente</label>
+                <label><input type="radio" name="lawton_aiCuidaCasa" :value="1" v-model="scales.actividad_instrumental.aiCuidaCasa.value" /> Independiente</label>
               </div>
             </div>
             <div class="scale-total form-group">
@@ -179,7 +207,7 @@
             </div>
             <div class="scale-total form-group">
               <label>TOTAL RECURSO SOCIAL:</label>
-              <input type="text" v-model="scales.total_recurso_social" readonly />
+              <input type="number" v-model="scales.total_recurso_social" readonly />
             </div>
           </div>
         </div>
@@ -230,6 +258,28 @@
             <div class="scale-total form-group">
               <label>TOTAL TINNETTI:</label>
               <input type="number" v-model="scales.total_escalas_rapidas_tinnet" readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h4 class="subsection-title">TAMIZAJE</h4>
+          <p class="subsection-description">
+            Evaluación rápida de diversas áreas para identificar posibles problemas.
+          </p>
+          <div class="scale-grid">
+            <div class="scale-item" v-for="(item, key) in scales.tamizaje" :key="key">
+              <label>{{ item.label }}:</label>
+              <div class="radio-options">
+                <label v-for="(optionLabel, val) in item.options" :key="val">
+                  <input type="radio" :name="`tamizaje_${key}`" :value="val" v-model="item.value" />
+                  {{ optionLabel }}
+                </label>
+              </div>
+            </div>
+            <div class="scale-total form-group">
+              <label>TOTAL TAMIZAJE:</label>
+              <input type="number" v-model="scales.total_tamizaje" readonly />
             </div>
           </div>
         </div>
@@ -294,7 +344,7 @@
           <div class="info-block">
             <h4>ÍNDICE DE BARTHEL</h4>
             <ul>
-              <li>< 20: Dependencia Total</li>
+              <li>20: Dependencia Total</li>
               <li>20 - 35: Dependencia Severa</li>
               <li>40 - 55: Dependencia Moderada</li>
               <li>60 - 95: Dependencia Leve</li>
@@ -354,14 +404,14 @@
 
 <script setup>
 import { reactive, ref, computed } from 'vue'
+import axios from 'axios' // Import axios
 import FichaSelector from '@/components/FichaSelector.vue'
 
 const selectedFichaId = ref(null)
 
 const fichaData = reactive({
-  cod_pno: '',
-  fecha_aplicacion: '',
-  firma_verificacion: '',
+  enfNombreencuestador: '',
+  enfObservaciones: '',
 })
 
 // Estructura de datos para las escalas con opciones médicas sensatas
@@ -468,6 +518,11 @@ const scales = reactive({
       value: null,
       options: { 0: 'No usa/Dependiente', 1: 'Independiente' },
     },
+    aiCuidaCasa: { // New field for API mapping
+      label: 'CUIDADO DE LA CASA',
+      value: null,
+      options: { 0: 'No hace/Dependiente', 1: 'Independiente' },
+    },
   },
   total_actividad_instrumental: computed(() => {
     return Object.values(scales.actividad_instrumental).reduce(
@@ -535,11 +590,7 @@ const scales = reactive({
     },
   },
   total_estado_cognitivo: computed(() => {
-    // Para MMSE, cada '1' en nuestra simplificación corresponde a que el usuario obtuvo el máximo puntaje en esa categoría.
-    // Para un cálculo preciso, los 'value' deberían ser los puntos reales obtenidos (0-5, 0-3, etc.).
-    // Aquí sumamos los '1's asumiendo que un '1' significa que completó la tarea satisfactoriamente para ese ítem.
-    // **Nota importante**: Para una aplicación real, se necesitaría un manejo más granular de los puntos del MMSE.
-    // Esta implementación solo sumará 1 si la opción '1' (que representa 'Correcto' o 'Máx Puntos') es seleccionada.
+    // This sum assumes '1' means the task was completed satisfactorily for that item.
     return Object.values(scales.estado_cognitivo).reduce(
       (sum, item) => sum + (Number(item.value) || 0),
       0,
@@ -604,7 +655,7 @@ const scales = reactive({
       options: { 0: 'Sí', 1: 'No' }, // 'No' suma a depresión
     },
     util_valioso: {
-      label: '¿Le cuesta iniciar nuevos proyectos?',
+      label: '¿Le cuesta iniciar nuevos proyectos?', // Mapped to API's depSienteinutil
       value: null,
       options: { 0: 'No', 1: 'Sí' }, // 'Sí' suma a depresión
     },
@@ -663,9 +714,9 @@ const scales = reactive({
     )
   }),
 
-  // RECURSO SOCIAL - Opciones categóricas
+  // RECURSO SOCIAL - Opciones categóricas, mapped to numerical values for API total
   recurso_social: {
-    situacion_familiar: {
+    situacion_familiar: { // This will map to rsViveCon in API
       label: 'SITUACIÓN FAMILIAR',
       value: null,
       options: {
@@ -676,7 +727,7 @@ const scales = reactive({
         5: 'Vive en institución/residencia',
       },
     },
-    relaciones_contactos_sociales: {
+    relaciones_contactos_sociales: { // This will map to rsContactoSocial in API
       label: 'RELACIONES Y CONTACTOS SOCIALES',
       value: null,
       options: {
@@ -687,7 +738,7 @@ const scales = reactive({
         5: 'Red social amplia y activa',
       },
     },
-    apoyo_red_social: {
+    apoyo_red_social: { // This will map to rsApoyoRedes in API
       label: 'APOYO DE LA RED SOCIAL',
       value: null,
       options: {
@@ -698,7 +749,28 @@ const scales = reactive({
         5: 'No necesita apoyo o lo tiene cubierto totalmente',
       },
     },
-    vive_con: {
+  },
+  total_recurso_social: computed(() => {
+    // Assuming numerical values for total
+    return Object.values(scales.recurso_social).reduce(
+      (sum, item) => sum + (Number(item.value) || 0),
+      0,
+    )
+  }),
+
+  // OTROS RIESGOS - Mapped to API's "otrosriesgos"
+  otros_riesgos: {
+    grupo_edad: { // Mapped to orGrupoEdad
+      label: 'GRUPO DE EDAD',
+      value: null,
+      options: {
+        1: '65-74 años',
+        2: '75-84 años',
+        3: '85-94 años',
+        4: '95 o más años',
+      },
+    },
+    vive_con: { // Mapped to orViveCon
       label: 'VIVE CON',
       value: null,
       options: {
@@ -709,41 +781,18 @@ const scales = reactive({
         5: 'Institución/Residencia',
       },
     },
-    grupo_edad: {
-      label: 'GRUPO DE EDAD',
-      value: null,
-      options: {
-        1: '65-74 años',
-        2: '75-84 años',
-        3: '85-94 años',
-        4: '95 o más años',
-      },
-    },
-  },
-  total_recurso_social: computed(() => {
-    // Este total es más conceptual, no una suma directa. Podría ser un objeto resumen.
-    return 'Ver categorías' // O un objeto con los valores seleccionados.
-  }),
-
-  // OTROS RIESGOS - Opciones categóricas/binarias
-  otros_riesgos: {
-    antecedentes_caidas: {
-      label: 'ANTECEDENTES DE CAÍDAS EN EL ÚLTIMO AÑO',
+    movilidad: { // Mapped to orMovilidad (New field)
+      label: 'MOVILIDAD (Limitación significativa)',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
-    polifarmacia: {
-      label: 'POLIFARMACIA (Uso de ≥ 5 medicamentos crónicos)',
+    enfermedad_aguda: { // Mapped to orEnfermedadAguda (New field)
+      label: 'ENFERMEDAD AGUDA RECIENTE',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
-    deficit_sensorial: {
-      label: 'DÉFICIT SENSORIAL (Visual/Auditivo no corregido)',
-      value: null,
-      options: { 0: 'No', 1: 'Sí' },
-    },
-    incontinencia: {
-      label: 'INCONTINENCIA (Urinaria/Fecal)',
+    neuropsico: { // Mapped to orNeuropsico (New field)
+      label: 'PROBLEMAS NEUROPSICOLÓGICOS (Demencia/Delirium)',
       value: null,
       options: { 0: 'No', 1: 'Sí' },
     },
@@ -834,6 +883,66 @@ const scales = reactive({
       0,
     )
   }),
+
+  // TAMIZAJE - New section
+  tamizaje: {
+    dif_visual: {
+      label: 'Dificultad Visual',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    dif_auditiva: {
+      label: 'Dificultad Auditiva',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    levanta_anda: {
+      label: 'Se levanta y anda sin dificultad',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    perdida_orina: {
+      label: 'Pérdida de orina',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    perdida_peso: {
+      label: 'Pérdida de peso significativa (últimos 6 meses)',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    perdida_memoria: {
+      label: 'Pérdida de memoria',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    triste_deprimido: {
+      label: 'Se siente triste o deprimido',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    banarse_solo: {
+      label: 'Puede bañarse solo',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    compras_solo: {
+      label: 'Puede ir de compras solo',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+    vive_solo_tamizaje: { // Distinct from other 'vive_con' fields for API mapping
+      label: 'Vive solo',
+      value: null,
+      options: { 0: 'No', 1: 'Sí' },
+    },
+  },
+  total_tamizaje: computed(() => {
+    return Object.values(scales.tamizaje).reduce(
+      (sum, item) => sum + (Number(item.value) || 0),
+      0,
+    )
+  }),
 })
 
 // Simulación de envío
@@ -846,20 +955,125 @@ const handleSubmit = async () => {
   submitStatus.value = ''
   isSubmitting.value = true
 
+  // Basic validation for required fields
+  if (!selectedFichaId.value) {
+    submitMessage.value = 'Debe seleccionar una ficha médica existente.';
+    submitStatus.value = 'error';
+    isSubmitting.value = false;
+    return;
+  }
+  if (!fichaData.enfNombreencuestador.trim()) {
+    submitMessage.value = 'El nombre del encuestador es requerido.';
+    submitStatus.value = 'error';
+    isSubmitting.value = false;
+    return;
+  }
+
+  // Map Barthel scores to "Sí"/"No" for specific API fields
+  const mapBarthelToYesNo = (value, independentScore) => {
+    return value === independentScore ? "Sí" : "No";
+  };
+
+  const payload = {
+    idficha: selectedFichaId.value,
+    enfNombreencuestador: fichaData.enfNombreencuestador.trim(),
+    enfObservaciones: fichaData.enfObservaciones.trim() || null,
+    actbasica: {
+      abBanasolo: mapBarthelToYesNo(scales.actividades_basicas.lavarse.value, 10),
+      abVistedesvistesolo: mapBarthelToYesNo(scales.actividades_basicas.vestirse.value, 10),
+      abCuidaapariencia: mapBarthelToYesNo(scales.actividades_basicas.arreglarse.value, 10),
+      abUsainodoro: mapBarthelToYesNo(scales.actividades_basicas.usar_inodoro.value, 10),
+      abControlesfinteres: (scales.actividades_basicas.deposiciones.value === 10 && scales.actividades_basicas.micciones.value === 10) ? "Sí" : "No",
+      abTrasacuestalevanta: mapBarthelToYesNo(scales.actividades_basicas.trasladarse.value, 15),
+      abCamina: mapBarthelToYesNo(scales.actividades_basicas.deambular.value, 15),
+      abAlimenta: mapBarthelToYesNo(scales.actividades_basicas.comer.value, 10),
+      abTotal: scales.total_actividades_basicas.value
+    },
+    actinstrumental: {
+      aiCuidaCasa: Number(scales.actividad_instrumental.aiCuidaCasa.value),
+      aiUsaTelefono: Number(scales.actividad_instrumental.uso_telefono.value),
+      aiMediosTransporte: Number(scales.actividad_instrumental.manejo_transporte.value),
+      aiPreparaComida: Number(scales.actividad_instrumental.preparar_comida.value),
+      aiLavaRopa: Number(scales.actividad_instrumental.manejo_ropa.value),
+      aiVaCompras: Number(scales.actividad_instrumental.hacer_compras.value),
+      aiManejaDinero: Number(scales.actividad_instrumental.manejo_dinero.value),
+      aiManejaMedicina: Number(scales.actividad_instrumental.manejo_medicamentos.value),
+      aiTotales: scales.total_actividad_instrumental.value
+    },
+    cognitivo: {
+      cogSabeFecha: Number(scales.estado_cognitivo.orientacion_tiempo.value),
+      cogAprendeDeTres: Number(scales.estado_cognitivo.fijacion.value),
+      cogRepiteAlreves: Number(scales.estado_cognitivo.atencion_calculo.value),
+      cogTomaDoblaColoca: Number(scales.estado_cognitivo.lenguaje_orden.value),
+      cogRepitePalabras: Number(scales.estado_cognitivo.memoria.value),
+      cogCopiaCirculos: Number(scales.estado_cognitivo.dibujo.value),
+      cogTotal: scales.total_estado_cognitivo.value
+    },
+    depresion: {
+      depSatisfechovida: Number(scales.depresion.satisfecho_vida.value),
+      depDejaactinteres: Number(scales.depresion.actividades_interes.value),
+      depVidavacia: Number(scales.depresion.vida_vacia.value),
+      depAburrefrecuencia: Number(scales.depresion.aburrido.value),
+      depBuenanimo: Number(scales.depresion.animado.value),
+      depAlgomalosuceder: Number(scales.depresion.preocupado.value),
+      depFelizmayortiempo: Number(scales.depresion.feliz_mayor_parte.value),
+      depDesamparado: Number(scales.depresion.abandonado.value),
+      depActividadnueva: Number(scales.depresion.prefiere_casa.value),
+      depProblemamemoria: Number(scales.depresion.problemas_memoria.value),
+      depMaravillosovivir: Number(scales.depresion.estar_vivo.value),
+      depSienteinutil: Number(scales.depresion.util_valioso.value),
+      depLlenoenergia: Number(scales.depresion.lleno_energia.value),
+      depSinesperanza: Number(scales.depresion.sin_esperanza.value),
+      depOtrosmejorqueuno: Number(scales.depresion.mejor_gente.value),
+      depTotal: scales.total_depresion.value
+    },
+    otrosriesgos: {
+      orGrupoEdad: Number(scales.otros_riesgos.grupo_edad.value),
+      orViveCon: Number(scales.otros_riesgos.vive_con.value),
+      orMovilidad: Number(scales.otros_riesgos.movilidad.value),
+      orEnfermedadAguda: Number(scales.otros_riesgos.enfermedad_aguda.value),
+      orNeuropsico: Number(scales.otros_riesgos.neuropsico.value),
+      orTotal: scales.total_otros_riesgos.value
+    },
+    recursosocial: {
+      rsViveCon: Number(scales.recurso_social.situacion_familiar.value), // Mapping situacion_familiar to rsViveCon
+      rsContactoSocial: Number(scales.recurso_social.relaciones_contactos_sociales.value),
+      rsApoyoRedes: Number(scales.recurso_social.apoyo_red_social.value),
+      rsTotal: scales.total_recurso_social.value // This computed total should work
+    },
+    tamizaje: {
+      tamDifvisual: Number(scales.tamizaje.dif_visual.value),
+      tamDifauditiva: Number(scales.tamizaje.dif_auditiva.value),
+      tamLevanteanda: Number(scales.tamizaje.levanta_anda.value),
+      tamPerdidaorina: Number(scales.tamizaje.perdida_orina.value),
+      tamPerdidapeso: Number(scales.tamizaje.perdida_peso.value),
+      tamPerdidamemoria: Number(scales.tamizaje.perdida_memoria.value),
+      tamTristedeprimido: Number(scales.tamizaje.triste_deprimido.value),
+      tamBanarsolo: Number(scales.tamizaje.banarse_solo.value),
+      tamComprasolo: Number(scales.tamizaje.compras_solo.value),
+      tamVivesolo: Number(scales.tamizaje.vive_solo_tamizaje.value),
+      tamTotal: scales.total_tamizaje.value
+    }
+  };
+
   try {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/enfermeria`, payload);
 
-    console.log('Datos de la Ficha Médica:', JSON.parse(JSON.stringify(fichaData)))
-    console.log('Resultados de Escalas:', JSON.parse(JSON.stringify(scales)))
-
-    submitMessage.value = 'Ficha médica guardada exitosamente.'
-    submitStatus.value = 'success'
+    console.log('Ficha Médica guardada exitosamente:', response.data);
+    submitMessage.value = 'Ficha médica guardada exitosamente.';
+    submitStatus.value = 'success';
+    // Optionally reset form here
   } catch (error) {
-    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
-    submitStatus.value = 'error'
-    console.error('Error guardando ficha:', error)
+    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.';
+    submitStatus.value = 'error';
+    console.error('Error guardando ficha:', error);
+    if (error.response && error.response.data && error.response.data.message) {
+      submitMessage.value += ` Detalles: ${error.response.data.message}`;
+    } else if (error.message) {
+      submitMessage.value += ` Detalles: ${error.message}`;
+    }
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
 }
 </script>
@@ -1206,5 +1420,87 @@ const handleSubmit = async () => {
   .info-grid {
     grid-template-columns: 1fr; /* Una columna en pantallas muy pequeñas */
   }
+}
+
+@media (max-width: 480px) {
+  .ficha-card {
+    padding: 20px 15px;
+  }
+
+  .form-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+  .university-name {
+    font-size: 1.2rem;
+  }
+  .faculty-name {
+    font-size: 0.8rem;
+  }
+  .section-title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  .form-group label {
+    font-size: 0.85rem;
+  }
+  .wong-baker-face {
+    width: 50px;
+  }
+  .face-option {
+    width: 100%; /* Una cara por fila */
+  }
+
+  .progress-indicator {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .step-label {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}
+
+/* Specific styling for the highlighted form group */
+.form-group-highlight {
+  margin-top: 25px; /* Increased margin for better separation */
+  padding: 15px; /* Added padding */
+  border: 1px solid var(--color-primary-light); /* Subtle border */
+  border-radius: 8px;
+  background-color: var(--color-background-light); /* Slightly different background */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Soft shadow */
+}
+
+.form-group-highlight label {
+  color: var(--color-primary-dark); /* Stronger color for label */
+  font-size: 1rem; /* Slightly larger font for label */
+  font-weight: 700; /* Bolder label */
+}
+
+.form-group-highlight input[type='text'],
+.form-group-highlight textarea { /* Apply to textarea as well */
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--color-input-border-default);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-input-background-default);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form-group-highlight input[type='text']:focus,
+.form-group-highlight textarea:focus { /* Apply to textarea as well */
+  box-shadow: 0 0 0 5px rgba(var(--color-primary-rgb), 0.3); /* More prominent focus shadow */
 }
 </style>
