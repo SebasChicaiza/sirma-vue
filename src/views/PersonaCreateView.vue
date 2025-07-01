@@ -26,26 +26,26 @@ const form = ref({
   perOcupacion: '',
   perInstruccion: '',
   perCuidador: '',
-  perPeso: null, // Cambiado a null para numéricos
-  perTalla: null, // Cambiado a null para numéricos
-  perDiscapacidad: null, // 0 para No, 1 para Sí, null inicialmente
-  perTipoDiscapacidad: '', // Nuevo campo para el tipo de discapacidad
+  // perPeso: null, // Removed as per API specification
+  // perTalla: null, // Removed as per API specification
+  // perDiscapacidad: null, // Removed as per API specification
+  // perTipoDiscapacidad: '', // Removed as per API specification
 })
 
-// Computed property para habilitar/deshabilitar el campo de tipo de discapacidad
-const disableTipoDiscapacidad = ref(true)
-watch(
-  () => form.value.perDiscapacidad,
-  (newValue) => {
-    if (newValue === 1) {
-      // Si "Sí" (1) está seleccionado
-      disableTipoDiscapacidad.value = false
-    } else {
-      disableTipoDiscapacidad.value = true
-      form.value.perTipoDiscapacidad = '' // Limpiar si la discapacidad es "No"
-    }
-  },
-)
+// Removed watch for perDiscapacidad as perDiscapacidad is no longer sent to API
+// const disableTipoDiscapacidad = ref(true)
+// watch(
+//   () => form.value.perDiscapacidad,
+//   (newValue) => {
+//     if (newValue === 1) {
+//       // Si "Sí" (1) está seleccionado
+//       disableTipoDiscapacidad.value = false
+//     } else {
+//       disableTipoDiscapacidad.value = true
+//       form.value.perTipoDiscapacidad = '' // Limpiar si la discapacidad es "No"
+//     }
+//   },
+// )
 
 const guardar = async () => {
   submitMessage.value = ''
@@ -82,11 +82,12 @@ const guardar = async () => {
     perOcupacion: form.value.perOcupacion.trim() || null,
     perInstruccion: form.value.perInstruccion.trim() || null,
     perCuidador: form.value.perCuidador.trim() || null,
-    perPeso: form.value.perPeso !== null ? Number(form.value.perPeso).toFixed(2) : null,
-    perTalla: form.value.perTalla !== null ? Number(form.value.perTalla).toFixed(2) : null,
-    perDiscapacidad: form.value.perDiscapacidad !== null ? Number(form.value.perDiscapacidad) : 0, // Asegura que sea 0 o 1
-    perTipoDiscapacidad:
-      form.value.perDiscapacidad === 1 ? form.value.perTipoDiscapacidad.trim() : null, // Solo si hay discapacidad
+    // The following fields are removed from the payload as they are not accepted by your API:
+    // perPeso: form.value.perPeso !== null ? Number(form.value.perPeso).toFixed(2) : null,
+    // perTalla: form.value.perTalla !== null ? Number(form.value.perTalla).toFixed(2) : null,
+    // perDiscapacidad: form.value.perDiscapacidad !== null ? Number(form.value.perDiscapacidad) : 0,
+    // perTipoDiscapacidad:
+    //   form.value.perDiscapacidad === 1 ? form.value.perTipoDiscapacidad.trim() : null,
   }
 
   try {
@@ -223,13 +224,14 @@ const guardar = async () => {
 
         <div>
           <label for="perEstadocivil" class="input-label">Estado Civil</label>
-          <input
-            id="perEstadocivil"
-            v-model.trim="form.perEstadocivil"
-            type="text"
-            placeholder="Ej: Casado/a"
-            class="input-style"
-          />
+          <select id="perEstadocivil" v-model="form.perEstadocivil" class="input-style">
+            <option disabled value="">Seleccionar</option>
+            <option value="Soltero">Soltero</option>
+            <option value="Casado">Casado</option>
+            <option value="Divorciado">Divorciado</option>
+            <option value="Viudo">Viudo</option>
+            <option value="Union Libre">Unión Libre</option>
+          </select>
         </div>
         <div>
           <label for="perOcupacion" class="input-label">Ocupación</label>
@@ -264,30 +266,6 @@ const guardar = async () => {
         </div>
 
         <div>
-          <label for="perPeso" class="input-label">Peso (kg)</label>
-          <input
-            id="perPeso"
-            v-model.number="form.perPeso"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Ej: 65.50"
-            class="input-style"
-          />
-        </div>
-        <div>
-          <label for="perTalla" class="input-label">Talla (m)</label>
-          <input
-            id="perTalla"
-            v-model.number="form.perTalla"
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Ej: 1.65"
-            class="input-style"
-          />
-        </div>
-        <div>
           <label for="perZona" class="input-label">Zona</label>
           <input
             id="perZona"
@@ -309,26 +287,6 @@ const guardar = async () => {
           />
         </div>
 
-        <div>
-          <label for="perDiscapacidad" class="input-label">¿Presenta Discapacidad?</label>
-          <select id="perDiscapacidad" v-model="form.perDiscapacidad" class="input-style">
-            <option :value="null" disabled>Seleccionar</option>
-            <option :value="0">No</option>
-            <option :value="1">Sí</option>
-          </select>
-        </div>
-        <div>
-          <label for="perTipoDiscapacidad" class="input-label">Tipo de Discapacidad</label>
-          <input
-            id="perTipoDiscapacidad"
-            v-model.trim="form.perTipoDiscapacidad"
-            type="text"
-            placeholder="Ej: Motora, Visual"
-            class="input-style"
-            :disabled="disableTipoDiscapacidad"
-            :class="{ 'bg-gray-100 cursor-not-allowed': disableTipoDiscapacidad }"
-          />
-        </div>
         <div class="md:col-span-2">
           <label for="perGeorreferenciacion" class="input-label"
             >Georreferenciación (Latitud, Longitud)</label

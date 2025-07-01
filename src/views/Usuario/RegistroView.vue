@@ -111,6 +111,10 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import axios from 'axios' // Importar axios para las llamadas a la API
+import { useRouter } from 'vue-router' // Mantener router para la redirección
+
+const router = useRouter()
 
 // Estado del formulario
 const formData = reactive({
@@ -252,16 +256,43 @@ const handleSubmit = async () => {
   }
 
   isSubmitting.value = true
-  // Simulación de una llamada a API
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1500)) // Simula retraso de red
 
+  // Construir el payload según la especificación de la API
+  const payload = {
+    userNombre: formData.nombre,
+    userApellido: formData.apellido,
+    userCorreo: formData.correo,
+    userClave: formData.clave,
+    userCedula: formData.cedula,
+  }
+
+  // --- ADDED FOR DEBUGGING ---
+  console.log('Payload being sent:', payload);
+  // --- END ADDED FOR DEBUGGING ---
+
+  try {
+    // Realizar la llamada a la API
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL_BACKEND}/usuarios/registro`,
+      payload
+    )
+    console.log('Respuesta del servidor:', response.data)
     submitMessage.value = '¡Registro exitoso! Ahora puedes iniciar sesión.'
     submitStatus.value = 'success'
+
+    // Opcional: Limpiar el formulario después de un registro exitoso
+    // Object.keys(formData).forEach(key => formData[key] = '');
+    // Redirigir al usuario a la página de inicio de sesión después de un breve retraso
+    setTimeout(() => {
+      router.push('/login')
+    }, 1500) // Esperar 1.5 segundos
   } catch (error) {
-    submitMessage.value = 'Ocurrió un error de conexión. Inténtalo más tarde.'
+    console.error('Error al registrar el usuario:', error)
+    submitMessage.value = 'Ocurrió un error al registrar el usuario. Por favor, intente de nuevo.'
     submitStatus.value = 'error'
-    console.error('Error al registrar:', error)
+    if (error.response && error.response.data && error.response.data.message) {
+      submitMessage.value += ` Detalles: ${error.response.data.message}`
+    }
   } finally {
     isSubmitting.value = false
   }
