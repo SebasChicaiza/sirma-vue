@@ -11,430 +11,204 @@
 
       <h2 class="form-title">FICHA MÉDICA DEL PACIENTE</h2>
 
-      <FichaSelector v-model:idficha="selectedFichaId" />
+      <!-- FichaSelector para obtener el idficha -->
+      <FichaSelector v-model:idficha="form.idficha" />
 
       <div class="form-metadata">
         <div class="form-group inline-group">
-          <label for="fechaContacto">Fecha de Contacto:<span class="required">*</span></label>
+          <label for="medNombreencuestador">Nombre del Encuestador:<span class="required">*</span></label>
           <input
-            id="fechaContacto"
-            v-model="form.fechaContacto"
-            type="date"
-            class="small-input"
-            required
-          />
-        </div>
-        <div class="form-group inline-group">
-          <label for="nombreEvaluador">Evaluador:<span class="required">*</span></label>
-          <input
-            id="nombreEvaluador"
-            v-model.trim="form.nombreEvaluador"
+            id="medNombreencuestador"
+            v-model.trim="form.medNombreencuestador"
             type="text"
-            placeholder="Ej. Juan Pérez"
+            placeholder="Ej. Dr. Juan Pérez"
             class="small-input"
             required
           />
         </div>
       </div>
 
-      <!-- Se eliminó la sección de Datos Generales -->
+      <section class="form-section">
+        <h3 class="section-title">📋 Anamnesis y Revisión Actual</h3>
+        <div class="form-group full-width">
+          <label for="medAnamnesis">Anamnesis (Síntomas Actuales):<span class="required">*</span></label>
+          <textarea
+            id="medAnamnesis"
+            v-model.trim="form.medAnamnesis"
+            rows="4"
+            placeholder="Escribe los síntomas relevantes que presenta el paciente actualmente, historia de la enfermedad actual."
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="medObservacionesrevact">Observaciones de Revisión Actual:</label>
+          <textarea
+            id="medObservacionesrevact"
+            v-model.trim="form.medObservacionesrevact"
+            rows="2"
+            placeholder="Observaciones adicionales sobre la revisión de sistemas actual."
+          ></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="medObservacionexamenes">Observaciones de Exámenes:</label>
+          <textarea
+            id="medObservacionexamenes"
+            v-model.trim="form.medObservacionexamenes"
+            rows="2"
+            placeholder="Observaciones sobre exámenes de laboratorio o imágenes recientes."
+          ></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="section-subtitle">Alertas:</label>
+          <div class="checkbox-group form-grid">
+            <label><input type="checkbox" v-model="form.alerta.alertCaida" /> Caída</label>
+            <label><input type="checkbox" v-model="form.alerta.alertDismovilidad" /> Dismovilidad</label>
+            <label><input type="checkbox" v-model="form.alerta.alertAstenia" /> Astenia</label>
+            <label><input type="checkbox" v-model="form.alerta.alertDesorientacion" /> Desorientación</label>
+            <label><input type="checkbox" v-model="form.alerta.alertComportamiento" /> Comportamiento</label>
+          </div>
+        </div>
+      </section>
 
       <section class="form-section">
-        <h3 class="section-title">📋 Estado General y Revisión Actual de Sistemas</h3>
+        <h3 class="section-title">🩺 Examen Sistémico</h3>
         <div class="form-group full-width">
-          <label for="estadoGeneral">Estado General:<span class="required">*</span></label>
-          <input
-            id="estadoGeneral"
-            v-model.trim="form.estadoGeneral"
-            type="text"
-            placeholder="Ej. Bueno, Regular, Deteriorado, etc."
-            required
-          />
-        </div>
-
-        <div class="form-group full-width">
-          <label class="section-subtitle">Alertas (selección múltiple):</label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" value="Visual" v-model="form.alertas" /> Visual</label>
-            <label
-              ><input type="checkbox" value="Auditiva" v-model="form.alertas" /> Auditiva</label
-            >
-            <label><input type="checkbox" value="Caídas" v-model="form.alertas" /> Caídas</label>
-            <label
-              ><input type="checkbox" value="Cognitiva" v-model="form.alertas" /> Cognitiva</label
-            >
-            <label
-              ><input type="checkbox" value="Deambulación" v-model="form.alertas" />
-              Deambulación</label
-            >
-            <label
-              ><input type="checkbox" value="Comportamental" v-model="form.alertas" />
-              Comportamental</label
-            >
+          <label class="section-subtitle">Estado de Sistemas:</label>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="exsOrgsentidos">Órganos de los Sentidos:</label>
+              <select id="exsOrgsentidos" v-model="form.examensistemico.exsOrgsentidos">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsRespiratorio">Respiratorio:</label>
+              <select id="exsRespiratorio" v-model="form.examensistemico.exsRespiratorio">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsCardiovascular">Cardiovascular:</label>
+              <select id="exsCardiovascular" v-model="form.examensistemico.exsCardiovascular">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsDigestivo">Digestivo:</label>
+              <select id="exsDigestivo" v-model="form.examensistemico.exsDigestivo">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsGenitourinario">Genitourinario:</label>
+              <select id="exsGenitourinario" v-model="form.examensistemico.exsGenitourinario">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsMusculoesqueletico">Músculo-esquelético:</label>
+              <select id="exsMusculoesqueletico" v-model="form.examensistemico.exsMusculoesqueletico">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsEndocrino">Endocrino:</label>
+              <select id="exsEndocrino" v-model="form.examensistemico.exsEndocrino">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsHemolinfatico">Hemolinfático:</label>
+              <select id="exsHemolinfatico" v-model="form.examensistemico.exsHemolinfatico">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="exsNeurologico">Neurológico:</label>
+              <select id="exsNeurologico" v-model="form.examensistemico.exsNeurologico">
+                <option value="Normal">Normal</option>
+                <option value="Alterado">Alterado</option>
+              </select>
+            </div>
           </div>
         </div>
+      </section>
 
+      <section class="form-section">
+        <h3 class="section-title">🧍‍♂️ Examen Regional</h3>
         <div class="form-group full-width">
-          <label class="section-subtitle">Revisión de sistemas (selección múltiple):</label>
-          <div class="checkbox-group">
-            <label
-              ><input type="checkbox" value="Respiratorio" v-model="form.revisionSistemas" />
-              Respiratorio</label
-            >
-            <label
-              ><input type="checkbox" value="Cardiovascular" v-model="form.revisionSistemas" />
-              Cardiovascular</label
-            >
-            <label
-              ><input type="checkbox" value="Genitourinario" v-model="form.revisionSistemas" />
-              Genitourinario</label
-            >
-            <label
-              ><input type="checkbox" value="Digestivo" v-model="form.revisionSistemas" />
-              Digestivo</label
-            >
-            <label
-              ><input type="checkbox" value="Neurológico" v-model="form.revisionSistemas" />
-              Neurológico</label
-            >
-            <label
-              ><input type="checkbox" value="Músculo-esquelético" v-model="form.revisionSistemas" />
-              Músculo-esquelético</label
-            >
-            <label
-              ><input type="checkbox" value="Endocrino" v-model="form.revisionSistemas" />
-              Endocrino</label
-            >
-            <label
-              ><input type="checkbox" value="Linfático" v-model="form.revisionSistemas" />
-              Linfático</label
-            >
-            <label
-              ><input type="checkbox" value="Tegumentario" v-model="form.revisionSistemas" />
-              Tegumentario</label
-            >
+          <label class="section-subtitle">Regiones Evaluadas:</label>
+          <div class="checkbox-group form-grid">
+            <label><input type="checkbox" v-model="form.examenregional.exrPiel" /> Piel</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrCabeza" /> Cabeza</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrOjos" /> Ojos</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrOidos" /> Oídos</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrBoca" /> Boca</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrNariz" /> Nariz</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrCuello" /> Cuello</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrAxilamama" /> Axila y Mama</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrTorax" /> Tórax</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrAbdomen" /> Abdomen</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrColumna" /> Columna</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrPerine" /> Periné</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrMiembrossuper" /> Miembros Superiores</label>
+            <label><input type="checkbox" v-model="form.examenregional.exrMiembrosinfer" /> Miembros Inferiores</label>
           </div>
         </div>
-
+        <!-- No hay un campo directo para 'examenDescripcion' en la nueva API. Se podría usar 'medObservacionesrevact' o 'medObservacionexamenes' si aplica. -->
+        <!-- Por ahora, lo mantendré como un campo de observación general si es necesario para el frontend, pero no se enviará al API directamente. -->
         <div class="form-group full-width">
-          <label for="sintomasActuales">Síntomas Actuales:<span class="required">*</span></label>
+          <label for="examenDescripcionGeneral"
+            >Descripción Detallada del Examen Físico (General):</label
+          >
           <textarea
-            id="sintomasActuales"
-            v-model.trim="form.sintomasActuales"
-            rows="3"
-            placeholder="Escribe los síntomas relevantes que presenta el paciente actualmente."
-            required
+            id="examenDescripcionGeneral"
+            v-model.trim="form.medObservacionesrevact"
+            rows="4"
+            placeholder="Detalle hallazgos relevantes por sistemas/regiones, incluyendo signos vitales (presión arterial, pulso, respiración, temperatura), peso, talla, IMC si son pertinentes. Ej: Piel pálida, mucosas secas, abdomen blando, depresible, no doloroso a la palpación."
           ></textarea>
         </div>
       </section>
 
       <section class="form-section">
-        <h3 class="section-title">📚 Antecedentes y Hábitos</h3>
+        <h3 class="section-title">📚 Antecedentes</h3>
 
         <div class="form-group full-width">
-          <label class="section-subtitle">Antecedentes Personales (múltiple selección):</label>
+          <label class="section-subtitle">Antecedentes Patológicos:</label>
           <div class="checkbox-group form-grid">
-            <label
-              ><input
-                type="checkbox"
-                value="Diabetes Mellitus"
-                v-model="form.antecedentesPersonales"
-              />
-              Diabetes Mellitus</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Hipertensión Arterial"
-                v-model="form.antecedentesPersonales"
-              />
-              Hipertensión Arterial</label
-            >
-            <label
-              ><input type="checkbox" value="Cardiopatía" v-model="form.antecedentesPersonales" />
-              Cardiopatía</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Accidente Cerebrovascular (ACV)"
-                v-model="form.antecedentesPersonales"
-              />
-              Accidente Cerebrovascular (ACV)</label
-            >
-            <label
-              ><input type="checkbox" value="Cáncer" v-model="form.antecedentesPersonales" />
-              Cáncer</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedad Renal Crónica"
-                v-model="form.antecedentesPersonales"
-              />
-              Enfermedad Renal Crónica</label
-            >
-            <label
-              ><input type="checkbox" value="Asma" v-model="form.antecedentesPersonales" />
-              Asma</label
-            >
-            <label
-              ><input type="checkbox" value="EPOC" v-model="form.antecedentesPersonales" />
-              EPOC</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Artrosis/Artritis"
-                v-model="form.antecedentesPersonales"
-              />
-              Artrosis/Artritis</label
-            >
-            <label
-              ><input type="checkbox" value="Osteoporosis" v-model="form.antecedentesPersonales" />
-              Osteoporosis</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Cirugía Previa"
-                v-model="form.antecedentesPersonales"
-              />
-              Cirugía Previa</label
-            >
-            <label
-              ><input type="checkbox" value="Fracturas" v-model="form.antecedentesPersonales" />
-              Fracturas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Alergias Conocidas"
-                v-model="form.antecedentesPersonales"
-              />
-              Alergias Conocidas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Disfunción Tiroidea"
-                v-model="form.antecedentesPersonales"
-              />
-              Disfunción Tiroidea</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Úlcera Gástrica/Duodenal"
-                v-model="form.antecedentesPersonales"
-              />
-              Úlcera Gástrica/Duodenal</label
-            >
-            <label
-              ><input type="checkbox" value="Parkinson" v-model="form.antecedentesPersonales" />
-              Parkinson</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Alzheimer/Demencia"
-                v-model="form.antecedentesPersonales"
-              />
-              Alzheimer/Demencia</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Depresión/Ansiedad"
-                v-model="form.antecedentesPersonales"
-              />
-              Depresión/Ansiedad</label
-            >
-            <label
-              ><input type="checkbox" value="Migrañas" v-model="form.antecedentesPersonales" />
-              Migrañas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Infecciones Urinarias Recurrentes"
-                v-model="form.antecedentesPersonales"
-              />
-              Infecciones Urinarias Recurrentes</label
-            >
+            <label><input type="checkbox" v-model="form.patologico.patoDermatologico" /> Dermatológico</label>
+            <label><input type="checkbox" v-model="form.patologico.patoVisuales" /> Visuales</label>
+            <label><input type="checkbox" v-model="form.patologico.patoOtorrino" /> Otorrino</label>
+            <label><input type="checkbox" v-model="form.patologico.patoEstomatologicos" /> Estomatológicos</label>
+            <label><input type="checkbox" v-model="form.patologico.patoEndocrinos" /> Endocrinos</label>
+            <label><input type="checkbox" v-model="form.patologico.patoCardiovasculares" /> Cardiovasculares</label>
+            <label><input type="checkbox" v-model="form.patologico.patoRespiratorio" /> Respiratorio</label>
+            <label><input type="checkbox" v-model="form.patologico.patoDigestivo" /> Digestivo</label>
+            <label><input type="checkbox" v-model="form.patologico.patoNeurologico" /> Neurológico</label>
+            <label><input type="checkbox" v-model="form.patologico.patoUrologico" /> Urológico</label>
+            <label><input type="checkbox" v-model="form.patologico.patoHemolinfatico" /> Hemolinfático</label>
+            <label><input type="checkbox" v-model="form.patologico.patoInfeccioso" /> Infeccioso</label>
+            <label><input type="checkbox" v-model="form.patologico.patoOncologico" /> Oncológico</label>
+            <label><input type="checkbox" v-model="form.patologico.patoMusculoesqueletico" /> Músculo-esquelético</label>
+            <label><input type="checkbox" v-model="form.patologico.patoPsiquiatrico" /> Psiquiátrico</label>
+            <label><input type="checkbox" v-model="form.patologico.patoQuirurgico" /> Quirúrgico</label>
           </div>
           <div class="form-group full-width">
-            <label for="otrosAntecedentesPersonales"
-              >Otros Antecedentes Personales / Observaciones:</label
-            >
+            <label for="patoObservaciones">Observaciones Patológicas:</label>
             <textarea
-              id="otrosAntecedentesPersonales"
-              v-model.trim="form.otrosAntecedentesPersonales"
-              rows="2"
-              placeholder="Especifique otros antecedentes o detalles relevantes no listados."
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="form-group full-width">
-          <label class="section-subtitle">Hábitos Nocivos (selección múltiple):</label>
-          <div class="checkbox-group form-grid">
-            <label
-              ><input type="checkbox" value="Tabaquismo" v-model="form.habitos" /> Tabaquismo</label
-            >
-            <label
-              ><input type="checkbox" value="Alcoholismo" v-model="form.habitos" />
-              Alcoholismo</label
-            >
-            <label
-              ><input type="checkbox" value="Uso de Drogas Ilícitas" v-model="form.habitos" /> Uso
-              de Drogas Ilícitas</label
-            >
-            <label
-              ><input type="checkbox" value="Sedentarismo" v-model="form.habitos" />
-              Sedentarismo</label
-            >
-            <label
-              ><input type="checkbox" value="Dieta Inadecuada" v-model="form.habitos" /> Dieta
-              Inadecuada</label
-            >
-            <label
-              ><input type="checkbox" value="Insomnio Crónico" v-model="form.habitos" /> Insomnio
-              Crónico</label
-            >
-            <label
-              ><input type="checkbox" value="Estrés Crónico" v-model="form.habitos" /> Estrés
-              Crónico</label
-            >
-          </div>
-          <div class="form-group full-width">
-            <label for="otrosHabitos">Otros Hábitos Nocivos / Observaciones:</label>
-            <textarea
-              id="otrosHabitos"
-              v-model.trim="form.otrosHabitos"
-              rows="2"
-              placeholder="Especifique otros hábitos o detalles relevantes."
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="form-group full-width">
-          <label class="section-subtitle">Antecedentes Farmacológicos (selección múltiple):</label>
-          <div class="checkbox-group form-grid">
-            <label
-              ><input
-                type="checkbox"
-                value="Polifarmacia (>5 medicamentos)"
-                v-model="form.farmaco"
-              />
-              Polifarmacia (>5 medicamentos)</label
-            >
-            <label
-              ><input type="checkbox" value="Alergia a Medicamentos" v-model="form.farmaco" />
-              Alergia a Medicamentos</label
-            >
-            <label
-              ><input type="checkbox" value="Antihipertensivos" v-model="form.farmaco" />
-              Antihipertensivos</label
-            >
-            <label
-              ><input type="checkbox" value="Antidiabéticos" v-model="form.farmaco" />
-              Antidiabéticos</label
-            >
-            <label
-              ><input type="checkbox" value="Anticoagulantes" v-model="form.farmaco" />
-              Anticoagulantes</label
-            >
-            <label
-              ><input type="checkbox" value="Antiinflamatorios (AINEs)" v-model="form.farmaco" />
-              Antiinflamatorios (AINEs)</label
-            >
-            <label
-              ><input type="checkbox" value="Analgésicos Opioides" v-model="form.farmaco" />
-              Analgésicos Opioides</label
-            >
-            <label
-              ><input type="checkbox" value="Diuréticos" v-model="form.farmaco" /> Diuréticos</label
-            >
-            <label
-              ><input type="checkbox" value="Antidepresivos/Ansiolíticos" v-model="form.farmaco" />
-              Antidepresivos/Ansiolíticos</label
-            >
-            <label
-              ><input type="checkbox" value="Suplementos/Vitaminas" v-model="form.farmaco" />
-              Suplementos/Vitaminas</label
-            >
-            <label
-              ><input type="checkbox" value="Medicina Alternativa/Natural" v-model="form.farmaco" />
-              Medicina Alternativa/Natural</label
-            >
-          </div>
-          <div class="form-group full-width">
-            <label for="otrosFarmaco">Otros Antecedentes Farmacológicos / Observaciones:</label>
-            <textarea
-              id="otrosFarmaco"
-              v-model.trim="form.otrosFarmaco"
-              rows="2"
-              placeholder="Especifique medicamentos actuales, alergias no listadas o interacciones relevantes."
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="form-group full-width">
-          <label class="section-subtitle">Antecedentes Patológicos (selección múltiple):</label>
-          <div class="checkbox-group form-grid">
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Infecciosas (TB, Hepatitis)"
-                v-model="form.patologicos"
-              />
-              Enfermedades Infecciosas (TB, Hepatitis)</label
-            >
-            <label
-              ><input type="checkbox" value="Enfermedades Autoinmunes" v-model="form.patologicos" />
-              Enfermedades Autoinmunes</label
-            >
-            <label
-              ><input type="checkbox" value="Cistitis Recurrente" v-model="form.patologicos" />
-              Cistitis Recurrente</label
-            >
-            <label
-              ><input type="checkbox" value="Anemia" v-model="form.patologicos" /> Anemia</label
-            >
-            <label
-              ><input type="checkbox" value="Problemas de Coagulación" v-model="form.patologicos" />
-              Problemas de Coagulación</label
-            >
-            <label
-              ><input type="checkbox" value="Hernias" v-model="form.patologicos" /> Hernias</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Cálculos Renales/Biliares"
-                v-model="form.patologicos"
-              />
-              Cálculos Renales/Biliares</label
-            >
-            <label
-              ><input type="checkbox" value="Glaucoma/Cataratas" v-model="form.patologicos" />
-              Glaucoma/Cataratas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Otras Enfermedades Crónicas"
-                v-model="form.patologicos"
-              />
-              Otras Enfermedades Crónicas</label
-            >
-          </div>
-          <div class="form-group full-width">
-            <label for="otrosPatologicos">Otros Antecedentes Patológicos / Observaciones:</label>
-            <textarea
-              id="otrosPatologicos"
-              v-model.trim="form.otrosPatologicos"
+              id="patoObservaciones"
+              v-model.trim="form.patologico.patoObservaciones"
               rows="2"
               placeholder="Especifique enfermedades o condiciones no listadas."
             ></textarea>
@@ -442,166 +216,23 @@
         </div>
 
         <div class="form-group full-width">
-          <label class="section-subtitle"
-            >Antecedentes Gineco-Obstétricos (selección múltiple, si aplica):</label
-          >
+          <label class="section-subtitle">Antecedentes Familiares:</label>
           <div class="checkbox-group form-grid">
-            <label
-              ><input type="checkbox" value="Menarquia" v-model="form.ginecoObstetricos" />
-              Menarquia</label
-            >
-            <label
-              ><input type="checkbox" value="Ciclos Regulares" v-model="form.ginecoObstetricos" />
-              Ciclos Regulares</label
-            >
-            <label
-              ><input type="checkbox" value="Ciclos Irregulares" v-model="form.ginecoObstetricos" />
-              Ciclos Irregulares</label
-            >
-            <label
-              ><input type="checkbox" value="Gestas" v-model="form.ginecoObstetricos" />
-              Gestas</label
-            >
-            <label
-              ><input type="checkbox" value="Partos" v-model="form.ginecoObstetricos" />
-              Partos</label
-            >
-            <label
-              ><input type="checkbox" value="Cesáreas" v-model="form.ginecoObstetricos" />
-              Cesáreas</label
-            >
-            <label
-              ><input type="checkbox" value="Abortos" v-model="form.ginecoObstetricos" />
-              Abortos</label
-            >
-            <label
-              ><input type="checkbox" value="FUM" v-model="form.ginecoObstetricos" /> FUM</label
-            >
-            <label
-              ><input type="checkbox" value="Menopausia" v-model="form.ginecoObstetricos" />
-              Menopausia</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Anticonceptivos Hormonales"
-                v-model="form.ginecoObstetricos"
-              />
-              Anticonceptivos Hormonales</label
-            >
-            <label
-              ><input type="checkbox" value="DIU" v-model="form.ginecoObstetricos" /> DIU</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Citología Vaginal (Papanicolau) Anormal"
-                v-model="form.ginecoObstetricos"
-              />
-              Citología Vaginal (Papanicolau) Anormal</label
-            >
-            <label
-              ><input type="checkbox" value="Patología Mamaria" v-model="form.ginecoObstetricos" />
-              Patología Mamaria</label
-            >
-            <label
-              ><input type="checkbox" value="Embarazo Ectópico" v-model="form.ginecoObstetricos" />
-              Embarazo Ectópico</label
-            >
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afCardiopatias" /> Cardiopatías</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afDiabetes" /> Diabetes</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afHipertension" /> Hipertensión</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afNeoplasia" /> Neoplasia</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afAlzheimer" /> Alzheimer</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afParkinson" /> Parkinson</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afTuberculosis" /> Tuberculosis</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afViolenciaintra" /> Violencia Intrafamiliar</label>
+            <label><input type="checkbox" v-model="form.antecedentesfamiliares.afSindromecuidador" /> Síndrome del Cuidador</label>
           </div>
           <div class="form-group full-width">
-            <label for="otrosGinecoObstetricos">Otros Gineco-Obstétricos / Observaciones:</label>
+            <label for="afObservaciones">Observaciones Familiares:</label>
             <textarea
-              id="otrosGinecoObstetricos"
-              v-model.trim="form.otrosGinecoObstetricos"
-              rows="2"
-              placeholder="Especifique detalles adicionales de antecedentes gineco-obstétricos."
-            ></textarea>
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">👪 Antecedentes Familiares y Sociales</h3>
-        <div class="form-group full-width">
-          <label class="section-subtitle">Antecedentes Familiares (selección múltiple):</label>
-          <div class="checkbox-group form-grid">
-            <label
-              ><input type="checkbox" value="Diabetes" v-model="form.antecedentesFamiliares" />
-              Diabetes</label
-            >
-            <label
-              ><input type="checkbox" value="Hipertensión" v-model="form.antecedentesFamiliares" />
-              Hipertensión</label
-            >
-            <label
-              ><input type="checkbox" value="Cáncer" v-model="form.antecedentesFamiliares" />
-              Cáncer</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Cardíacas"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Cardíacas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Renales"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Renales</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Mentales"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Mentales</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Neurológicas"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Neurológicas</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Autoinmunes"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Autoinmunes</label
-            >
-            <label
-              ><input type="checkbox" value="Alergias" v-model="form.antecedentesFamiliares" />
-              Alergias</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Enfermedades Respiratorias"
-                v-model="form.antecedentesFamiliares"
-              />
-              Enfermedades Respiratorias</label
-            >
-            <label
-              ><input type="checkbox" value="Obesidad" v-model="form.antecedentesFamiliares" />
-              Obesidad</label
-            >
-          </div>
-          <div class="form-group full-width">
-            <label for="otrosAntecedentesFamiliares"
-              >Otros Antecedentes Familiares / Observaciones:</label
-            >
-            <textarea
-              id="otrosAntecedentesFamiliares"
-              v-model.trim="form.otrosAntecedentesFamiliares"
+              id="afObservaciones"
+              v-model.trim="form.antecedentesfamiliares.afObservaciones"
               rows="2"
               placeholder="Especifique otros antecedentes familiares relevantes o detalles."
             ></textarea>
@@ -609,191 +240,203 @@
         </div>
 
         <div class="form-group full-width">
-          <label class="section-subtitle">Antecedentes Sociales (selección múltiple):</label>
+          <label class="section-subtitle">Antecedentes Farmacológicos:</label>
           <div class="checkbox-group form-grid">
-            <label
-              ><input type="checkbox" value="Vive Solo" v-model="form.antecedentesSociales" /> Vive
-              Solo</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Dependencia Económica"
-                v-model="form.antecedentesSociales"
-              />
-              Dependencia Económica</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Cuidado por Familiar"
-                v-model="form.antecedentesSociales"
-              />
-              Cuidado por Familiar</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Acceso Limitado a Servicios Básicos"
-                v-model="form.antecedentesSociales"
-              />
-              Acceso Limitado a Servicios Básicos</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Dificultad de Acceso a Salud"
-                v-model="form.antecedentesSociales"
-              />
-              Dificultad de Acceso a Salud</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Bajo Nivel Educativo"
-                v-model="form.antecedentesSociales"
-              />
-              Bajo Nivel Educativo</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                value="Actividad Laboral"
-                v-model="form.antecedentesSociales"
-              />
-              Actividad Laboral</label
-            >
-            <label
-              ><input type="checkbox" value="Jubilado" v-model="form.antecedentesSociales" />
-              Jubilado</label
-            >
-            <label
-              ><input type="checkbox" value="Estudiante" v-model="form.antecedentesSociales" />
-              Estudiante</label
-            >
+            <label><input type="checkbox" v-model="form.farmacologico.farAines" /> AINEs</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farAnalgesicos" /> Analgésicos</label>
+            <div class="form-group">
+              <label for="farAntidiabeticos">Antidiabéticos (nombre):</label>
+              <input type="text" id="farAntidiabeticos" v-model.trim="form.farmacologico.farAntidiabeticos" placeholder="Ej. Metformin" />
+            </div>
+            <label><input type="checkbox" v-model="form.farmacologico.farAntihipertensivos" /> Antihipertensivos</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farAnticoagulantes" /> Anticoagulantes</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farPsicofarmacos" /> Psicofármacos</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farAntibioticos" /> Antibióticos</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farAlergias" /> Alergias</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farEfectosadversos" /> Efectos Adversos</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farPoliprescriptor" /> Poliprescriptor</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farPolifarmacia" /> Polifarmacia</label>
+            <label><input type="checkbox" v-model="form.farmacologico.farOtros" /> Otros</label>
           </div>
           <div class="form-group full-width">
-            <label for="otrosAntecedentesSociales"
-              >Otros Antecedentes Sociales / Observaciones:</label
-            >
+            <label for="farObservaciones">Observaciones Farmacológicas:</label>
             <textarea
-              id="otrosAntecedentesSociales"
-              v-model.trim="form.otrosAntecedentesSociales"
+              id="farObservaciones"
+              v-model.trim="form.farmacologico.farObservaciones"
               rows="2"
-              placeholder="Especifique condiciones de vivienda, situación laboral/familiar, nivel de soporte social, etc."
+              placeholder="Especifique medicamentos actuales, alergias no listadas o interacciones relevantes."
             ></textarea>
           </div>
         </div>
-      </section>
 
-      <section class="form-section">
-        <h3 class="section-title">🧍‍♂️ Examen Físico</h3>
         <div class="form-group full-width">
-          <label class="section-subtitle">Regiones Evaluadas (selección múltiple):</label>
+          <label class="section-subtitle">Hábitos Nocivos:</label>
           <div class="checkbox-group form-grid">
-            <label
-              ><input type="checkbox" value="Cabeza" v-model="form.examenFisico" /> Cabeza</label
-            >
-            <label
-              ><input type="checkbox" value="Cuello" v-model="form.examenFisico" /> Cuello</label
-            >
-            <label><input type="checkbox" value="Tórax" v-model="form.examenFisico" /> Tórax</label>
-            <label
-              ><input type="checkbox" value="Abdomen" v-model="form.examenFisico" /> Abdomen</label
-            >
-            <label
-              ><input type="checkbox" value="Extremidades" v-model="form.examenFisico" />
-              Extremidades</label
-            >
-            <label
-              ><input type="checkbox" value="Columna" v-model="form.examenFisico" /> Columna</label
-            >
-            <label
-              ><input type="checkbox" value="Piel_Anexos" v-model="form.examenFisico" /> Piel y
-              Anexos</label
-            >
-            <label
-              ><input type="checkbox" value="Neurologico" v-model="form.examenFisico" />
-              Neurológico</label
-            >
-            <label
-              ><input type="checkbox" value="Cardiopulmonar" v-model="form.examenFisico" />
-              Cardiopulmonar</label
-            >
+            <label><input type="checkbox" v-model="form.habitosnocivos.nocTabaquismo" /> Tabaquismo</label>
+            <label><input type="checkbox" v-model="form.habitosnocivos.nocAlcoholismo" /> Alcoholismo</label>
+            <label><input type="checkbox" v-model="form.habitosnocivos.nocAdicciones" /> Adicciones</label>
+            <label><input type="checkbox" v-model="form.habitosnocivos.nocOtros" /> Otros</label>
+          </div>
+          <div class="form-group full-width">
+            <label for="nocObservaciones">Observaciones Hábitos Nocivos:</label>
+            <textarea
+              id="nocObservaciones"
+              v-model.trim="form.habitosnocivos.nocObservaciones"
+              rows="2"
+              placeholder="Especifique otros hábitos o detalles relevantes."
+            ></textarea>
           </div>
         </div>
+
         <div class="form-group full-width">
-          <label for="examenDescripcion"
-            >Descripción Detallada del Examen Físico:<span class="required">*</span></label
-          >
-          <textarea
-            id="examenDescripcion"
-            v-model.trim="form.examenDescripcion"
-            rows="4"
-            placeholder="Detalle hallazgos relevantes por sistemas/regiones, incluyendo signos vitales (presión arterial, pulso, respiración, temperatura), peso, talla, IMC si son pertinentes. Ej: Piel pálida, mucosas secas, abdomen blando, depresible, no doloroso a la palpación."
-            required
-          ></textarea>
+          <label class="section-subtitle">Antecedentes Ginecológicos (si aplica):</label>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="ginEdadmenopausia">Edad Menopausia:</label>
+              <input type="number" id="ginEdadmenopausia" v-model.number="form.ginecologico.ginEdadmenopausia" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="ginEdadultmamografia">Edad Última Mamografía:</label>
+              <input type="number" id="ginEdadultmamografia" v-model.number="form.ginecologico.ginEdadultmamografia" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="ginEdadultcitologia">Edad Última Citología:</label>
+              <input type="number" id="ginEdadultcitologia" v-model.number="form.ginecologico.ginEdadultcitologia" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="ginCantembarazos">Cantidad Embarazos:</label>
+              <input type="number" id="ginCantembarazos" v-model.number="form.ginecologico.ginCantembarazos" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="ginCantpartos">Cantidad Partos:</label>
+              <input type="number" id="ginCantpartos" v-model.number="form.ginecologico.ginCantpartos" min="0" />
+            </div>
+            <div class="form-group">
+              <label for="ginCantcesareas">Cantidad Cesáreas:</label>
+              <input type="number" id="ginCantcesareas" v-model.number="form.ginecologico.ginCantcesareas" min="0" />
+            </div>
+            <label><input type="checkbox" v-model="form.ginecologico.ginTerapiahormonal" /> Terapia Hormonal</label>
+          </div>
+          <div class="form-group full-width">
+            <label for="ginObservaciones">Observaciones Ginecológicas:</label>
+            <textarea
+              id="ginObservaciones"
+              v-model.trim="form.ginecologico.ginObservaciones"
+              rows="2"
+              placeholder="Historial de embarazos, partos, cesáreas, menopausia, etc."
+            ></textarea>
+          </div>
         </div>
+
+        <div class="form-group full-width">
+          <label class="section-subtitle">Antecedentes Andrológicos (si aplica):</label>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="andEdadultantigeno">Edad Último Antígeno Prostático:</label>
+              <input type="number" id="andEdadultantigeno" v-model.number="form.andrologico.andEdadultantigeno" min="0" />
+            </div>
+            <label><input type="checkbox" v-model="form.andrologico.andTerapiahormonal" /> Terapia Hormonal</label>
+          </div>
+          <div class="form-group full-width">
+            <label for="andObservaciones">Observaciones Andrológicas:</label>
+            <textarea
+              id="andObservaciones"
+              v-model.trim="form.andrologico.andObservaciones"
+              rows="2"
+              placeholder="PSA control, observaciones relevantes."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="section-subtitle">Estado General y Hábitos Saludables:</label>
+          <div class="checkbox-group form-grid">
+            <label><input type="checkbox" v-model="form.general.genVacunascompletas" /> Vacunas Completas</label>
+            <label><input type="checkbox" v-model="form.general.genHigienecuerpo" /> Higiene Corporal</label>
+            <label><input type="checkbox" v-model="form.general.genControlsalud" /> Control de Salud Regular</label>
+            <label><input type="checkbox" v-model="form.general.genHigieneoral" /> Higiene Oral</label>
+            <label><input type="checkbox" v-model="form.general.genActrecreativa" /> Actividad Recreativa</label>
+            <label><input type="checkbox" v-model="form.general.genOtrossaludables" /> Otros Hábitos Saludables</label>
+          </div>
+          <div class="form-group full-width">
+            <label for="genObservaciones">Observaciones Generales:</label>
+            <textarea
+              id="genObservaciones"
+              v-model.trim="form.general.genObservaciones"
+              rows="2"
+              placeholder="Observaciones sobre el estado general y hábitos de salud."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="section-subtitle">Síndromes Geriátricos:</label>
+          <div class="checkbox-group form-grid">
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgFragilidad" /> Fragilidad</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgDismovilidad" /> Dismovilidad</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgDepresion" /> Depresión</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgCaida" /> Caída</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgDelirio" /> Delirio</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgMalnutricion" /> Malnutrición</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgUlceraspresion" /> Úlceras por Presión</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgDemencia" /> Demencia</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgIncontinencia" /> Incontinencia</label>
+            <label><input type="checkbox" v-model="form.sindromesgeriatricos.sgIatrogenia" /> Iatrogenia</label>
+          </div>
+        </div>
+
       </section>
 
       <section class="form-section">
         <h3 class="section-title">🔍 Diagnóstico</h3>
         <div class="form-group full-width">
-          <label for="diagnosticosMedicos"
-            >Diagnósticos Médicos (CIE-10 si aplica):<span class="required">*</span></label
-          >
+          <label for="diagDiagnostico">Diagnóstico Médico:<span class="required">*</span></label>
           <textarea
-            id="diagnosticosMedicos"
-            v-model.trim="form.diagnosticosMedicos"
+            id="diagDiagnostico"
+            v-model.trim="form.diagnostico.diagDiagnostico"
             rows="2"
-            placeholder="Listar diagnósticos médicos con su código CIE-10 si es posible. Ej: Diabetes Mellitus tipo 2 (E11.9); Hipertensión esencial (I10)."
+            placeholder="Diagnóstico principal. Ej: Diabetes Mellitus Tipo 2, Hipertensión Arterial Esencial."
             required
           ></textarea>
         </div>
         <div class="form-group full-width">
-          <label class="section-subtitle">Diagnósticos de Enfermería (NANDA si aplica):</label>
-          <div class="form-grid">
-            <div
-              class="form-group"
-              v-for="(item, index) in form.diagnosticosEnfermeria"
-              :key="index"
-            >
-              <label :for="`diagnosticoEnfermeria-${index}`"
-                >Diagnóstico NANDA {{ index + 1 }}:</label
-              >
-              <input
-                :id="`diagnosticoEnfermeria-${index}`"
-                v-model.trim="form.diagnosticosEnfermeria[index]"
-                type="text"
-                :placeholder="`Ej: Riesgo de caídas r/c debilidad muscular. #${index + 1}`"
-              />
-            </div>
-          </div>
-          <div class="button-group">
-            <button @click="addDiagnosticoEnfermeria" type="button" class="add-remove-button">
-              + Añadir Diagnóstico
-            </button>
-            <button
-              v-if="form.diagnosticosEnfermeria.length > 1"
-              @click="removeDiagnosticoEnfermeria"
-              type="button"
-              class="add-remove-button remove"
-            >
-              - Eliminar Último
-            </button>
-          </div>
+          <label for="diagPresundefini">Presentación Definición:</label>
+          <select id="diagPresundefini" v-model="form.diagnostico.diagPresundefini">
+            <option value="">Seleccionar</option>
+            <option value="Definitivo">Definitivo</option>
+            <option value="Presuntivo">Presuntivo</option>
+          </select>
         </div>
+        <div class="form-group full-width">
+          <label for="diagCie">Código CIE-10:</label>
+          <input
+            id="diagCie"
+            v-model.trim="form.diagnostico.diagCie"
+            type="text"
+            placeholder="Ej: E11.9, I10"
+          />
+        </div>
+        <div class="form-group full-width">
+          <label for="diagClinicocindromico">Clínico Sindrómico:</label>
+          <input
+            id="diagClinicocindromico"
+            v-model.trim="form.diagnostico.diagClinicocindromico"
+            type="text"
+            placeholder="Ej: Metabólico, Cardiovascular"
+          />
+        </div>
+        <!-- Se eliminó la sección de Diagnósticos de Enfermería ya que no está en el API -->
       </section>
 
       <section class="form-section">
         <h3 class="section-title">📌 Plan de Manejo Integral</h3>
         <div class="form-group full-width">
-          <label for="planManejo"
+          <label for="medPlanintegral"
             >Descripción del Plan de Manejo:<span class="required">*</span></label
           >
           <textarea
-            id="planManejo"
-            v-model.trim="form.planManejo"
+            id="medPlanintegral"
+            v-model.trim="form.medPlanintegral"
             rows="4"
             placeholder="Describe el plan de seguimiento, medicación prescrita, intervenciones de enfermería, educación al paciente y familia, referencias a otros especialistas, etc. Ej: Control de glicemia capilar diario, dieta baja en sal, caminata 30 min/día."
             required
@@ -811,122 +454,228 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { reactive, ref } from 'vue'
 import axios from 'axios'
 import FichaSelector from '@/components/FichaSelector.vue'
 
 const form = reactive({
-  fechaContacto: '',
-  nombreEvaluador: '',
-  estadoGeneral: '',
-  alertas: [], // Array para checkboxes
-  revisionSistemas: [], // Array para checkboxes
-  sintomasActuales: '',
-  antecedentesPersonales: [], // Ahora es un array para los checkboxes
-  otrosAntecedentesPersonales: '', // Nuevo campo para observaciones
-  habitos: [], // Ahora es un array para los checkboxes
-  otrosHabitos: '', // Nuevo campo para observaciones
-  farmaco: [], // Ahora es un array para los checkboxes
-  otrosFarmaco: '', // Nuevo campo para observaciones
-  patologicos: [], // Ahora es un array para los checkboxes
-  otrosPatologicos: '', // Nuevo campo para observaciones
-  ginecoObstetricos: [], // Ahora es un array para los checkboxes
-  otrosGinecoObstetricos: '', // Nuevo campo para observaciones
-  antecedentesFamiliares: [], // Ahora es un array para los checkboxes
-  otrosAntecedentesFamiliares: '', // Nuevo campo para observaciones
-  antecedentesSociales: [], // Nuevo array para los checkboxes
-  otrosAntecedentesSociales: '', // Nuevo campo para observaciones
-  examenFisico: [], // Array para checkboxes
-  examenDescripcion: '',
-  diagnosticosMedicos: '',
-  diagnosticosEnfermeria: [''], // Iniciamos con un campo vacío para el primer diagnóstico
-  planManejo: '',
-})
+  // Top-level fields
+  idficha: null, // Will be populated by FichaSelector
+  medNombreencuestador: '',
+  medAnamnesis: '',
+  medObservacionesrevact: '',
+  medObservacionexamenes: '',
+  medPlanintegral: '',
 
-// Simulación de envío
+  // Nested objects - direct mapping to API structure for clarity
+  alerta: {
+    alertCaida: false,
+    alertDismovilidad: false,
+    alertAstenia: false,
+    alertDesorientacion: false,
+    alertComportamiento: false,
+  },
+  andrologico: {
+    andEdadultantigeno: null, // Number
+    andTerapiahormonal: false,
+    andObservaciones: '',
+  },
+  antecedentesfamiliares: {
+    afCardiopatias: false,
+    afDiabetes: false,
+    afHipertension: false,
+    afNeoplasia: false,
+    afAlzheimer: false,
+    afParkinson: false,
+    afTuberculosis: false,
+    afViolenciaintra: false,
+    afSindromecuidador: false,
+    afObservaciones: '',
+  },
+  diagnostico: {
+    diagDiagnostico: '',
+    diagPresundefini: '',
+    diagCie: '',
+    diagClinicocindromico: '',
+  },
+  examenregional: {
+    exrPiel: false,
+    exrCabeza: false,
+    exrOjos: false,
+    exrOidos: false,
+    exrBoca: false,
+    exrNariz: false,
+    exrCuello: false,
+    exrAxilamama: false,
+    exrTorax: false,
+    exrAbdomen: false,
+    exrColumna: false,
+    exrPerine: false,
+    exrMiembrossuper: false,
+    exrMiembrosinfer: false,
+  },
+  examensistemico: {
+    exsOrgsentidos: 'Normal',
+    exsRespiratorio: 'Normal',
+    exsCardiovascular: 'Normal',
+    exsDigestivo: 'Normal',
+    exsGenitourinario: 'Normal',
+    exsMusculoesqueletico: 'Normal',
+    exsEndocrino: 'Normal',
+    exsHemolinfatico: 'Normal',
+    exsNeurologico: 'Normal',
+  },
+  farmacologico: {
+    farAines: false,
+    farAnalgesicos: false,
+    farAntidiabeticos: '', // String for specific drug name
+    farAntihipertensivos: false,
+    farAnticoagulantes: false,
+    farPsicofarmacos: false,
+    farAntibioticos: false,
+    farAlergias: false,
+    farEfectosadversos: false,
+    farPoliprescriptor: false,
+    farPolifarmacia: false,
+    farOtros: false,
+    farObservaciones: '',
+  },
+  general: {
+    genVacunascompletas: false,
+    genHigienecuerpo: false,
+    genControlsalud: false,
+    genHigieneoral: false,
+    genActrecreativa: false,
+    genOtrossaludables: false,
+    genObservaciones: '',
+  },
+  ginecologico: {
+    ginEdadmenopausia: null, // Number
+    ginEdadultmamografia: null, // Number
+    ginEdadultcitologia: null, // Number
+    ginCantembarazos: null, // Number
+    ginCantpartos: null, // Number
+    ginCantcesareas: null, // Number
+    ginTerapiahormonal: false,
+    ginObservaciones: '',
+  },
+  habitosnocivos: {
+    nocTabaquismo: false,
+    nocAlcoholismo: false,
+    nocAdicciones: false,
+    nocOtros: false,
+    nocObservaciones: '',
+  },
+  patologico: {
+    patoDermatologico: false,
+    patoVisuales: false,
+    patoOtorrino: false,
+    patoEstomatologicos: false,
+    patoEndocrinos: false,
+    patoCardiovasculares: false,
+    patoRespiratorio: false,
+    patoDigestivo: false,
+    patoNeurologico: false,
+    patoUrologico: false,
+    patoHemolinfatico: false,
+    patoInfeccioso: false,
+    patoOncologico: false,
+    patoMusculoesqueletico: false,
+    patoPsiquiatrico: false,
+    patoQuirurgico: false,
+    patoObservaciones: '',
+  },
+  revisionactual: {
+    revactVision: false,
+    revactAudicion: false,
+    revactOlfatogusto: false,
+    revactRespiratorio: false,
+    revactCardiovascular: false,
+    revactDigestivo: false,
+    revactGenital: false,
+    revactUrinario: false,
+    revactMusculoesqueletico: false,
+    revactEndocrino: false,
+    revactHemolinf: false,
+    revactNervioso: false,
+    revactMetabolico: false,
+    revactObservaciones: '',
+  },
+  sindromesgeriatricos: {
+    sgFragilidad: false,
+    sgDismovilidad: false,
+    sgDepresion: false,
+    sgCaida: false,
+    sgDelirio: false,
+    sgMalnutricion: false,
+    sgUlceraspresion: false,
+    sgDemencia: false,
+    sgIncontinencia: false,
+    sgIatrogenia: false,
+  },
+});
+
 const isSubmitting = ref(false)
 const submitMessage = ref('')
 const submitStatus = ref('') // 'success' o 'error'
 
-const addDiagnosticoEnfermeria = () => {
-  form.diagnosticosEnfermeria.push('')
-}
-
-const removeDiagnosticoEnfermeria = () => {
-  if (form.diagnosticosEnfermeria.length > 1) {
-    form.diagnosticosEnfermeria.pop()
-  }
-}
+// No longer needed with direct boolean bindings
+// const addDiagnosticoEnfermeria = () => {
+//   form.diagnosticosEnfermeria.push('')
+// }
+// const removeDiagnosticoEnfermeria = () => {
+//   if (form.diagnosticosEnfermeria.length > 1) {
+//     form.diagnosticosEnfermeria.pop()
+//   }
+// }
 
 const validateForm = () => {
-  // Resetear mensajes de validación
   submitMessage.value = ''
   submitStatus.value = ''
 
-  // Validaciones de campos requeridos (básicos)
-  const requiredFields = [
-    { field: form.fechaContacto, name: 'Fecha de Contacto' },
-    { field: form.nombreEvaluador, name: 'Evaluador' },
-    { field: form.nombres, name: 'Nombres' },
-    { field: form.apellidos, name: 'Apellidos' },
-    { field: form.cedula, name: 'Cédula' },
-    { field: form.fechaNacimiento, name: 'Fecha de Nacimiento' },
-    { field: form.edad, name: 'Edad' },
-    { field: form.sexo, name: 'Sexo' },
-    { field: form.estadoGeneral, name: 'Estado General' },
-    { field: form.sintomasActuales, name: 'Síntomas Actuales' },
-    { field: form.examenDescripcion, name: 'Descripción del Examen Físico' },
-    { field: form.diagnosticosMedicos, name: 'Diagnósticos Médicos' },
-    { field: form.planManejo, name: 'Plan de Manejo' },
-  ]
-
-  for (const field of requiredFields) {
-    if (!field.field || (Array.isArray(field.field) && field.field.length === 0)) {
-      submitMessage.value = `El campo "${field.name}" es requerido.`
-      submitStatus.value = 'error'
-      return false
-    }
-  }
-
-  // Validación específica para Cédula (Ecuadorian ID)
-  // Nota: Esto es una validación básica de longitud y numérico.
-  // Una validación de cédula ecuatoriana real requiere un algoritmo más complejo.
-  if (form.cedula.length !== 10 || !/^\d+$/.test(form.cedula)) {
-    submitMessage.value = 'La Cédula debe contener exactamente 10 dígitos numéricos.'
+  // Validate top-level required fields
+  if (!form.idficha) {
+    submitMessage.value = 'Debe seleccionar una ficha médica.'
     submitStatus.value = 'error'
     return false
   }
-  // Añadir aquí la validación de dígito verificador de cédula si es necesario para mayor robustez
-  // Por ejemplo, una función `isValidCedula(form.cedula)`
-
-  // Validación de Edad
-  if (form.edad < 0 || form.edad > 120 || !Number.isInteger(form.edad)) {
-    submitMessage.value = 'La Edad debe ser un número entero válido (entre 0 y 120).'
+  if (!form.medNombreencuestador.trim()) {
+    submitMessage.value = 'El nombre del encuestador es requerido.'
+    submitStatus.value = 'error'
+    return false
+  }
+  if (!form.medAnamnesis.trim()) {
+    submitMessage.value = 'La anamnesis (síntomas actuales) es requerida.'
+    submitStatus.value = 'error'
+    return false
+  }
+  if (!form.medPlanintegral.trim()) {
+    submitMessage.value = 'El plan de manejo integral es requerido.'
+    submitStatus.value = 'error'
+    return false
+  }
+  if (!form.diagnostico.diagDiagnostico.trim()) {
+    submitMessage.value = 'El diagnóstico médico es requerido.'
     submitStatus.value = 'error'
     return false
   }
 
-  // Validación de Fecha de Nacimiento (que no sea una fecha futura)
-  const today = new Date()
-  const birthDate = new Date(form.fechaNacimiento)
-  if (birthDate > today) {
-    submitMessage.value = 'La Fecha de Nacimiento no puede ser una fecha futura.'
-    submitStatus.value = 'error'
-    return false
-  }
+  // Basic validation for number fields (can be null, but if filled, must be valid)
+  const numberFields = [
+    { field: form.andrologico.andEdadultantigeno, name: 'Edad Último Antígeno Prostático' },
+    { field: form.ginecologico.ginEdadmenopausia, name: 'Edad Menopausia' },
+    { field: form.ginecologico.ginEdadultmamografia, name: 'Edad Última Mamografía' },
+    { field: form.ginecologico.ginEdadultcitologia, name: 'Edad Última Citología' },
+    { field: form.ginecologico.ginCantembarazos, name: 'Cantidad Embarazos' },
+    { field: form.ginecologico.ginCantpartos, name: 'Cantidad Partos' },
+    { field: form.ginecologico.ginCantcesareas, name: 'Cantidad Cesáreas' },
+  ];
 
-  // Validación para al menos un campo de diagnóstico de enfermería si se han añadido dinámicamente
-  if (
-    form.diagnosticosEnfermeria.length > 0 &&
-    form.diagnosticosEnfermeria.every((d) => d.trim() === '')
-  ) {
-    // Si solo hay un campo y está vacío, no se requiere. Si hay más y todos están vacíos, es un problema.
-    // Se puede ajustar la lógica si se considera obligatorio al menos un diagnóstico NANDA.
-    // Por ahora, solo se activa el mensaje si hay más de 1 campo y todos están vacíos.
-    if (form.diagnosticosEnfermeria.length > 1) {
-      submitMessage.value =
-        'Si ha añadido diagnósticos de enfermería, al menos uno debe tener contenido.'
+  for (const field of numberFields) {
+    if (field.field !== null && (isNaN(field.field) || field.field < 0)) {
+      submitMessage.value = `El campo "${field.name}" debe ser un número válido y no negativo.`
       submitStatus.value = 'error'
       return false
     }
@@ -935,65 +684,195 @@ const validateForm = () => {
   return true
 }
 
-const searchCedula = ref('')
-const fichas = ref([])
-const selectedFichaId = ref(null)
-
-const buscarFichas = async () => {
-  fichas.value = []
-  selectedFichaId.value = null
-  if (!searchCedula.value) return
-  try {
-    const res = await axios.get(
-      `https://backend-sirma-nest.onrender.com/api/personas/fichas-medicas/${searchCedula.value}`,
-    )
-    fichas.value = res.data
-  } catch (e) {
-    fichas.value = []
-    alert('No se encontraron fichas o hubo un error.')
-  }
-}
-
-const seleccionarFicha = (ficha) => {
-  selectedFichaId.value = ficha.idficha
-}
-
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
   }
 
-  // Asegúrate de que haya una ficha seleccionada
-  if (!selectedFichaId.value) {
-    submitMessage.value = 'Debe seleccionar una ficha antes de guardar.'
-    submitStatus.value = 'error'
-    return
-  }
-
   isSubmitting.value = true
 
+  // Construct the payload directly from the form reactive object
+  const payload = {
+    idficha: form.idficha,
+    medNombreencuestador: form.medNombreencuestador.trim(),
+    medAnamnesis: form.medAnamnesis.trim(),
+    medObservacionesrevact: form.medObservacionesrevact.trim() || null,
+    medObservacionexamenes: form.medObservacionexamenes.trim() || null,
+    medPlanintegral: form.medPlanintegral.trim(),
+    alerta: {
+      alertCaida: form.alerta.alertCaida,
+      alertDismovilidad: form.alerta.alertDismovilidad,
+      alertAstenia: form.alerta.alertAstenia,
+      alertDesorientacion: form.alerta.alertDesorientacion,
+      alertComportamiento: form.alerta.alertComportamiento,
+    },
+    andrologico: {
+      andEdadultantigeno: form.andrologico.andEdadultantigeno !== null ? Number(form.andrologico.andEdadultantigeno) : null,
+      andTerapiahormonal: form.andrologico.andTerapiahormonal,
+      andObservaciones: form.andrologico.andObservaciones.trim() || null,
+    },
+    antecedentesfamiliares: {
+      afCardiopatias: form.antecedentesfamiliares.afCardiopatias,
+      afDiabetes: form.antecedentesfamiliares.afDiabetes,
+      afHipertension: form.antecedentesfamiliares.afHipertension,
+      afNeoplasia: form.antecedentesfamiliares.afNeoplasia,
+      afAlzheimer: form.antecedentesfamiliares.afAlzheimer,
+      afParkinson: form.antecedentesfamiliares.afParkinson,
+      afTuberculosis: form.antecedentesfamiliares.afTuberculosis,
+      afViolenciaintra: form.antecedentesfamiliares.afViolenciaintra,
+      afSindromecuidador: form.antecedentesfamiliares.afSindromecuidador,
+      afObservaciones: form.antecedentesfamiliares.afObservaciones.trim() || null,
+    },
+    diagnostico: {
+      diagDiagnostico: form.diagnostico.diagDiagnostico.trim(),
+      diagPresundefini: form.diagnostico.diagPresundefini || null,
+      diagCie: form.diagnostico.diagCie.trim() || null,
+      diagClinicocindromico: form.diagnostico.diagClinicocindromico.trim() || null,
+    },
+    examenregional: {
+      exrPiel: form.examenregional.exrPiel,
+      exrCabeza: form.examenregional.exrCabeza,
+      exrOjos: form.examenregional.exrOjos,
+      exrOidos: form.examenregional.exrOidos,
+      exrBoca: form.examenregional.exrBoca,
+      exrNariz: form.examenregional.exrNariz,
+      exrCuello: form.examenregional.exrCuello,
+      exrAxilamama: form.examenregional.exrAxilamama,
+      exrTorax: form.examenregional.exrTorax,
+      exrAbdomen: form.examenregional.exrAbdomen,
+      exrColumna: form.examenregional.exrColumna,
+      exrPerine: form.examenregional.exrPerine,
+      exrMiembrossuper: form.examenregional.exrMiembrossuper,
+      exrMiembrosinfer: form.examenregional.exrMiembrosinfer,
+    },
+    examensistemico: {
+      exsOrgsentidos: form.examensistemico.exsOrgsentidos,
+      exsRespiratorio: form.examensistemico.exsRespiratorio,
+      exsCardiovascular: form.examensistemico.exsCardiovascular,
+      exsDigestivo: form.examensistemico.exsDigestivo,
+      exsGenitourinario: form.examensistemico.exsGenitourinario,
+      exsMusculoesqueletico: form.examensistemico.exsMusculoesqueletico,
+      exsEndocrino: form.examensistemico.exsEndocrino,
+      exsHemolinfatico: form.examensistemico.exsHemolinfatico,
+      exsNeurologico: form.examensistemico.exsNeurologico,
+    },
+    farmacologico: {
+      farAines: form.farmacologico.farAines,
+      farAnalgesicos: form.farmacologico.farAnalgesicos,
+      farAntidiabeticos: form.farmacologico.farAntidiabeticos.trim() || null,
+      farAntihipertensivos: form.farmacologico.farAntihipertensivos,
+      farAnticoagulantes: form.farmacologico.farAnticoagulantes,
+      farPsicofarmacos: form.farmacologico.farPsicofarmacos,
+      farAntibioticos: form.farmacologico.farAntibioticos,
+      farAlergias: form.farmacologico.farAlergias,
+      farEfectosadversos: form.farmacologico.farEfectosadversos,
+      farPoliprescriptor: form.farmacologico.farPoliprescriptor,
+      farPolifarmacia: form.farmacologico.farPolifarmacia,
+      farOtros: form.farmacologico.farOtros,
+      farObservaciones: form.farmacologico.farObservaciones.trim() || null,
+    },
+    general: {
+      genVacunascompletas: form.general.genVacunascompletas,
+      genHigienecuerpo: form.general.genHigienecuerpo,
+      genControlsalud: form.general.genControlsalud,
+      genHigieneoral: form.general.genHigieneoral,
+      genActrecreativa: form.general.genActrecreativa,
+      genOtrossaludables: form.general.genOtrossaludables,
+      genObservaciones: form.general.genObservaciones.trim() || null,
+    },
+    ginecologico: {
+      ginEdadmenopausia: form.ginecologico.ginEdadmenopausia !== null ? Number(form.ginecologico.ginEdadmenopausia) : null,
+      ginEdadultmamografia: form.ginecologico.ginEdadultmamografia !== null ? Number(form.ginecologico.ginEdadultmamografia) : null,
+      ginEdadultcitologia: form.ginecologico.ginEdadultcitologia !== null ? Number(form.ginecologico.ginEdadultcitologia) : null,
+      ginCantembarazos: form.ginecologico.ginCantembarazos !== null ? Number(form.ginecologico.ginCantembarazos) : null,
+      ginCantpartos: form.ginecologico.ginCantpartos !== null ? Number(form.ginecologico.ginCantpartos) : null,
+      ginCantcesareas: form.ginecologico.ginCantcesareas !== null ? Number(form.ginecologico.ginCantcesareas) : null,
+      ginTerapiahormonal: form.ginecologico.ginTerapiahormonal,
+      ginObservaciones: form.ginecologico.ginObservaciones.trim() || null,
+    },
+    habitosnocivos: {
+      nocTabaquismo: form.habitosnocivos.nocTabaquismo,
+      nocAlcoholismo: form.habitosnocivos.nocAlcoholismo,
+      nocAdicciones: form.habitosnocivos.nocAdicciones,
+      nocOtros: form.habitosnocivos.nocOtros,
+      nocObservaciones: form.habitosnocivos.nocObservaciones.trim() || null,
+    },
+    patologico: {
+      patoDermatologico: form.patologico.patoDermatologico,
+      patoVisuales: form.patologico.patoVisuales,
+      patoOtorrino: form.patologico.patoOtorrino,
+      patoEstomatologicos: form.patologico.patoEstomatologicos,
+      patoEndocrinos: form.patologico.patoEndocrinos,
+      patoCardiovasculares: form.patologico.patoCardiovasculares,
+      patoRespiratorio: form.patologico.patoRespiratorio,
+      patoDigestivo: form.patologico.patoDigestivo,
+      patoNeurologico: form.patologico.patoNeurologico,
+      patoUrologico: form.patologico.patoUrologico,
+      patoHemolinfatico: form.patologico.patoHemolinfatico,
+      patoInfeccioso: form.patologico.patoInfeccioso,
+      patoOncologico: form.patologico.patoOncologico,
+      patoMusculoesqueletico: form.patologico.patoMusculoesqueletico,
+      patoPsiquiatrico: form.patologico.patoPsiquiatrico,
+      patoQuirurgico: form.patologico.patoQuirurgico,
+      patoObservaciones: form.patologico.patoObservaciones.trim() || null,
+    },
+    revisionactual: {
+      revactVision: form.revisionactual.revactVision,
+      revactAudicion: form.revisionactual.revactAudicion,
+      revactOlfatogusto: form.revisionactual.revactOlfatogusto,
+      revactRespiratorio: form.revisionactual.revactRespiratorio,
+      revactCardiovascular: form.revisionactual.revactCardiovascular,
+      revactDigestivo: form.revisionactual.revactDigestivo,
+      revactGenital: form.revisionactual.revactGenital,
+      revactUrinario: form.revisionactual.revactUrinario,
+      revactMusculoesqueletico: form.revisionactual.revactMusculoesqueletico,
+      revactEndocrino: form.revisionactual.revactEndocrino,
+      revactHemolinf: form.revisionactual.revactHemolinf,
+      revactNervioso: form.revisionactual.revactNervioso,
+      revactMetabolico: form.revisionactual.revactMetabolico,
+      revactObservaciones: form.revisionactual.revactObservaciones.trim() || null,
+    },
+    sindromesgeriatricos: {
+      sgFragilidad: form.sindromesgeriatricos.sgFragilidad,
+      sgDismovilidad: form.sindromesgeriatricos.sgDismovilidad,
+      sgDepresion: form.sindromesgeriatricos.sgDepresion,
+      sgCaida: form.sindromesgeriatricos.sgCaida,
+      sgDelirio: form.sindromesgeriatricos.sgDelirio,
+      sgMalnutricion: form.sindromesgeriatricos.sgMalnutricion,
+      sgUlceraspresion: form.sindromesgeriatricos.sgUlceraspresion,
+      sgDemencia: form.sindromesgeriatricos.sgDemencia,
+      sgIncontinencia: form.sindromesgeriatricos.sgIncontinencia,
+      sgIatrogenia: form.sindromesgeriatricos.sgIatrogenia,
+    },
+  };
+
+  console.log('Payload a enviar:', payload); // For debugging
+
   try {
-    const payload = {
-      ...form,
-      idficha: selectedFichaId.value, // Solo el id de ficha
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 2000)) // Simula API
-
-    console.log('Datos enviados:', payload)
-
-    submitMessage.value = 'Ficha médica del paciente guardada exitosamente.'
-    submitStatus.value = 'success'
-    // resetForm();
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL_BACKEND}/api/medicina`,
+      payload
+    );
+    console.log('Respuesta del servidor:', response.data);
+    submitMessage.value = '¡Ficha médica guardada correctamente!';
+    submitStatus.value = 'success';
+    // Optionally reset form or redirect
+    // Object.keys(form).forEach(key => { /* reset logic */ });
   } catch (error) {
-    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
-    submitStatus.value = 'error'
-    console.error('Error guardando ficha médica del paciente:', error)
+    console.error('Error al guardar la ficha médica:', error);
+    submitMessage.value = 'Ocurrió un error al guardar la ficha médica. Por favor, intente de nuevo.';
+    submitStatus.value = 'error';
+    if (error.response && error.response.data && error.response.data.message) {
+      submitMessage.value += ` Detalles: ${error.response.data.message}`;
+    } else if (error.message) {
+      submitMessage.value += ` Detalles: ${error.message}`;
+    }
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
+};
 </script>
+
 <style scoped>
 /*
   Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
