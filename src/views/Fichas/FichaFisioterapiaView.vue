@@ -574,7 +574,7 @@
         </div>
       </section>
 
-      <!-- Step 6: Evaluación del Dolor y Plan de Manejo -->
+      <!-- Step 6: Evaluación del Dolor y Zonas -->
       <section v-if="currentStep === 6" class="form-section">
         <h3 class="section-title">🤕 Evaluación del Dolor</h3>
         <h4 class="section-subtitle">Escala Visual Analógica EVA (Marque una X)</h4>
@@ -670,20 +670,6 @@
             placeholder="Detalle cualquier observación adicional sobre las zonas de dolor seleccionadas o no seleccionadas."
           ></textarea>
         </div>
-
-        <h3 class="section-title mt-5">📌 Plan de Manejo Integral de Fisioterapia</h3>
-        <div class="form-group full-width">
-          <label for="planManejoFisioterapia"
-            >Descripción del Plan de Manejo:<span class="required">*</span></label
-          >
-          <textarea
-            id="planManejoFisioterapia"
-            v-model.trim="form.medPlanintegral"
-            rows="4"
-            placeholder="Describe el plan de seguimiento, ejercicios terapéuticos, modalidades, educación al paciente, etc."
-            required
-          ></textarea>
-        </div>
       </section>
 
       <!-- Navigation Buttons -->
@@ -725,7 +711,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, watch } from 'vue' // Added watch
 import axios from 'axios'
 import FichaSelector from '@/components/FichaSelector.vue'
 
@@ -802,12 +788,12 @@ const form = reactive({
     },
   },
 
-  // Fields for the /api/medicina payload (final submission)
+  // Fields for the /api/medicina payload (final submission) - These will no longer be sent in submitFinalForm
   medNombreencuestador: '',
   medAnamnesis: '',
   medObservacionesrevact: '',
   medObservacionexamenes: '',
-  medPlanintegral: '',
+  medPlanintegral: '', // This field will no longer be part of the final submission
   alerta: {
     alertCaida: false,
     alertDismovilidad: false,
@@ -959,6 +945,39 @@ const form = reactive({
 const currentStep = ref(1);
 const totalSteps = 6; // Total number of steps
 const fisioterapiaId = ref(null); // To store idfisioterapia from the first API call
+const initialZonasDolorosasState = reactive({}); // Stores initial state of pain zones from backend
+
+// Watch for changes in idficha to fetch initial pain zones
+watch(() => form.idficha, async (newIdFicha) => {
+  if (newIdFicha) {
+    fisioterapiaId.value = newIdFicha; // Assuming idficha can directly be used as idfisioterapia for fetching
+    await fetchInitialPainZones(newIdFicha);
+  }
+}, { immediate: true }); // immediate: true to run on component mount if idficha is already set
+
+// Function to fetch initial pain zones
+const fetchInitialPainZones = async (idFicha) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio?idfisioterapia=${idFicha}`);
+    // Clear previous state
+    form.dolor.zonasDolorosas = [];
+    for (const key in initialZonasDolorosasState) {
+      delete initialZonasDolorosasState[key];
+    }
+
+    response.data.forEach(zone => {
+      initialZonasDolorosasState[zone.idzona] = zone.zonaDuele;
+      if (zone.zonaDuele) {
+        form.dolor.zonasDolorosas.push(zone.idzona);
+      }
+    });
+    console.log('Initial pain zones fetched:', initialZonasDolorosasState);
+  } catch (error) {
+    console.error('Error fetching initial pain zones:', error);
+    // It's okay if no records exist, just means no pain zones are pre-selected
+  }
+};
+
 
 // Computed properties for Tinetti totals
 const totalEquilibrioEstatico = computed(() => {
@@ -1008,7 +1027,7 @@ const getStepLabel = (step) => {
     case 3: return 'Evaluación de la Fuerza';
     case 4: return 'Equilibrio Dinámico';
     case 5: return 'Equilibrio Estático';
-    case 6: return 'Evaluación del Dolor y Plan';
+    case 6: return 'Evaluación del Dolor y Zonas';
     default: return '';
   }
 };
@@ -1024,10 +1043,6 @@ const validateStep = (step) => {
       if (!form.fechaContacto) { submitMessage.value = 'La fecha de contacto es requerida.'; submitStatus.value = 'error'; return false; }
       if (!form.nombreFisioterapeuta.trim()) { submitMessage.value = 'El nombre del fisioterapeuta es requerido.'; submitStatus.value = 'error'; return false; }
       if (!form.problemasActuales.trim()) { submitMessage.value = 'La descripción de problemas actuales es requerida.'; submitStatus.value = 'error'; return false; }
-      // Add validation for fisPeso, fisTalla, fisDiscapacidad if they are required
-      // if (form.fisPeso === null) { submitMessage.value = 'El peso es requerido.'; submitStatus.value = 'error'; return false; }
-      // if (form.fisTalla === null) { submitMessage.value = 'La talla es requerida.'; submitStatus.value = 'error'; return false; }
-      // if (form.fisDiscapacidad === null) { submitMessage.value = 'El porcentaje de discapacidad es requerido.'; submitStatus.value = 'error'; return false; }
       return true;
     case 2:
       if (form.tonoMuscular.ashworth === null) { submitMessage.value = 'Debe seleccionar un grado en la Escala de Ashworth.'; submitStatus.value = 'error'; return false; }
@@ -1072,7 +1087,6 @@ const validateStep = (step) => {
         submitStatus.value = 'error';
         return false;
       }
-      if (!form.medPlanintegral.trim()) { submitMessage.value = 'El plan de manejo integral de fisioterapia es requerido.'; submitStatus.value = 'error'; return false; }
       return true;
     default:
       return true;
@@ -1280,211 +1294,65 @@ const submitFinalForm = async () => {
   }
 
   isSubmitting.value = true;
-  submitMessage.value = 'Guardando ficha final...';
+  submitMessage.value = 'Guardando zonas de dolor...';
   submitStatus.value = '';
 
-  // Construct the final payload for /api/medicina
-  const finalPayload = {
-    idficha: form.idficha,
-    medNombreencuestador: form.nombreFisioterapeuta.trim(),
-    medAnamnesis: form.problemasActuales.trim(),
-    medObservacionesrevact: form.medObservacionesrevact.trim() || null,
-    medObservacionexamenes: form.medObservacionexamenes.trim() || null,
-    medPlanintegral: form.medPlanintegral.trim(),
-
-    alerta: {
-      alertCaida: form.alerta.alertCaida || (totalTinetti.value !== null && totalTinetti.value < 19),
-      alertDismovilidad: form.alerta.alertDismovilidad || (form.marcha.tipo !== 'Libre' || form.traslados.tipo !== 'Independiente'),
-      alertAstenia: form.alerta.alertAstenia || (form.fuerza.izq !== null && form.fuerza.der !== null && (form.fuerza.izq < 3 || form.fuerza.der < 3)),
-      alertDesorientacion: form.alerta.alertDesorientacion,
-      alertComportamiento: form.alerta.alertComportamiento,
-    },
-    andrologico: {
-      andEdadultantigeno: form.andrologico.andEdadultantigeno !== null ? Number(form.andrologico.andEdadultantigeno) : null,
-      andTerapiahormonal: form.andrologico.andTerapiahormonal,
-      andObservaciones: form.andrologico.andObservaciones.trim() || null,
-    },
-    antecedentesfamiliares: {
-      afCardiopatias: form.antecedentesfamiliares.afCardiopatias,
-      afDiabetes: form.antecedentesfamiliares.afDiabetes,
-      afHipertension: form.antecedentesfamiliares.afHipertension,
-      afNeoplasia: form.antecedentesfamiliares.afNeoplasia,
-      afAlzheimer: form.antecedentesfamiliares.afAlzheimer,
-      afParkinson: form.antecedentesfamiliares.afParkinson,
-      afTuberculosis: form.antecedentesfamiliares.afTuberculosis,
-      afViolenciaintra: form.antecedentesfamiliares.afViolenciaintra,
-      afSindromecuidador: false, // Assuming this is not directly from form, keep as is or map if needed
-      afObservaciones: form.antecedentesfamiliares.afObservaciones.trim() || null,
-    },
-    diagnostico: {
-      diagDiagnostico: `${form.diagnostico.diagDiagnostico.trim()} [Fisio: Marcha: ${form.marcha.tipo}, Traslados: ${form.traslados.tipo}, Dolor EVA: ${form.dolor.evaScore}, Wong-Baker: ${form.dolor.wongBakerScore}, Fuerza IZQ: ${form.fuerza.izq}, DER: ${form.fuerza.der}, Ashworth: ${form.tonoMuscular.ashworth}, Campbell: ${form.tonoMuscular.campbell}, Tinetti Total: ${totalTinetti.value}]`,
-      diagPresundefini: form.diagnostico.diagPresundefini || null,
-      diagCie: form.diagnostico.diagCie.trim() || null,
-      diagClinicocindromico: `${form.diagnostico.diagClinicocindromico.trim()} Fisioterapéutico`,
-    },
-    examenregional: {
-      exrPiel: form.examenregional.exrPiel,
-      exrCabeza: form.examenregional.exrCabeza,
-      exrOjos: form.examenregional.exrOjos,
-      exrOidos: form.examenregional.exrOidos,
-      exrBoca: form.examenregional.exrBoca,
-      exrNariz: form.examenregional.exrNariz,
-      exrCuello: form.examenregional.exrCuello,
-      exrAxilamama: form.examenregional.exrAxilamama,
-      exrTorax: form.examenregional.exrTorax,
-      exrAbdomen: form.examenregional.exrAbdomen,
-      exrColumna: false, // Assuming this is not directly from form, keep as is or map if needed
-      exrPerine: false, // Assuming this is not directly from form, keep as is or map if needed
-      exrMiembrossuper: form.examenregional.exrMiembrossuper,
-      exrMiembrosinfer: form.examenregional.exrMiembrosinfer,
-    },
-    examensistemico: {
-      exsOrgsentidos: form.examensistemico.exsOrgsentidos,
-      exsRespiratorio: form.examensistemico.exsRespiratorio,
-      exsCardiovascular: form.examensistemico.exsCardiovascular,
-      exsDigestivo: form.examensistemico.exsDigestivo,
-      exsGenitourinario: form.examensistemico.exsGenitourinario,
-      exsMusculoesqueletico: form.examensistemico.exsMusculoesqueletico,
-      exsEndocrino: form.examensistemico.exsEndocrino,
-      exsHemolinfatico: form.examensistemico.exsHemolinfatico,
-      exsNeurologico: form.examensistemico.exsNeurologico,
-    },
-    farmacologico: {
-      farAines: form.farmacologico.farAines,
-      farAnalgesicos: form.farmacologico.farAnalgesicos,
-      farAntidiabeticos: form.farmacologico.farAntidiabeticos.trim() || null,
-      farAntihipertensivos: form.farmacologico.farAntihipertensivos,
-      farAnticoagulantes: form.farmacologico.farAnticoagulantes,
-      farPsicofarmacos: form.farmacologico.farPsicofarmacos,
-      farAntibioticos: form.farmacologico.farAntibioticos,
-      farAlergias: form.farmacologico.farAlergias,
-      farEfectosadversos: form.farmacologico.farEfectosadversos,
-      farPoliprescriptor: form.farmacologico.farPoliprescriptor,
-      farPolifarmacia: form.farmacologico.farPolifarmacia,
-      farOtros: false, // Assuming this is not directly from form, keep as is or map if needed
-      farObservaciones: form.farmacologico.farObservaciones.trim() || null,
-    },
-    general: {
-      genVacunascompletas: form.general.genVacunascompletas,
-      genHigienecuerpo: form.general.genHigienecuerpo,
-      genControlsalud: false, // Assuming this is not directly from form, keep as is or map if needed
-      genHigieneoral: form.general.genHigieneoral,
-      genActrecreativa: false, // Assuming this is not directly from form, keep as is or map if needed
-      genOtrossaludables: false, // Assuming this is not directly from form, keep as is or map if needed
-      genObservaciones: `${form.general.genObservaciones.trim()} [Fisioterapia: Fecha: ${form.fechaContacto}, Fisioterapeuta: ${form.nombreFisioterapeuta.trim()}]`,
-    },
-    ginecologico: {
-      ginEdadmenopausia: form.ginecologico.ginEdadmenopausia !== null ? Number(form.ginecologico.ginEdadmenopausia) : null,
-      ginEdadultmamografia: form.ginecologico.ginEdadultmamografia !== null ? Number(form.ginecologico.ginEdadultmamografia) : null,
-      ginEdadultcitologia: form.ginecologico.ginEdadultcitologia !== null ? Number(form.ginecologico.ginEdadultcitologia) : null,
-      ginCantembarazos: form.ginecologico.ginCantembarazos !== null ? Number(form.ginecologico.ginCantembarazos) : null,
-      ginCantpartos: form.ginecologico.ginCantpartos !== null ? Number(form.ginecologico.ginCantpartos) : null,
-      ginCantcesareas: form.ginecologico.ginCantcesareas !== null ? Number(form.ginecologico.ginCantcesareas) : null,
-      ginTerapiahormonal: form.ginecologico.ginTerapiahormonal,
-      ginObservaciones: form.ginecologico.ginObservaciones.trim() || null,
-    },
-    habitosnocivos: {
-      nocTabaquismo: form.habitosnocivos.nocTabaquismo,
-      nocAlcoholismo: form.habitosnocivos.nocAlcoholismo,
-      nocAdicciones: form.habitosnocivos.nocAdicciones,
-      nocOtros: false, // Assuming this is not directly from form, keep as is or map if needed
-      nocObservaciones: form.habitosnocivos.nocObservaciones.trim() || null,
-    },
-    patologico: {
-      patoDermatologico: form.patologico.patoDermatologico,
-      patoVisuales: form.patologico.patoVisuales,
-      patoOtorrino: form.patologico.patoOtorrino,
-      patoEstomatologicos: form.patologico.patoEstomatologicos,
-      patoEndocrinos: form.patologico.patoEndocrinos,
-      patoCardiovasculares: form.patologico.patoCardiovasculares,
-      patoRespiratorio: form.patologico.patoRespiratorio,
-      patoDigestivo: form.patologico.patoDigestivo,
-      patoNeurologico: form.patologico.patoNeurologico,
-      patoUrologico: form.patologico.patoUrologico,
-      patoHemolinfatico: form.patologico.patoHemolinfatico,
-      patoInfeccioso: form.patologico.patoInfeccioso,
-      patoOncologico: form.patologico.patoOncologico,
-      patoMusculoesqueletico: form.patologico.patoMusculoesqueletico,
-      patoPsiquiatrico: form.patologico.patoPsiquiatrico,
-      patoQuirurgico: false, // Assuming this is not directly from form, keep as is or map if needed
-      patoObservaciones: `${form.patologico.patoObservaciones.trim()} [Fisioterapia: Dolor Zona: ${form.dolor.zonaEspecifica.trim()}]`,
-    },
-    revisionactual: {
-      revactVision: form.revisionactual.revactVision,
-      revactAudicion: form.revisionactual.revactAudicion,
-      revactOlfatogusto: form.revisionactual.revactOlfatogusto,
-      revactRespiratorio: form.revisionactual.revactRespiratorio,
-      revactCardiovascular: form.revisionactual.revactCardiovascular,
-      revactDigestivo: form.revisionactual.revactDigestivo,
-      revactGenital: form.revisionactual.revactGenital,
-      revactUrinario: form.revisionactual.revactUrinario,
-      revactMusculoesqueletico: form.revisionactual.revuloesqueletico,
-      revactEndocrino: form.revisionactual.revactEndocrino,
-      revactHemolinf: form.revisionactual.revactHemolinf,
-      revactNervioso: form.revisionactual.revactNervioso,
-      revactMetabolico: form.revisionactual.revactMetabolico,
-      revactObservaciones: `${form.revisionactual.revactObservaciones.trim()} [Fisioterapia: Marcha: ${form.marcha.tipo} (${form.marcha.valInicial}), Traslados: ${form.traslados.tipo} (${form.traslados.observacion}), Fuerza Obs: ${form.fuerza.observaciones}, Tono Obs: ${form.tonoMuscular.ashworthObservaciones}]`,
-    },
-    sindromesgeriatricos: {
-      sgFragilidad: form.sindromesgeriatricos.sgFragilidad,
-      sgDismovilidad: form.sindromesgeriatricos.sgDismovilidad || (form.marcha.tipo !== 'Libre' || form.traslados.tipo !== 'Independiente'),
-      sgDepresion: form.sindromesgeriatricos.sgDepresion,
-      sgCaida: form.sindromesgeriatricos.sgCaida || (totalTinetti.value !== null && totalTinetti.value < 19),
-      sgDelirio: form.sindromesgeriatricos.sgDelirio,
-      sgMalnutricion: form.sindromesgeriatricos.sgMalnutricion,
-      sgUlceraspresion: form.sindromesgeriatricos.sgUlceraspresion,
-      sgDemencia: form.sindromesgeriatricos.sgDemencia,
-      sgIncontinencia: form.sindromesgeriatricos.sgIncontinencia,
-      sgIatrogenia: form.sindromesgeriatricos.sgIatrogenia,
-    },
-  };
-
   try {
-    // This is the final submission to the /api/medicina endpoint
-    const response = await axios.post(
-      `${import.meta.env.VITE_URL_BACKEND}/api/medicina`,
-      finalPayload
-    );
-    console.log('Respuesta del servidor (final):', response.data);
+    if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso 1 para iniciar la ficha.');
 
-    // After successfully submitting to /api/medicina, submit pain zones
-    if (fisioterapiaId.value && form.dolor.zonasDolorosas.length > 0) {
-      for (const idzona of form.dolor.zonasDolorosas) {
+    const allPossibleZoneIds = Array.from({ length: 28 }, (_, i) => i + 1); // IDs from 1 to 28
+
+    for (const idzona of allPossibleZoneIds) {
+      const isCurrentlySelected = form.dolor.zonasDolorosas.includes(idzona);
+      const wasPreviouslyActive = initialZonasDolorosasState[idzona] === true;
+
+      if (isCurrentlySelected && !wasPreviouslyActive) {
+        // Zone is selected now, but wasn't active before (or didn't exist) -> POST
         try {
-          await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/fisioterapia-zona`, {
+          await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio`, {
             idfisioterapia: fisioterapiaId.value,
             idzona: idzona,
             zonaDuele: true,
           });
-          console.log(`Zona ${idzona} guardada/actualizada.`);
-        } catch (zoneError) {
-          if (zoneError.response && zoneError.response.data && zoneError.response.data.message && zoneError.response.data.message.includes('Ya existe un registro de Fisioterapia Zona')) {
-            console.warn(`Zona ${idzona} ya existe, intentando PATCH.`);
-            await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/fisioterapia-zona/${fisioterapiaId.value}/${idzona}`, {
+          console.log(`Zona ${idzona} POSTed as true.`);
+        } catch (error) {
+          if (error.response && error.response.status === 409) { // Assuming 409 Conflict for "already exists"
+            console.warn(`Zona ${idzona} already exists, attempting PATCH to set true.`);
+            await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
               zonaDuele: true,
             });
-            console.log(`Zona ${idzona} actualizada.`);
+            console.log(`Zona ${idzona} PATCHed to true.`);
           } else {
-            console.error(`Error al guardar/actualizar zona ${idzona}:`, zoneError);
-            submitMessage.value = `Error al guardar algunas zonas de dolor. Detalles: ${zoneError.message}`;
+            console.error(`Error POSTing zona ${idzona}:`, error);
+            submitMessage.value = `Error al guardar/actualizar zona ${idzona}. Detalles: ${error.message}`;
             submitStatus.value = 'error';
-            // Do not re-throw, allow main form submission to complete if possible
           }
         }
+      } else if (!isCurrentlySelected && wasPreviouslyActive) {
+        // Zone is not selected now, but was active before -> PATCH to false
+        try {
+          await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
+            zonaDuele: false,
+          });
+          console.log(`Zona ${idzona} PATCHed to false.`);
+        } catch (error) {
+          console.error(`Error PATCHing zona ${idzona} to false:`, error);
+          submitMessage.value = `Error al actualizar zona ${idzona} a no dolorosa. Detalles: ${error.message}`;
+          submitStatus.value = 'error';
+        }
       }
-      if (submitStatus.value !== 'error') { // Only update if no previous error
-        submitMessage.value = '¡Ficha de fisioterapia y zonas de dolor guardadas correctamente!';
-        submitStatus.value = 'success';
-      }
-    } else {
-      submitMessage.value = '¡Ficha de fisioterapia guardada correctamente!';
+      // If isCurrentlySelected && wasPreviouslyActive, do nothing (already true and remains true)
+      // If !isCurrentlySelected && !wasPreviouslyActive, do nothing (already false and remains false, or never existed)
+    }
+
+    if (submitStatus.value !== 'error') {
+      submitMessage.value = '¡Zonas de dolor guardadas correctamente!';
       submitStatus.value = 'success';
     }
 
-    // Optionally reset form or redirect
   } catch (error) {
-    console.error('Error al guardar la ficha de fisioterapia (final):', error);
-    submitMessage.value = 'Ocurrió un error al guardar la ficha de fisioterapia. Por favor, intente de nuevo.';
+    console.error('Error general al guardar las zonas de dolor:', error);
+    submitMessage.value = 'Ocurrió un error general al guardar las zonas de dolor. Por favor, intente de nuevo.';
     submitStatus.value = 'error';
     if (error.response && error.response.data && error.response.data.message) {
       submitMessage.value += ` Detalles: ${error.response.data.message}`;
@@ -2040,7 +1908,7 @@ const getWongBakerFace = (score) => {
   fill: #e0e0e0; /* Default color for body parts */
   stroke: #999;
   stroke-width: 1;
-  transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out, transform 0.1s ease-in-out;
+  transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out; /* Removed transform */
   cursor: pointer;
 }
 
@@ -2054,7 +1922,7 @@ const getWongBakerFace = (score) => {
   fill: #ff6b6b; /* Red color for painful areas */
   stroke: #c0392b;
   stroke-width: 2;
-  transform: scale(1.05); /* Slightly enlarge when active */
+  /* Removed transform: scale(1.05); */
 }
 
 /* Specific styling for shoulder base to be non-interactive */
