@@ -76,7 +76,6 @@ onMounted(() => {
       </h1>
 
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-
         <router-link
           to="/personas/crear"
           class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 ease-in-out transform hover:scale-105"
@@ -181,12 +180,6 @@ onMounted(() => {
                 >
                   Editar
                 </router-link>
-                <button
-                  @click="goToCrearFicha(persona.idpersona)"
-                  class="text-purple-600 hover:text-purple-800 font-medium hover:underline transition duration-150 ease-in-out"
-                >
-                  Crear Ficha
-                </button>
                 <button
                   @click="eliminarPersona(persona.idpersona)"
                   class="text-red-600 hover:text-red-800 font-medium hover:underline transition duration-150 ease-in-out"

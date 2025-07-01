@@ -2,15 +2,13 @@
   <div>
     <div class="search-section">
       <input
-        v-model="searchCedula"
+        v-model="searchQuery"
         @keyup.enter="buscarFichas"
         type="text"
-        placeholder="Buscar fichas disponibles por cédula"
+        placeholder="Buscar por cédula, nombre o apellido"
         class="small-input titulo-search"
       />
-      <button @click="buscarFichas" class="submit-button" style="margin-left: 10px">
-        Buscar
-      </button>
+      <button @click="buscarFichas" class="submit-button" style="margin-left: 10px">Buscar</button>
     </div>
 
     <div v-if="fichas.length > 0" class="results-section">
@@ -18,6 +16,8 @@
         <thead>
           <tr>
             <th>ID Ficha</th>
+            <th>Cédula</th>
+            <th>Nombres Completos</th>
             <th>Fecha Primer Contacto</th>
             <th>Estado General</th>
             <th>Observaciones</th>
@@ -25,19 +25,45 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="ficha in fichas" :key="ficha.idficha">
-            <td>{{ ficha.idficha }}</td>
-            <td>{{ ficha.pacFechaprimercontacto }}</td>
-            <td>{{ ficha.pacEstadogeneral }}</td>
-            <td>{{ ficha.pacObservaciones }}</td>
+          <tr v-for="ficha in paginatedFichas" :key="ficha.idFicha">
+            <td>{{ ficha.idFicha }}</td>
+            <td>{{ ficha.PER_CEDULA }}</td>
             <td>
-              <button @click="seleccionarFicha(ficha)" class="add-remove-button">
-                Seleccionar
+              {{
+                [
+                  ficha.PER_PRIMERNOMBRE,
+                  ficha.PER_SEGUNDONOMBRE,
+                  ficha.PER_PRIMERAPELLIDO,
+                  ficha.PER_SEGUNDOAPELLIDO,
+                ]
+                  .filter(Boolean)
+                  .join(' ')
+              }}
+            </td>
+            <td>
+              {{ ficha.PAC_FECHAPRIMERCONTACTO ? ficha.PAC_FECHAPRIMERCONTACTO.split('T')[0] : '' }}
+            </td>
+            <td>{{ ficha.PAC_ESTADOGENERAL }}</td>
+            <td>{{ ficha.PAC_OBSERVACIONES }}</td>
+            <td>
+              <button
+                @click="seleccionarFicha(ficha)"
+                :class="['add-remove-button', { selected: selectedFichaId === ficha.idFicha }]"
+              >
+                {{ selectedFichaId === ficha.idFicha ? 'Seleccionado' : 'Seleccionar' }}
               </button>
             </td>
           </tr>
         </tbody>
       </table>
+      <!-- Controles de paginación -->
+      <div class="pagination" v-if="totalPages > 1">
+        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Anterior</button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
+          Siguiente
+        </button>
+      </div>
     </div>
 
     <div v-if="selectedFichaId">
@@ -45,7 +71,9 @@
     </div>
 
     <div v-if="showManualInput" class="manual-id-section">
-      <label for="manualFichaId"><strong>No se encontraron fichas.</strong> Ingrese el ID de ficha manualmente:</label>
+      <label for="manualFichaId"
+        ><strong>No se encontraron fichas.</strong> Ingrese el ID de ficha manualmente:</label
+      >
       <input
         id="manualFichaId"
         v-model="manualFichaId"
@@ -53,33 +81,44 @@
         type="text"
         placeholder="Ej: FCH001"
         class="small-input"
-        style="margin-top: 10px; max-width: 220px;"
+        style="margin-top: 10px; max-width: 220px"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import axios from 'axios'
 
 const emit = defineEmits(['update:idficha'])
 
-const searchCedula = ref('')
+const searchQuery = ref('')
 const fichas = ref([])
 const selectedFichaId = ref(null)
 const showManualInput = ref(false)
 const manualFichaId = ref('')
+
+const currentPage = ref(1)
+const pageSize = 5
+
+const totalPages = computed(() => Math.ceil(fichas.value.length / pageSize))
+
+const paginatedFichas = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return fichas.value.slice(start, start + pageSize)
+})
 
 const buscarFichas = async () => {
   fichas.value = []
   selectedFichaId.value = null
   showManualInput.value = false
   manualFichaId.value = ''
-  if (!searchCedula.value) return
+  currentPage.value = 1
+  if (!searchQuery.value) return
   try {
     const res = await axios.get(
-      `https://backend-sirma-nest.onrender.com/api/personas/fichas-medicas/${searchCedula.value}`,
+      `https://backend-sirma-nest.onrender.com/api/pacientes/ficha/cedula/${encodeURIComponent(searchQuery.value)}`,
     )
     fichas.value = res.data
     if (!Array.isArray(res.data) || res.data.length === 0) {
@@ -92,8 +131,8 @@ const buscarFichas = async () => {
 }
 
 const seleccionarFicha = (ficha) => {
-  selectedFichaId.value = ficha.idficha
-  emit('update:idficha', ficha.idficha)
+  selectedFichaId.value = ficha.idFicha
+  emit('update:idficha', ficha.idFicha)
   showManualInput.value = false
   manualFichaId.value = ''
 }
@@ -102,12 +141,18 @@ const emitManualId = () => {
   selectedFichaId.value = manualFichaId.value
   emit('update:idficha', manualFichaId.value)
 }
+
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 </script>
 
 <style scoped>
-.titulo-search{
- width: 100%;
- padding: 2rem;
+.titulo-search {
+  width: 100%;
+  padding: 2rem;
 }
 .submit-button {
   background-color: var(--color-primary-dark, #2d5c4d);
@@ -118,7 +163,10 @@ const emitManualId = () => {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
 }
 .submit-button:hover {
   background-color: var(--color-primary-dark-hover, #245a4b);
@@ -206,6 +254,12 @@ const emitManualId = () => {
 .add-remove-button:hover {
   background-color: var(--color-accent-green-dark, #5bbf3a);
 }
+.add-remove-button.selected {
+  background-color: var(--color-accent-green, #7ed957);
+  color: #fff;
+  cursor: default;
+  pointer-events: none;
+}
 .manual-id-section {
   margin-top: 18px;
   background: #fffbe7;
@@ -224,5 +278,27 @@ const emitManualId = () => {
 .manual-id-section input {
   margin-top: 8px;
 }
-
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 18px 0 10px 0;
+}
+.pagination button {
+  background: var(--color-primary-dark, #2d5c4d);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
 </style>
