@@ -376,13 +376,15 @@ const handleSearch = async (busqueda) => {
   } catch (error) {
     resultadosBusqueda.value = []
     busquedaRealizada.value = true
-    submitMessage.value = 'No se encontraron resultados para la búsqueda o hubo un error en la conexión.'
+    submitMessage.value =
+      'No se encontraron resultados para la búsqueda o hubo un error en la conexión.'
     submitStatus.value = 'error'
-    console.error('Error en la búsqueda:', error);
+    console.error('Error en la búsqueda:', error)
   }
 }
 
 const seleccionarPersona = (persona) => {
+  form.pCedula = persona.perCedula
   form.idpersona = persona.idpersona
   localStorage.setItem('idpersona', persona.idpersona)
   idPersonaSeleccionada.value = persona.idpersona // Actualiza la variable reactiva
@@ -392,133 +394,140 @@ const seleccionarPersona = (persona) => {
 
 const validateForm = () => {
   // Limpiar mensajes anteriores
-  submitMessage.value = '';
-  submitStatus.value = '';
+  submitMessage.value = ''
+  submitStatus.value = ''
 
   // 1. Validación de campos obligatorios
-  if (!form.idFicha || !form.pacFechaprimercontacto || !form.idpersona || !form.pacEstadogeneral ||
-      !form.dgNombreencuestador || form.dgPasAcostado === null || form.dgPadAcostado === null ||
-      form.dgPasSentado === null || form.dgPadSentado === null || !form.dgDiagnosticoha ||
-      form.dgPulsopormin === null || !form.dgDiagnosticopulso || form.dgFrecrespiratoria === null ||
-      !form.dgDiagnosticofr || form.dgSaturacion === null || !form.dgDiagnosticosaturacion ||
-      form.dgTemperatura === null || !form.dgDiagnosticotemperatura
+  if (
+    !form.idFicha ||
+    !form.pacFechaprimercontacto ||
+    !form.idpersona ||
+    !form.pacEstadogeneral ||
+    !form.dgNombreencuestador ||
+    form.dgPasAcostado === null ||
+    form.dgPadAcostado === null ||
+    form.dgPasSentado === null ||
+    form.dgPadSentado === null ||
+    !form.dgDiagnosticoha ||
+    form.dgPulsopormin === null ||
+    !form.dgDiagnosticopulso ||
+    form.dgFrecrespiratoria === null ||
+    !form.dgDiagnosticofr ||
+    form.dgSaturacion === null ||
+    !form.dgDiagnosticosaturacion ||
+    form.dgTemperatura === null ||
+    !form.dgDiagnosticotemperatura
   ) {
-    submitMessage.value = 'Por favor, complete todos los campos obligatorios.';
-    submitStatus.value = 'error';
-    return false;
+    submitMessage.value = 'Por favor, complete todos los campos obligatorios.'
+    submitStatus.value = 'error'
+    return false
   }
 
   // 2. Validación de rangos numéricos y formatos
-  const errors = [];
+  const errors = []
 
   // ID Ficha - Formato específico (ej. FCH02)
   if (!/^FCH\d{2,}$/.test(form.idFicha)) {
-    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).');
+    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).')
   }
 
   // Fecha de contacto - No futura
-  const today = new Date(currentDate.value);
-  const contactDate = new Date(form.pacFechaprimercontacto);
+  const today = new Date(currentDate.value)
+  const contactDate = new Date(form.pacFechaprimercontacto)
   if (contactDate > today) {
-    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.');
+    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.')
   }
 
   // Nombre del Encuestador - Solo letras y espacios
   if (!/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/.test(form.dgNombreencuestador.trim())) {
-    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.');
+    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.')
   }
 
   // Presión Arterial (PAS/PAD) - Rangos
-  if (form.dgPasAcostado < 70 || form.dgPasAcostado > 200) errors.push('PAS Acostado fuera de rango (70-200).');
-  if (form.dgPadAcostado < 40 || form.dgPadAcostado > 120) errors.push('PAD Acostado fuera de rango (40-120).');
-  if (form.dgPasSentado < 70 || form.dgPasSentado > 200) errors.push('PAS Sentado fuera de rango (70-200).');
-  if (form.dgPadSentado < 40 || form.dgPadSentado > 120) errors.push('PAD Sentado fuera de rango (40-120).');
+  if (form.dgPasAcostado < 70 || form.dgPasAcostado > 200)
+    errors.push('PAS Acostado fuera de rango (70-200).')
+  if (form.dgPadAcostado < 40 || form.dgPadAcostado > 120)
+    errors.push('PAD Acostado fuera de rango (40-120).')
+  if (form.dgPasSentado < 70 || form.dgPasSentado > 200)
+    errors.push('PAS Sentado fuera de rango (70-200).')
+  if (form.dgPadSentado < 40 || form.dgPadSentado > 120)
+    errors.push('PAD Sentado fuera de rango (40-120).')
 
   // Pulso - Rango
-  if (form.dgPulsopormin < 40 || form.dgPulsopormin > 180) errors.push('Pulso por Minuto fuera de rango (40-180).');
+  if (form.dgPulsopormin < 40 || form.dgPulsopormin > 180)
+    errors.push('Pulso por Minuto fuera de rango (40-180).')
 
   // Frecuencia Respiratoria - Rango
-  if (form.dgFrecrespiratoria < 10 || form.dgFrecrespiratoria > 30) errors.push('Frecuencia Respiratoria fuera de rango (10-30).');
+  if (form.dgFrecrespiratoria < 10 || form.dgFrecrespiratoria > 30)
+    errors.push('Frecuencia Respiratoria fuera de rango (10-30).')
 
   // Saturación - Rango
-  if (form.dgSaturacion < 85 || form.dgSaturacion > 100) errors.push('Saturación fuera de rango (85-100%).');
+  if (form.dgSaturacion < 85 || form.dgSaturacion > 100)
+    errors.push('Saturación fuera de rango (85-100%).')
 
   // Temperatura - Rango
-  if (form.dgTemperatura < 34.0 || form.dgTemperatura > 42.0) errors.push('Temperatura fuera de rango (34.0-42.0°C).');
-
+  if (form.dgTemperatura < 34.0 || form.dgTemperatura > 42.0)
+    errors.push('Temperatura fuera de rango (34.0-42.0°C).')
 
   if (errors.length > 0) {
-    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>');
-    submitStatus.value = 'error';
-    return false;
+    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>')
+    submitStatus.value = 'error'
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 const handleSubmit = async () => {
-  if (!validateForm()) {
-    // Si la validación falla, los mensajes de error ya se han establecido.
-    return;
-  }
+  if (!validateForm()) return
 
   isSubmitting.value = true
 
-  // Asegurar que idpersona esté presente
   if (!form.idpersona) {
-    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.';
-    submitStatus.value = 'error';
-    isSubmitting.value = false;
-    return;
+    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.'
+    submitStatus.value = 'error'
+    isSubmitting.value = false
+    return
   }
 
-  // Mapea los campos del formulario a los nombres que espera la API
   const payload = {
-    p_IDFICHA: form.idFicha,
-    p_FECHAPRIMERCONTACTO: form.pacFechaprimercontacto,
-    p_ESTADOGENERAL: form.pacEstadogeneral,
-    p_OBSERVACIONES: form.pacObservaciones,
-    p_IDPERSONA: Number(form.idpersona), // Asegúrate de enviar como número
-    p_NOMBREENCUESTADOR: form.dgNombreencuestador,
-    p_PAS_ACOSTADO: Number(form.dgPasAcostado),
-    p_PAD_ACOSTADO: Number(form.dgPadAcostado),
-    p_PAS_SENTADO: Number(form.dgPasSentado),
-    p_PAD_SENTADO: Number(form.dgPadSentado),
-    p_DIAGNOSTICOHA: form.dgDiagnosticoha,
-    p_PULSOPORMIN: Number(form.dgPulsopormin),
-    p_DIAGNOSTICOPULSO: form.dgDiagnosticopulso,
-    p_FRECRESPIRATORIA: Number(form.dgFrecrespiratoria),
-    p_DIAGNOSTICOFR: form.dgDiagnosticofr,
-    p_SATURACION: Number(form.dgSaturacion),
-    p_DIAGNOSTICOSATURACION: form.dgDiagnosticosaturacion,
-    p_TEMPERATURA: Number(form.dgTemperatura),
-    p_DIAGNOSTICOTEMPERATURA: form.dgDiagnosticotemperatura,
-    p_FIRMACONSENTIMIENTO: form.dgFirmaconcentimiento ? 1 : 0, // Convertir booleano a 1 o 0
-    p_FIRMAMEDICINA: form.dgFirmamedicina ? 1 : 0,
-    p_FIRMAENFERMERIA: form.dgFirmaenfermeria ? 1 : 0,
-    p_FIRMANUTRICION: form.dgFirmanutricion ? 1 : 0,
-    p_FIRMAFISIOTERAPIA: form.dgFirmafisioterapia ? 1 : 0,
+    p_cedula: form.pCedula,
+    p_id_ficha_nueva: form.idFicha,
+    p_fecha_primer_contacto: form.pacFechaprimercontacto,
+    p_estado_general: form.pacEstadogeneral,
+    p_observaciones: form.pacObservaciones,
+    p_nombre_encuestador: form.dgNombreencuestador,
+    p_pas_acostado: Number(form.dgPasAcostado),
+    p_pad_acostado: Number(form.dgPadAcostado),
+    p_pas_sentado: Number(form.dgPasSentado),
+    p_pad_sentado: Number(form.dgPadSentado),
+    p_diagnostico_ha: form.dgDiagnosticoha,
+    p_pulso_por_min: Number(form.dgPulsopormin),
+    p_diagnostico_pulso: form.dgDiagnosticopulso,
+    p_frec_respiratoria: Number(form.dgFrecrespiratoria),
+    p_diagnostico_fr: form.dgDiagnosticofr,
+    p_saturacion: Number(form.dgSaturacion),
+    p_diagnostico_saturacion: form.dgDiagnosticosaturacion,
+    p_temperatura: Number(form.dgTemperatura),
+    p_diagnostico_temperatura: form.dgDiagnosticotemperatura,
+    p_firma_consentimiento: form.dgFirmaconcentimiento,
+    p_firma_medicina: form.dgFirmamedicina,
+    p_firma_enfermeria: form.dgFirmaenfermeria,
+    p_firma_nutricion: form.dgFirmanutricion,
+    p_firma_fisioterapia: form.dgFirmafisioterapia,
   }
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/pacientes/insertar-ficha-general`, payload)
-    if (response.data.success) { // Asumiendo que la API devuelve un campo 'success'
-      submitMessage.value = 'Ficha general guardada exitosamente.';
-      submitStatus.value = 'success';
-      // Considera resetear el formulario aquí
-      // resetForm();
-    } else {
-      submitMessage.value = response.data.message || 'Error al guardar la ficha. Por favor, revise los datos.';
-      submitStatus.value = 'error';
-    }
+    const response = await axios.post(
+      `${import.meta.env.VITE_URL_BACKEND}/fichas-general-completa`,
+      payload,
+    )
+    submitMessage.value = 'Ficha general guardada exitosamente.'
+    submitStatus.value = 'success'
   } catch (error) {
-    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo. Asegúrate de que todos los datos son válidos.';
-    submitStatus.value = 'error';
-    console.error('Error guardando ficha general:', error);
-    // Mostrar un mensaje de error más específico si la API lo proporciona
-    if (error.response && error.response.data && error.response.data.message) {
-      submitMessage.value = `Error: ${error.response.data.message}`;
-    }
+    console.error('Error guardando ficha:', error)
+    submitMessage.value = 'Error al guardar la ficha. Verifica los datos o intenta nuevamente.'
+    submitStatus.value = 'error'
   } finally {
     isSubmitting.value = false
   }
@@ -868,7 +877,6 @@ const handleSubmit = async () => {
 /* Pantallas grandes / monitores (4 columnas) - Base ya definida */
 /* max-width: 1200px */
 /* grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); */
-
 
 /* Para pantallas de tabletas grandes o laptops pequeñas (hasta 1250px) - Transición a 3 columnas */
 @media (max-width: 1250px) {
