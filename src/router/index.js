@@ -47,7 +47,7 @@ const router = createRouter({
     { path: '/acerca-del-sistema', component: AcercaProyecto, meta: { public: true } },
     { path: '/miembros-del-equipo', component: MiembrosEquipo, meta: { public: true } },
     { path: '/reportes-view', component: ReportesViewUser, meta: { public: true } },
-    { path: '/chatbot', component: ChatbotView }
+    { path: '/chatbot', component: ChatbotView, meta: { requiresAuth: true } },
   ],
 })
 

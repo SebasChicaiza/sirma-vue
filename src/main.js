@@ -23,6 +23,7 @@ import {
   faMapMarkerAlt,
   faPhone,
   faEnvelope,
+  faRobot,
   // ADD THESE ICONS FOR THE 'HOW IT WORKS' SECTION:
   faUserPlus,   // For "Registra pacientes"
   faHistory,    // For "Accede al historial"
@@ -42,6 +43,7 @@ library.add(
   faMapMarkerAlt,
   faPhone,
   faEnvelope,
+  faRobot,
   // ADD THEM TO THE LIBRARY AS WELL:
   faUserPlus,
   faHistory,

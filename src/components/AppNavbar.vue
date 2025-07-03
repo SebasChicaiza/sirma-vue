@@ -16,6 +16,7 @@ import {
   faUserCircle,
   faBell,
   faSignOutAlt,
+  faRobot,
   faSignInAlt, // Icono para iniciar sesión
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -32,6 +33,7 @@ library.add(
   faUserCircle,
   faBell,
   faSignOutAlt,
+  faRobot,
   faSignInAlt, // Añadido aquí también
 )
 
@@ -133,6 +135,12 @@ onUnmounted(() => {
         <router-link to="/reportes" @click="closeMenu">
           <font-awesome-icon icon="chart-bar" /> Reportes
         </router-link>
+      </li>
+      <li>
+        <RouterLink to="/chatbot" @click="closeMenu">
+          <FontAwesomeIcon :icon="['fas', 'robot']" />
+          Chatbot
+        </RouterLink>
       </li>
       <li class="navbar-separator mobile-only"></li>
       <li class="navbar-user-info mobile-only">

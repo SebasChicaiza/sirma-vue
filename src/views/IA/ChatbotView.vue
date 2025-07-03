@@ -3,8 +3,8 @@
   <div class="chatbase-container">
     <iframe
       src="https://www.chatbase.co/chatbot-iframe/yA8xVSvUGjfp_Ilg0Sxf3"
-      width="100%"
-      style="height: 100%; min-height: 700px"
+      width="80%"
+      style="height: 100%; min-height: 500px; margin: 0 auto; padding: 2rem"
       frameborder="0"
     ></iframe>
   </div>
