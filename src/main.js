@@ -12,19 +12,21 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome' // El componente 
 
 /* Importar los íconos que vas a usar (Free Solid Icons) */
 import {
-  faHome,          // Ícono para 'Inicio'
-  faNotesMedical,  // Ícono para 'Fichas' (más específico que faFileAlt)
-  faUsers,         // Ícono para 'Usuarios'
-  faCalendarAlt,   // Ícono para 'Calendario'
-  faChartBar,      // Ícono para 'Reportes'
-  faUserCircle,    // Ícono para 'Mi Perfil' / Avatar de usuario
-  faBell,          // Ícono para 'Notificaciones'
-  faSignOutAlt,    // Ícono para 'Cerrar Sesión'
-  faMapMarkerAlt,  // Ícono para dirección en el Footer
-  faPhone,         // Ícono para teléfono en el Footer
-  faEnvelope       // Ícono para email en el Footer
-  // ¡Añade aquí cualquier otro ícono que planees usar!
-  // Puedes ver todos los íconos disponibles en fontawesome.com/icons
+  faHome,
+  faNotesMedical,
+  faUsers,
+  faCalendarAlt,
+  faChartBar,
+  faUserCircle,
+  faBell,
+  faSignOutAlt,
+  faMapMarkerAlt,
+  faPhone,
+  faEnvelope,
+  // ADD THESE ICONS FOR THE 'HOW IT WORKS' SECTION:
+  faUserPlus,   // For "Registra pacientes"
+  faHistory,    // For "Accede al historial"
+  faChartLine   // For "Optimiza la atención" (or faChartBar if you prefer, but faChartLine is a common alternative for optimization/growth)
 } from '@fortawesome/free-solid-svg-icons' // Asegúrate de importar de 'free-solid-svg-icons'
 
 /* Añade los íconos importados a la biblioteca global de Font Awesome */
@@ -39,7 +41,11 @@ library.add(
   faSignOutAlt,
   faMapMarkerAlt,
   faPhone,
-  faEnvelope
+  faEnvelope,
+  // ADD THEM TO THE LIBRARY AS WELL:
+  faUserPlus,
+  faHistory,
+  faChartLine
 )
 
 const app = createApp(App)
