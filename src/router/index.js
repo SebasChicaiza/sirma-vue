@@ -20,6 +20,7 @@ import AcercaProyecto from '@/views/AcercaProyecto.vue'
 import ReportesViewUser from '@/views/ReportesViewUser.vue'
 import MiembrosEquipo from '@/views/MiembrosEquipo.vue'
 import ChatbotView from '@/views/IA/ChatbotView.vue'
+import GeminiView from '@/views/IA/GeminiView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,7 @@ const router = createRouter({
     { path: '/miembros-del-equipo', component: MiembrosEquipo, meta: { public: true } },
     { path: '/reportes-view', component: ReportesViewUser, meta: { public: true } },
     { path: '/chatbot', component: ChatbotView, meta: { requiresAuth: true } },
+    { path: '/gemini', component: GeminiView, meta: { requiresAuth: true } },
   ],
 })
 
