@@ -137,7 +137,7 @@ onUnmounted(() => {
         </router-link>
       </li>
       <li>
-        <RouterLink to="/chatbot" @click="closeMenu">
+        <RouterLink to="/gemini" @click="closeMenu">
           <FontAwesomeIcon :icon="['fas', 'robot']" />
           Chatbot
         </RouterLink>
