@@ -19,23 +19,33 @@ let model = null
 
 // --- Tu promptTemplate actualizado usando template literals (¡la clave!) ---
 const promptTemplate =
-  ref(`Actúa como un **analista médico con experiencia en diagnóstico diferencial**. Tu objetivo es proporcionar un **diagnóstico principal claro, conciso y altamente probable** basado **exclusivamente** en los datos clínicos del paciente que te presentaré.
+  ref(`Actúa como un **médico especialista con amplia experiencia en diagnóstico clínico y manejo de pacientes**. Tu objetivo es proporcionar un **diagnóstico principal claro, conciso y altamente probable**, proponer los **exámenes complementarios más relevantes** y ofrecer **recomendaciones iniciales al paciente**, todo basado **exclusivamente** en los datos clínicos que te presentaré.
 
 **Instrucciones clave para el análisis:**
-1. **Prioriza la concisión:** Ve directo al punto. Evita descripciones redundantes o jerga innecesaria.
-2. **Enfoque en el diagnóstico más probable:** Después de analizar todos los síntomas y hallazgos, presenta la condición que mejor se ajuste a la evidencia.
-3. **Justificación basada en datos:** Para el diagnóstico propuesto, menciona brevemente los **3 a 5 hallazgos o síntomas clave** más relevantes de los datos del paciente que respaldan tu conclusión.
-4. **Análisis diferencial (opcional/implícito):** Si la información lo permite y es crucial, puedes mencionar brevemente (en una sola frase) una o dos condiciones menos probables que se hayan considerado y descartado rápidamente por falta de evidencia clave, pero solo si esto refuerza la precisión del diagnóstico principal.
-5. **Restricción de información:** No inventes síntomas o hallazgos. Si la información es insuficiente para un diagnóstico concluyente, indícalo claramente en lugar de especular.
+1.  **Prioriza la concisión y la claridad:** Sé directo y evita la jerga innecesaria.
+2.  **Diagnóstico principal y justificación:** Presenta la condición más probable que mejor se ajuste a la evidencia. Para respaldar este diagnóstico, menciona los **3 a 5 hallazgos o síntomas clave** más relevantes de los datos del paciente.
+3.  **Análisis diferencial (opcional/implícito):** Si la información lo permite y es crucial, puedes mencionar brevemente (en una sola frase) una o dos condiciones menos probables que se hayan considerado y descartado rápidamente por falta de evidencia clave, pero solo si esto refuerza la precisión del diagnóstico principal.
+4.  **Exámenes complementarios:** Sugiere los **2 a 4 exámenes de laboratorio o imágenes más pertinentes** para confirmar el diagnóstico, evaluar la extensión de la condición o descartar otras posibilidades importantes. Justifica brevemente por qué son necesarios.
+5.  **Recomendaciones iniciales al paciente:** Ofrece **2 a 3 recomendaciones prácticas y específicas** para el paciente, que pueden incluir medidas de cuidado general, seguimiento o cuándo buscar atención médica adicional. Estas deben ser claras y fáciles de entender.
+6.  **Restricción de información:** No inventes síntomas, hallazgos, diagnósticos, exámenes o recomendaciones. Si la información es insuficiente para un diagnóstico concluyente o para hacer recomendaciones detalladas, indícalo claramente en lugar de especular.
 
 **Formato de la respuesta:**
 * **Diagnóstico Principal:** [Nombre de la condición más probable]
 * **Hallazgos Clave de Soporte:**
-  * - [Síntoma/Hallazgo 1]
-  * - [Síntoma/Hallazgo 2]
-  * - [Síntoma/Hallazgo 3]
-  * - [Síntoma/Hallazgo 4 (si aplica)]
-  * - [Síntoma/Hallazgo 5 (si aplica)]
+    * - [Síntoma/Hallazgo 1]
+    * - [Síntoma/Hallazgo 2]
+    * - [Síntoma/Hallazgo 3]
+    * - [Síntoma/Hallazgo 4 (si aplica)]
+    * - [Síntoma/Hallazgo 5 (si aplica)]
+* **Exámenes Complementarios Sugeridos:**
+    * - [Examen 1]: [Breve justificación]
+    * - [Examen 2]: [Breve justificación]
+    * - [Examen 3 (si aplica)]: [Breve justificación]
+    * - [Examen 4 (si aplica)]: [Breve justificación]
+* **Recomendaciones para el Paciente:**
+    * - [Recomendación 1]
+    * - [Recomendación 2]
+    * - [Recomendación 3 (si aplica)]
 
 Por favor, comienza el análisis con los siguientes datos del paciente:
 `)
@@ -63,9 +73,9 @@ const fetchFicha = async () => {
   analysisResult.value = null
 
   try {
-    const base = 'https://backend-sirma-nest.onrender.com/api'
+    const base = 'https://backend-sirma-nest.onrender.com'
     const { data: fichas } = await axios.get(
-      `${base}/pacientes/fichas-generales/cedula/${cedula.value}`,
+      `${base}/api/pacientes/fichas-generales/cedula/${cedula.value}`,
     )
     const ficha = fichas.find(
       (item) => item.IDFICHAPACIENTE === fichaId.value || item.IDDATOSGENERALES === fichaId.value,
@@ -74,19 +84,19 @@ const fetchFicha = async () => {
     const { IDMEDICINA, IDENFERMERIA, IDNUTRICION, IDFISIOTERAPIA } = ficha
 
     // Aquí mantuve los comentarios de las llamadas no usadas, si las necesitas, descoméntalas.
-    const [med /*, enf, nut, fis*/] = await Promise.all([
-      axios.get(`${base}/medicina/${IDMEDICINA}`),
-      //axios.get(`${base}/enfermeria/${IDENFERMERIA}`),
-      //axios.get(`${base}/nutricion/${IDNUTRICION}`),
-      //axios.get(`${base}/fisioterapia/${IDFISIOTERAPIA}`),
+    const [med, enf, nut, fis] = await Promise.all([
+      axios.get(`${base}/api/medicina/${IDMEDICINA}`),
+      axios.get(`${base}/api/enfermeria/completa/${IDENFERMERIA}`),
+      axios.get(`${base}/nutricion/completa/${IDNUTRICION}`),
+      axios.get(`${base}/api/fisioterapia/completo/${IDFISIOTERAPIA}`),
     ])
 
     serviceData.value = {
       datosGenerales: ficha,
       medicina: med.data,
-      //enfermeria: enf.data,
-      //nutricion: nut.data,
-      //fisioterapia: fis.data,
+      enfermeria: enf.data,
+      nutricion: nut.data,
+      fisioterapia: fis.data,
     }
   } catch (err) {
     error.value = err.response?.data?.message || err.message
