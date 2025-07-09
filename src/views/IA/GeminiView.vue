@@ -1,11 +1,10 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue' // Importa las funciones necesarias para Composition API
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
 
-// --- Estado reactivo (como data() en Options API) ---
 const cedula = ref('')
 const fichaId = ref('')
 const isLoading = ref(false)
@@ -13,11 +12,9 @@ const error = ref(null)
 const serviceData = ref(null)
 const analysisResult = ref(null)
 
-// Variables para Gemini AI
 let genAI = null
 let model = null
 
-// --- Tu promptTemplate actualizado usando template literals (¡la clave!) ---
 const promptTemplate =
   ref(`Actúa como un **médico especialista con amplia experiencia en diagnóstico clínico y manejo de pacientes**. Tu objetivo es proporcionar un **diagnóstico principal claro, conciso y altamente probable**, proponer los **exámenes complementarios más relevantes** y ofrecer **recomendaciones iniciales al paciente**, todo basado **exclusivamente** en los datos clínicos que te presentaré.
 
@@ -50,22 +47,16 @@ const promptTemplate =
 Por favor, comienza el análisis con los siguientes datos del paciente:
 `)
 
-// --- Propiedades computadas (como computed en Options API) ---
-const geminiReady = computed(() => {
-  return !!import.meta.env.VITE_GEMINI_API_KEY
-})
+const geminiReady = computed(() => !!import.meta.env.VITE_GEMINI_API_KEY)
 
-// --- Ciclo de vida (como mounted() en Options API) ---
 onMounted(() => {
   if (geminiReady.value) {
-    // Accede al valor del ref o computed con .value
     const key = import.meta.env.VITE_GEMINI_API_KEY.trim()
     genAI = new GoogleGenerativeAI(key)
     model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
   }
 })
 
-// --- Métodos (como methods en Options API) ---
 const fetchFicha = async () => {
   isLoading.value = true
   error.value = null
@@ -81,22 +72,48 @@ const fetchFicha = async () => {
       (item) => item.IDFICHAPACIENTE === fichaId.value || item.IDDATOSGENERALES === fichaId.value,
     )
     if (!ficha) throw new Error('Ficha no encontrada')
+
     const { IDMEDICINA, IDENFERMERIA, IDNUTRICION, IDFISIOTERAPIA } = ficha
 
-    // Aquí mantuve los comentarios de las llamadas no usadas, si las necesitas, descoméntalas.
-    const [med, enf, nut, fis] = await Promise.all([
-      axios.get(`${base}/api/medicina/${IDMEDICINA}`),
-      axios.get(`${base}/api/enfermeria/completa/${IDENFERMERIA}`),
-      axios.get(`${base}/nutricion/completa/${IDNUTRICION}`),
-      axios.get(`${base}/api/fisioterapia/completo/${IDFISIOTERAPIA}`),
-    ])
+    // Llamadas individuales con try/catch
+    let medicinaData = null
+    try {
+      const resp = await axios.get(`${base}/api/medicina/${IDMEDICINA}`)
+      medicinaData = resp.data
+    } catch (_e) {
+      console.warn('Medicina API falló o devolvió nada')
+    }
+
+    let enfermeriaData = null
+    try {
+      const resp = await axios.get(`${base}/api/enfermeria/completa/${IDENFERMERIA}`)
+      enfermeriaData = resp.data
+    } catch (_e) {
+      console.warn('Enfermería API falló o devolvió nada')
+    }
+
+    let nutricionData = null
+    try {
+      const resp = await axios.get(`${base}/nutricion/completa/${IDNUTRICION}`)
+      nutricionData = resp.data
+    } catch (_e) {
+      console.warn('Nutrición API falló o devolvió nada')
+    }
+
+    let fisioterapiaData = null
+    try {
+      const resp = await axios.get(`${base}/api/fisioterapia/completo/${IDFISIOTERAPIA}`)
+      fisioterapiaData = resp.data
+    } catch (_e) {
+      console.warn('Fisioterapia API falló o devolvió nada')
+    }
 
     serviceData.value = {
       datosGenerales: ficha,
-      medicina: med.data,
-      enfermeria: enf.data,
-      nutricion: nut.data,
-      fisioterapia: fis.data,
+      medicina: medicinaData,
+      enfermeria: enfermeriaData,
+      nutricion: nutricionData,
+      fisioterapia: fisioterapiaData,
     }
   } catch (err) {
     error.value = err.response?.data?.message || err.message
@@ -106,20 +123,13 @@ const fetchFicha = async () => {
 }
 
 const analyzeWithGemini = async () => {
-  if (!geminiReady.value || !serviceData.value) return // Accede a los valores con .value
+  if (!geminiReady.value || !serviceData.value) return
   isLoading.value = true
   error.value = null
 
   try {
-    // Armar el prompt + datos como contexto único
-    // Accede al valor del promptTemplate con .value
     const context = `${promptTemplate.value}\n\n${JSON.stringify(serviceData.value, null, 2)}`
-
-    // Asegúrate de que 'model' se haya inicializado correctamente en onMounted
-    if (!model) {
-      throw new Error('El modelo de Gemini no se ha inicializado. Verifica tu API Key.')
-    }
-
+    if (!model) throw new Error('El modelo de Gemini no se ha inicializado.')
     const result = await model.generateContent([context])
     const response = await result.response
     analysisResult.value = response.text()
