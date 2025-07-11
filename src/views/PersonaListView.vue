@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 const personas = ref([])
 const router = useRouter()
 const isLoading = ref(false)
@@ -172,6 +175,7 @@ onMounted(() => {
                 </span>
               </td>
               <td
+                v-if="userStore.isAdmin"
                 class="p-4 space-y-2 sm:space-y-0 sm:space-x-2 flex flex-col sm:flex-row items-center justify-center"
               >
                 <router-link

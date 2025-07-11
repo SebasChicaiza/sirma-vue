@@ -117,7 +117,7 @@ onUnmounted(() => {
 
     <ul :class="['navbar-links', { 'navbar-links-open': isMenuOpen }]">
       <li>
-        <router-link to="/" @click="closeMenu">
+        <router-link to="/Gestion" @click="closeMenu">
           <font-awesome-icon icon="home" /> Inicio
         </router-link>
       </li>
@@ -148,14 +148,7 @@ onUnmounted(() => {
           <font-awesome-icon icon="user-circle" /> Mi Perfil
         </router-link>
       </li>
-      <li class="mobile-only">
-        <router-link to="/notificaciones" @click="closeMenu">
-          <font-awesome-icon icon="bell" /> Notificaciones
-          <span v-if="notificationCount > 0" class="notification-badge">{{
-            notificationCount
-          }}</span>
-        </router-link>
-      </li>
+
       <li class="mobile-only">
         <template v-if="usuarioLogueado">
           <button @click="logout" class="logout-button">
@@ -171,10 +164,7 @@ onUnmounted(() => {
     </ul>
 
     <div class="navbar-right desktop-only">
-      <router-link to="/notificaciones" class="navbar-icon-link" aria-label="Ver notificaciones">
-        <font-awesome-icon icon="bell" />
-        <span v-if="notificationCount > 0" class="notification-badge">{{ notificationCount }}</span>
-      </router-link>
+
       <router-link to="/perfil" class="navbar-user-avatar" aria-label="Ir a mi perfil">
         <font-awesome-icon icon="user-circle" />
       </router-link>

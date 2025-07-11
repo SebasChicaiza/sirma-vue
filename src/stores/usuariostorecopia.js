@@ -4,33 +4,24 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     usuario: JSON.parse(localStorage.getItem('usuario')) || null,
   }),
-
   getters: {
     isAdmin: (state) => state.usuario?.userRol === 'admin',
     isLogged: (state) => !!state.usuario,
-    userRol: (state) => state.usuario?.userRol || null,
-    userNombre: (state) => `${state.usuario?.userNombre || ''} ${state.usuario?.userApellido || ''}`,
   },
-
   actions: {
     setUsuario(usuario) {
       this.usuario = usuario
-
       if (usuario) {
-        // ⚠️ Nunca guardar la clave
-        const { userClave, ...safeUsuario } = usuario
-        localStorage.setItem('usuario', JSON.stringify(safeUsuario))
+        localStorage.setItem('usuario', JSON.stringify(usuario))
       } else {
         localStorage.removeItem('usuario')
       }
     },
-
     logout() {
       this.setUsuario(null)
     },
-
     syncFromLocalStorage() {
       this.usuario = JSON.parse(localStorage.getItem('usuario')) || null
-    },
+    }
   }
 })

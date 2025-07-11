@@ -143,12 +143,9 @@ const handleSubmit = async () => {
 
     submitMessage.value = 'Inicio de sesión exitoso. Redirigiendo...'
     submitStatus.value = 'success'
+
     setTimeout(() => {
-      if (usuario.rol === 'admin') {
-        router.push('/dashboard')
-      } else {
-        router.push('/')
-      }
+      router.push('/Gestion')
     }, 1500)
   } catch (error) {
     submitMessage.value = 'Error de conexión con el servidor. ' + error

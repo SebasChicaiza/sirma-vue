@@ -11,9 +11,9 @@ const userStore = useUserStore()
 
 <template>
   <div class="app-wrapper">
-    <component :is="userStore.isAdmin ? AppNavbar : AppNavbarUser" />
+    <component :is="userStore.userRol ? AppNavbar : AppNavbarUser" />
     <RouterView />
-    <component :is="userStore.isAdmin ? AppFooter : AppFooterUser" />
+    <component :is="userStore.userRol ? AppFooter : AppFooterUser" />
   </div>
 </template>
 

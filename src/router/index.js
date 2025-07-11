@@ -22,6 +22,8 @@ import MiembrosEquipo from '@/views/MiembrosEquipo.vue'
 import ChatbotView from '@/views/IA/ChatbotView.vue'
 import GeminiView from '@/views/IA/GeminiView.vue'
 import VerFichas from '@/views/VerFichas.vue'
+import PerfilView from '@/views/Usuario/PerfilView.vue'
+import ReportesView from '@/views/ReportesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,34 +34,36 @@ const router = createRouter({
       component: HomeViewUser,
       meta: { public: true }
     },
-    { path: '/personas', component: PersonaListView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/personas/crear', component: PersonaCreateView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/personas', component: PersonaListView, meta: { requiresAuth: true} },
+    { path: '/personas/crear', component: PersonaCreateView, meta: { requiresAuth: true} },
     { path: '/personas/editar/:id', component: PersonaEditView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/chat', component: ChatBot },
 
 
-    { path: '/ficha/general', component: FichaGeneralView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/ficha/medica', component: FichaMedicaView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/ficha/enfermeria', component: FichaEnfermeriaView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/ficha/nutricion', component: FichaNutricionView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/ficha/fisioterapia', component: FichaFisioterapiaView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/ficha/general', component: FichaGeneralView, meta: { requiresAuth: true} },
+    { path: '/ficha/medica', component: FichaMedicaView, meta: { requiresAuth: true} },
+    { path: '/ficha/enfermeria', component: FichaEnfermeriaView, meta: { requiresAuth: true} },
+    { path: '/ficha/nutricion', component: FichaNutricionView, meta: { requiresAuth: true} },
+    { path: '/ficha/fisioterapia', component: FichaFisioterapiaView, meta: { requiresAuth: true} },
 
-    { path: '/fichas/generales/:id', name: 'ficha-generales', component: FichaGeneralView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/fichas/medicina/:id', name: 'ficha-medicina', component: FichaMedicaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/fichas/enfermeria/:id', name: 'ficha-enfermeria', component: FichaEnfermeriaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/fichas/nutricion/:id', name: 'ficha-nutricion', component: FichaNutricionView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/fichas/fisioterapia/:id', name: 'ficha-fisioterapia', component: FichaFisioterapiaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas/generales/:id', name: 'ficha-generales', component: FichaGeneralView, props: true, meta: { requiresAuth: true} },
+    { path: '/fichas/medicina/:id', name: 'ficha-medicina', component: FichaMedicaView, props: true, meta: { requiresAuth: true} },
+    { path: '/fichas/enfermeria/:id', name: 'ficha-enfermeria', component: FichaEnfermeriaView, props: true, meta: { requiresAuth: true} },
+    { path: '/fichas/nutricion/:id', name: 'ficha-nutricion', component: FichaNutricionView, props: true, meta: { requiresAuth: true} },
+    { path: '/fichas/fisioterapia/:id', name: 'ficha-fisioterapia', component: FichaFisioterapiaView, props: true, meta: { requiresAuth: true } },
 
-    { path: '/fichas', component: FichaSeleccionView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas', component: FichaSeleccionView, meta: { requiresAuth: true} },
     { path: '/registro', component: RegistroView },
     { path: '/login', component: LoginView },
-    { path: '/Gestion', component: HomeView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/Gestion', component: HomeView, meta: { requiresAuth: true } },
     { path: '/acerca-del-sistema', component: AcercaProyecto, meta: { public: true } },
     { path: '/miembros-del-equipo', component: MiembrosEquipo, meta: { public: true } },
     { path: '/reportes-view', component: ReportesViewUser, meta: { public: true } },
     { path: '/chatbot', component: ChatbotView, meta: { requiresAuth: true } },
     { path: '/gemini', component: GeminiView, meta: { requiresAuth: true } },
     { path: '/ficha/buscar', component: VerFichas, meta: { requiresAuth: true } },
+    { path: '/perfil', component: PerfilView, meta: { requiresAuth: true } },
+    { path: '/reportes', component: ReportesView, meta: { requiresAuth: true } },
   ],
 })
 
@@ -68,23 +72,18 @@ router.beforeEach((to, from, next) => {
   const usuario = userData ? JSON.parse(userData) : null
 
   const isLoggedIn = !!usuario
-  const isAdmin = usuario?.userRol === 'admin'
 
-  // Requiere autenticación pero no está logueado
+  // Requiere estar logueado
   if (to.meta.requiresAuth && !isLoggedIn) {
     return next('/login')
   }
 
-  // Requiere ser admin, pero no lo es
-  if (to.meta.requiresAdmin && !isAdmin) {
-    return next('/')
-  }
-
-  // Usuario logueado quiere acceder a página pública (como login o home)
+  // Ya está logueado y quiere ir a una página pública (como login o registro)
   if (to.meta.public && isLoggedIn) {
-    return isAdmin ? next('/Gestion') : next('/')
+    return next('/')  // o a '/Gestion', si quieres redirigir admins ahí
   }
 
-  return next()
+  next()
 })
+
 export default router
