@@ -50,7 +50,7 @@
     <!-- Hospital Info Carousel Section -->
     <section class="hospital-info animate-slide-up" style="animation-delay: 0.4s;">
       <div class="carousel-container">
-        <div class="carousel-slider" :style="{ transform: `translateX(-${currentImage * 100}%)` }">
+        <div class="carousel-slider" :style="{ transform: `translateY(-${currentImage * 100}%)` }">
           <img
             v-for="(img, idx) in carouselImages"
             :key="idx"
@@ -490,11 +490,11 @@ const departments = [
 /* Carousel Styles */
 .carousel-container {
   position: relative;
-  width: 90vw;
-  max-width: 1600px;
-  height: 60vh;
-  min-height: 350px;
-  max-height: 700px;
+  width: 50vw;
+  max-width: 600px;
+  height: 70vh;
+  min-height: 500px;
+  max-height: 800px;
   overflow: hidden;
   border-radius: 32px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -508,17 +508,18 @@ const departments = [
 
 .carousel-slider {
   display: flex;
+  flex-direction: column;
   transition: transform 0.6s cubic-bezier(.77,0,.18,1);
   height: 100%;
   width: 100%;
 }
 
 .carousel-image {
-  width: 90vw;
-  max-width: 1600px;
-  height: 60vh;
-  min-height: 350px;
-  max-height: 700px;
+  width: 50vw;
+  max-width: 600px;
+  height: 70vh;
+  min-height: 500px;
+  max-height: 800px;
   object-fit: cover;
   border-radius: 32px;
   flex-shrink: 0;
@@ -535,7 +536,7 @@ const departments = [
   border-radius: 50%;
   width: 48px;
   height: 48px;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   z-index: 2;
   transition: background 0.2s;
@@ -554,6 +555,22 @@ const departments = [
 
 .carousel-btn:hover {
   background: rgba(30, 30, 30, 0.6);
+}
+
+@media (max-width: 900px) {
+  .carousel-container {
+    width: 80vw;
+    max-width: 400px;
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .carousel-image {
+    width: 80vw;
+    max-width: 400px;
+    height: 60vh;
+    min-height: 400px;
+  }
 }
 
 /* Animations */
