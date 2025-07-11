@@ -2,8 +2,29 @@
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faRobot } from '@fortawesome/free-solid-svg-icons'
+import {
+  faRobot,
+  faCircleInfo,
+  faIdCard,
+  faFileMedical,
+  faBrain,
+  faCheckCircle,
+  faExclamationTriangle,
+  faSpinner,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faRobot,
+  faCircleInfo,
+  faIdCard,
+  faFileMedical,
+  faBrain,
+  faCheckCircle,
+  faExclamationTriangle,
+  faSpinner,
+)
 
 const cedula = ref('')
 const fichaId = ref('')
@@ -127,7 +148,7 @@ const analyzeWithGemini = async () => {
     const response = await result.response
     analysisResult.value = response.text()
   } catch (err) {
-    error.value = err.message
+    error.value = 'Error en el análisis de la IA. Inténtalo de nuevo más tarde.'
   } finally {
     isLoading.value = false
   }
@@ -141,97 +162,181 @@ const sendSatisfaction = async (score) => {
     satisfactionSent.value = true
   } catch (err) {
     console.error('Error al enviar calificación:', err.message)
+    satisfactionSent.value = true
+    error.value = 'No se pudo enviar la calificación.'
   }
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-    <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">
-          <FontAwesomeIcon :icon="faRobot" class="mr-2" />
-          SIRMA IA
+  <div class="min-h-screen bg-gray-50 p-6 md:p-12 font-sans">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-700 tracking-tight">
+          <font-awesome-icon :icon="['fas', 'robot']" class="mr-3 text-indigo-500" />
+          Asistente Clínico IA
         </h1>
+        <p class="text-lg text-gray-500 mt-2 font-light">Análisis inteligente de fichas médicas.</p>
       </div>
 
-      <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <div
+        class="bg-white border-l-4 border-indigo-400 text-indigo-800 p-4 rounded-lg shadow-sm flex items-start space-x-3"
+      >
+        <font-awesome-icon :icon="['fas', 'circle-info']" class="text-xl mt-1 flex-shrink-0" />
+        <div>
+          <p class="font-bold text-lg mb-1">Instrucciones</p>
+          <ul class="list-disc ml-5 text-sm space-y-1 text-gray-700">
+            <li>
+              <font-awesome-icon :icon="['fas', 'id-card']" class="mr-2" />
+              Ingresa la <strong>cédula</strong> y el <strong>ID de ficha</strong> del paciente.
+            </li>
+            <li>
+              <font-awesome-icon :icon="['fas', 'file-medical']" class="mr-2" />
+              Haz clic en <strong>"Cargar Ficha"</strong> para obtener los datos clínicos.
+            </li>
+            <li>
+              <font-awesome-icon :icon="['fas', 'brain']" class="mr-2" />
+              Luego, presiona <strong>"Analizar con IA"</strong> para recibir un diagnóstico y recomendaciones.
+            </li>
+            <li>
+              <font-awesome-icon :icon="['fas', 'check-circle']" class="mr-2" />
+              Por favor, califica la respuesta. Tu retroalimentación nos ayuda a mejorar.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Búsqueda de Ficha</h2>
         <form
           @submit.prevent="fetchFicha"
-          class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0"
+          class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
         >
-          <input
-            v-model="cedula"
-            type="text"
-            placeholder="Cédula"
-            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-          />
-          <input
-            v-model="fichaId"
-            type="text"
-            placeholder="ID de Ficha (p.ej. FCH01 o 6)"
-            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-          />
-          <button
-            type="submit"
-            :disabled="isLoading"
-            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
-          >
-            {{ isLoading ? 'Cargando...' : 'Cargar ficha' }}
-          </button>
+          <div class="col-span-1">
+            <label for="cedula" class="block text-sm font-medium text-gray-700">Cédula</label>
+            <input
+              id="cedula"
+              v-model="cedula"
+              type="text"
+              placeholder="Ej: 1712345678"
+              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div class="col-span-1">
+            <label for="fichaId" class="block text-sm font-medium text-gray-700">ID de Ficha</label>
+            <input
+              id="fichaId"
+              v-model="fichaId"
+              type="text"
+              placeholder="Ej: FCH01 o 6"
+              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div class="col-span-1">
+            <button
+              type="submit"
+              :disabled="isLoading"
+              class="w-full h-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <font-awesome-icon
+                v-if="isLoading"
+                :icon="['fas', 'spinner']"
+                spin
+                class="mr-2"
+              />
+              {{ isLoading ? 'Cargando...' : 'Cargar Ficha' }}
+            </button>
+          </div>
         </form>
-        <p v-if="error" class="text-red-600 mt-2">{{ error }}</p>
-      </div>
-
-      <div v-if="serviceData" class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Ficha cargada correctamente</h2>
-        <button
-          @click="analyzeWithGemini"
-          :disabled="isLoading || !geminiReady"
-          class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+        <p
+          v-if="error"
+          class="mt-4 text-red-600 font-semibold flex items-center"
         >
-          {{ isLoading ? 'Analizando...' : 'Enviar a I.A.' }}
-        </button>
-        <p v-if="!geminiReady" class="text-sm text-red-600 mt-2">
-          API Key no configurada en variables de entorno.
+          <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="mr-2" />
+          {{ error }}
         </p>
       </div>
 
-      <div v-if="analysisResult" class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Resultado de Análisis</h2>
-        <pre class="bg-gray-100 p-4 rounded overflow-x-auto text-sm whitespace-pre-wrap">{{
-          analysisResult
-        }}</pre>
+      <div v-if="serviceData" class="bg-white rounded-xl shadow-lg p-6 text-center">
+        <p class="text-lg font-medium text-gray-800 mb-4">
+          <font-awesome-icon :icon="['fas', 'check-circle']" class="text-green-500 mr-2" />
+          Ficha del paciente cargada correctamente.
+        </p>
+        <button
+          @click="analyzeWithGemini"
+          :disabled="isLoading || !geminiReady"
+          class="inline-flex items-center px-8 py-3 border border-transparent text-lg font-bold rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <font-awesome-icon
+            v-if="isLoading"
+            :icon="['fas', 'spinner']"
+            spin
+            class="mr-2"
+          />
+          <font-awesome-icon v-else :icon="['fas', 'brain']" class="mr-2" />
+          {{ isLoading ? 'Analizando...' : 'Analizar con I.A.' }}
+        </button>
+        <p v-if="!geminiReady" class="text-sm text-red-600 mt-4">
+          Error: La clave de la API de Gemini no está configurada.
+        </p>
+      </div>
 
-        <div v-if="!satisfactionSent" class="mt-6 text-center">
-          <h3 class="text-lg font-semibold mb-2">¿Qué tan útil fue esta respuesta?</h3>
-          <div class="flex justify-center gap-4 text-3xl">
-            <button @click="sendSatisfaction(1)">😠</button>
-            <button @click="sendSatisfaction(2)">😕</button>
-            <button @click="sendSatisfaction(3)">😐</button>
-            <button @click="sendSatisfaction(4)">🙂</button>
-            <button @click="sendSatisfaction(5)">😄</button>
-          </div>
+      <div v-if="analysisResult" class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <font-awesome-icon :icon="['fas', 'robot']" class="mr-2 text-indigo-500" />
+          Resultado del Análisis
+        </h2>
+        <div
+          class="bg-gray-50 border-l-4 border-indigo-200 p-4 rounded-md overflow-x-auto text-sm leading-relaxed"
+        >
+          <pre class="whitespace-pre-wrap font-sans">{{ analysisResult }}</pre>
         </div>
 
-        <p v-else class="mt-4 text-green-600 text-center font-semibold">
+        <div v-if="!satisfactionSent" class="mt-8 text-center">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">
+            ¿Qué tan útil fue esta respuesta?
+          </h3>
+          <div class="flex justify-center gap-6 text-4xl">
+            <button
+              @click="sendSatisfaction(1)"
+              class="hover:scale-125 transition-transform duration-200"
+            >
+              😡
+            </button>
+            <button
+              @click="sendSatisfaction(2)"
+              class="hover:scale-125 transition-transform duration-200"
+            >
+              😕
+            </button>
+            <button
+              @click="sendSatisfaction(3)"
+              class="hover:scale-125 transition-transform duration-200"
+            >
+              😐
+            </button>
+            <button
+              @click="sendSatisfaction(4)"
+              class="hover:scale-125 transition-transform duration-200"
+            >
+              🙂
+            </button>
+            <button
+              @click="sendSatisfaction(5)"
+              class="hover:scale-125 transition-transform duration-200"
+            >
+              🤩
+            </button>
+          </div>
+        </div>
+        <p
+          v-else
+          class="mt-6 text-green-600 text-center font-bold text-lg flex items-center justify-center"
+        >
+          <font-awesome-icon :icon="['fas', 'check-circle']" class="mr-2" />
           ¡Gracias por tu calificación!
         </p>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
