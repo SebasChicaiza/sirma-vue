@@ -11,9 +11,11 @@ const isLoading = ref(false)
 const error = ref(null)
 const serviceData = ref(null)
 const analysisResult = ref(null)
+const satisfactionSent = ref(false)
 
 let genAI = null
 let model = null
+const base = 'https://backend-sirma-nest.onrender.com'
 
 const promptTemplate =
   ref(`Actúa como un **médico especialista con amplia experiencia en diagnóstico clínico y manejo de pacientes**. Tu objetivo es proporcionar un **diagnóstico principal claro, conciso y altamente probable**, proponer los **exámenes complementarios más relevantes** y ofrecer **recomendaciones iniciales al paciente**, todo basado **exclusivamente** en los datos clínicos que te presentaré.
@@ -62,9 +64,9 @@ const fetchFicha = async () => {
   error.value = null
   serviceData.value = null
   analysisResult.value = null
+  satisfactionSent.value = false
 
   try {
-    const base = 'https://backend-sirma-nest.onrender.com'
     const { data: fichas } = await axios.get(
       `${base}/api/pacientes/fichas-generales/cedula/${cedula.value}`,
     )
@@ -75,38 +77,29 @@ const fetchFicha = async () => {
 
     const { IDMEDICINA, IDENFERMERIA, IDNUTRICION, IDFISIOTERAPIA } = ficha
 
-    // Llamadas individuales con try/catch
     let medicinaData = null
     try {
       const resp = await axios.get(`${base}/api/medicina/${IDMEDICINA}`)
       medicinaData = resp.data
-    } catch (_e) {
-      console.warn('Medicina API falló o devolvió nada')
-    }
+    } catch (_) {}
 
     let enfermeriaData = null
     try {
       const resp = await axios.get(`${base}/api/enfermeria/completa/${IDENFERMERIA}`)
       enfermeriaData = resp.data
-    } catch (_e) {
-      console.warn('Enfermería API falló o devolvió nada')
-    }
+    } catch (_) {}
 
     let nutricionData = null
     try {
       const resp = await axios.get(`${base}/nutricion/completa/${IDNUTRICION}`)
       nutricionData = resp.data
-    } catch (_e) {
-      console.warn('Nutrición API falló o devolvió nada')
-    }
+    } catch (_) {}
 
     let fisioterapiaData = null
     try {
       const resp = await axios.get(`${base}/api/fisioterapia/completo/${IDFISIOTERAPIA}`)
       fisioterapiaData = resp.data
-    } catch (_e) {
-      console.warn('Fisioterapia API falló o devolvió nada')
-    }
+    } catch (_) {}
 
     serviceData.value = {
       datosGenerales: ficha,
@@ -137,6 +130,17 @@ const analyzeWithGemini = async () => {
     error.value = err.message
   } finally {
     isLoading.value = false
+  }
+}
+
+const sendSatisfaction = async (score) => {
+  try {
+    await axios.post(`${base}/satisfaccion-inteligencia-artificial`, {
+      calificacion: score,
+    })
+    satisfactionSent.value = true
+  } catch (err) {
+    console.error('Error al enviar calificación:', err.message)
   }
 }
 </script>
@@ -180,8 +184,7 @@ const analyzeWithGemini = async () => {
       </div>
 
       <div v-if="serviceData" class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4">Datos de Servicios Agregados</h2>
-        <pre class="bg-gray-100 p-4 rounded overflow-x-auto text-sm">{{ serviceData }}</pre>
+        <h2 class="text-xl font-semibold mb-4">Ficha cargada correctamente</h2>
         <button
           @click="analyzeWithGemini"
           :disabled="isLoading || !geminiReady"
@@ -199,17 +202,30 @@ const analyzeWithGemini = async () => {
         <pre class="bg-gray-100 p-4 rounded overflow-x-auto text-sm whitespace-pre-wrap">{{
           analysisResult
         }}</pre>
+
+        <div v-if="!satisfactionSent" class="mt-6 text-center">
+          <h3 class="text-lg font-semibold mb-2">¿Qué tan útil fue esta respuesta?</h3>
+          <div class="flex justify-center gap-4 text-3xl">
+            <button @click="sendSatisfaction(1)">😠</button>
+            <button @click="sendSatisfaction(2)">😕</button>
+            <button @click="sendSatisfaction(3)">😐</button>
+            <button @click="sendSatisfaction(4)">🙂</button>
+            <button @click="sendSatisfaction(5)">😄</button>
+          </div>
+        </div>
+
+        <p v-else class="mt-4 text-green-600 text-center font-semibold">
+          ¡Gracias por tu calificación!
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Estilos adicionales si es necesario */
 .animate-spin {
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   from {
     transform: rotate(0deg);
