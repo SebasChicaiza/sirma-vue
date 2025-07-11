@@ -21,6 +21,7 @@ import ReportesViewUser from '@/views/ReportesViewUser.vue'
 import MiembrosEquipo from '@/views/MiembrosEquipo.vue'
 import ChatbotView from '@/views/IA/ChatbotView.vue'
 import GeminiView from '@/views/IA/GeminiView.vue'
+import VerFichas from '@/views/VerFichas.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,22 +35,31 @@ const router = createRouter({
     { path: '/personas', component: PersonaListView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/personas/crear', component: PersonaCreateView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/personas/editar/:id', component: PersonaEditView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
-    //{ path: '/fichas', component: FichaListView },
     { path: '/chat', component: ChatBot },
+
+
     { path: '/ficha/general', component: FichaGeneralView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/ficha/medica', component: FichaMedicaView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/fichas', component: FichaSeleccionView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/registro', component: RegistroView },
-    { path: '/login', component: LoginView },
     { path: '/ficha/enfermeria', component: FichaEnfermeriaView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/ficha/nutricion', component: FichaNutricionView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/ficha/fisioterapia', component: FichaFisioterapiaView, meta: { requiresAuth: true, requiresAdmin: true } },
+
+    { path: '/fichas/generales/:id', name: 'ficha-generales', component: FichaGeneralView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas/medicina/:id', name: 'ficha-medicina', component: FichaMedicaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas/enfermeria/:id', name: 'ficha-enfermeria', component: FichaEnfermeriaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas/nutricion/:id', name: 'ficha-nutricion', component: FichaNutricionView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/fichas/fisioterapia/:id', name: 'ficha-fisioterapia', component: FichaFisioterapiaView, props: true, meta: { requiresAuth: true, requiresAdmin: true } },
+
+    { path: '/fichas', component: FichaSeleccionView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/registro', component: RegistroView },
+    { path: '/login', component: LoginView },
     { path: '/Gestion', component: HomeView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/acerca-del-sistema', component: AcercaProyecto, meta: { public: true } },
     { path: '/miembros-del-equipo', component: MiembrosEquipo, meta: { public: true } },
     { path: '/reportes-view', component: ReportesViewUser, meta: { public: true } },
     { path: '/chatbot', component: ChatbotView, meta: { requiresAuth: true } },
     { path: '/gemini', component: GeminiView, meta: { requiresAuth: true } },
+    { path: '/ficha/buscar', component: VerFichas, meta: { requiresAuth: true } },
   ],
 })
 

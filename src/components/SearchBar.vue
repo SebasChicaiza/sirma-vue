@@ -32,12 +32,24 @@ export default {
     placeholder: {
       type: String,
       default: 'Buscar...'
+    },
+    // Add the new prop to receive the initial value
+    initialValue: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      searchTerm: ''
+      // Use the prop's value to set the initial state of the input
+      searchTerm: this.initialValue
     };
+  },
+  // Use a watcher to react to changes in the prop
+  watch: {
+    initialValue(newValue) {
+      this.searchTerm = newValue;
+    }
   },
   methods: {
     emitSearch() {

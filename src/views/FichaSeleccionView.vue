@@ -1,51 +1,70 @@
 <template>
-  <div class="ficha-seleccion-container">
-    <h1 class="page-title">Seleccionar Tipo de Ficha</h1>
-    <p class="page-description">Por favor, elige el tipo de ficha con el que deseas trabajar.</p>
+  <div className="ficha-seleccion-container">
+      <h1 className="page-title">Seleccionar Tipo de Ficha</h1>
+      <p className="page-description">Por favor, elige el tipo de ficha con el que deseas trabajar.</p>
 
-    <div class="button-grid">
-      <router-link to="/ficha/general" class="selection-button">
-        <div class="button-icon-wrapper general">
-          <i class="icon-file-alt"></i>
-        </div>
-        <span class="button-text">Ficha General</span>
-        <p class="button-description">
-          Información básica del paciente: datos personales, contacto, etc.
-        </p>
-      </router-link>
+      <div className="button-grid">
+        <RouterLink to="/ficha/buscar" className="selection-button">
+          <div className="button-icon-wrapper general">
+            <i className="fa-solid fa-magnifying-glass icon-file-alt"></i>
+          </div>
+          <span className="button-text">Fichas de un paciente</span>
+          <p className="button-description">
+            Busca y selecciona un paciente para ver sus fichas.
+          </p>
+        </RouterLink>
 
-      <router-link to="/ficha/medica" class="selection-button">
-        <div class="button-icon-wrapper medical">
-          <i class="icon-stethoscope"></i>
-        </div>
-        <span class="button-text">Ficha Médica</span>
-        <p class="button-description">
-          Historial clínico, diagnósticos, tratamientos, alergias, etc.
-        </p>
-      </router-link>
-      <router-link to="/ficha/enfermeria" class="selection-button">
-        <div class="button-icon-wrapper enfermeria"><i class="icon-nurse-cap"></i></div>
-        <span class="button-text">Ficha de Enfermería</span>
-        <p class="button-description">
-          Evaluación de enfermería, planes de cuidado, intervenciones y seguimiento.
-        </p>
-      </router-link>
-      <router-link to="/ficha/nutricion" class="selection-button">
-        <div class="button-icon-wrapper nutricion"><i class="icon-nurse-cap"></i></div>
-        <span class="button-text">Ficha de Nutricion</span>
-        <p class="button-description">
-          Evaluación de nutrición, planes de alimentación, seguimiento de peso y salud.
-        </p>
-      </router-link>
-      <router-link to="/ficha/fisioterapia" class="selection-button">
-        <div class="button-icon-wrapper fisioterapia"><i class="icon-nurse-cap"></i></div>
-        <span class="button-text">Ficha de Fisioterapia</span>
-        <p class="button-description">
-          Evaluación de fisioterapia, planes de tratamiento, ejercicios y seguimiento.
-        </p>
-      </router-link>
+        <RouterLink to="/ficha/general" className="selection-button">
+          <div className="button-icon-wrapper general">
+            <i className="fa-solid fa-file-lines icon-file-alt"></i>
+          </div>
+          <span className="button-text">Ficha General</span>
+          <p className="button-description">
+            Información básica del paciente: datos personales, contacto, etc.
+          </p>
+        </RouterLink>
+
+        <RouterLink to="/ficha/medica" className="selection-button">
+          <div className="button-icon-wrapper medical">
+            <i className="fa-solid fa-stethoscope icon-file-alt"></i>
+          </div>
+          <span className="button-text">Ficha Médica</span>
+          <p className="button-description">
+            Historial clínico, diagnósticos, tratamientos, alergias, etc.
+          </p>
+        </RouterLink>
+
+        <RouterLink to="/ficha/enfermeria" className="selection-button">
+          <div className="button-icon-wrapper enfermeria">
+            <i className="fa-solid fa-user-nurse icon-file-alt"></i>
+          </div>
+          <span className="button-text">Ficha de Enfermería</span>
+          <p className="button-description">
+            Evaluación de enfermería, planes de cuidado, intervenciones y seguimiento.
+          </p>
+        </RouterLink>
+
+        <RouterLink to="/ficha/nutricion" className="selection-button">
+          <div className="button-icon-wrapper nutricion">
+            <i className="fa-solid fa-apple-whole icon-file-alt"></i>
+          </div>
+          <span className="button-text">Ficha de Nutricion</span>
+          <p className="button-description">
+            Evaluación de nutrición, planes de alimentación, seguimiento de peso y salud.
+          </p>
+        </RouterLink>
+
+        <RouterLink to="/ficha/fisioterapia" className="selection-button">
+          <div className="button-icon-wrapper fisioterapia">
+            <i className="fa-solid fa-bone icon-file-alt"></i>
+          </div>
+          <span className="button-text">Ficha de Fisioterapia</span>
+          <p className="button-description">
+            Evaluación de fisioterapia, planes de tratamiento, ejercicios y seguimiento.
+          </p>
+        </RouterLink>
+      </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -117,6 +136,11 @@
 .selection-button:hover {
   transform: translateY(-8px); /* Efecto "levantar" al pasar el ratón */
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Sombra más grande al pasar el ratón */
+}
+
+.icon-file-alt{
+  font-size: 2rem; /* Tamaño grande para el ícono */
+  color: var(--color-text-lighter); /* Color del ícono */
 }
 
 .button-icon-wrapper {
