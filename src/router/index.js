@@ -24,6 +24,7 @@ import GeminiView from '@/views/IA/GeminiView.vue'
 import VerFichas from '@/views/VerFichas.vue'
 import PerfilView from '@/views/Usuario/PerfilView.vue'
 import ReportesView from '@/views/ReportesView.vue'
+import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,22 +69,19 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const userData = localStorage.getItem('usuario')
-  const usuario = userData ? JSON.parse(userData) : null
+  const userStore = useUserStore()
+  userStore.syncFromLocalStorage()
 
+  const usuario = userStore.usuario
   const isLoggedIn = !!usuario
+  const isAdmin = usuario?.userRol === 'admin'
 
-  // Requiere estar logueado
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    return next('/login')
-  }
+  if (to.meta.requiresAuth && !isLoggedIn) return next('/login')
+  if (to.meta.requiresAdmin && !isAdmin) return next('/')
+  if (to.meta.public && isLoggedIn) return next('/Gestion')
 
-  // Ya está logueado y quiere ir a una página pública (como login o registro)
-  if (to.meta.public && isLoggedIn) {
-    return next('/')  // o a '/Gestion', si quieres redirigir admins ahí
-  }
-
-  next()
+  return next()
 })
+
 
 export default router
