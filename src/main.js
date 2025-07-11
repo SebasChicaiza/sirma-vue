@@ -9,7 +9,7 @@ import router from './router'
 /* Importar Font Awesome */
 import { library } from '@fortawesome/fontawesome-svg-core' // El núcleo de Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome' // El componente Vue
-
+import { useUserStore } from './stores/user'
 /* Importar los íconos que vas a usar (Free Solid Icons) */
 import {
   faHome,
@@ -56,6 +56,9 @@ const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.use(createPinia())
-app.use(router)
 
+const userStore = useUserStore()
+userStore.syncFromLocalStorage()
+
+app.use(router)
 app.mount('#app')
