@@ -12,8 +12,6 @@
         <ul>
           <li><router-link to="/">Inicio</router-link></li>
           <li><router-link to="/fichas">Fichas</router-link></li>
-          <li><router-link to="/usuarios">Usuarios</router-link></li>
-          <li><router-link to="/calendario">Calendario</router-link></li>
           <li><router-link to="/reportes">Reportes</router-link></li>
         </ul>
       </div>
@@ -31,14 +29,7 @@
         <p class="footer-schedule">Horario de atención: Lunes a Viernes, 8:00 - 17:00</p>
       </div>
 
-      <div class="footer-section footer-legal">
-        <h3>Información Legal</h3>
-        <ul>
-          <li><router-link to="/privacidad">Política de Privacidad</router-link></li>
-          <li><router-link to="/terminos">Términos y Condiciones</router-link></li>
-          <li><router-link to="/ayuda">Ayuda y Preguntas Frecuentes</router-link></li>
-        </ul>
-      </div>
+
     </div>
 
     <div class="footer-bottom">
