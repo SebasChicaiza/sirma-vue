@@ -9,292 +9,304 @@
         </div>
       </div>
 
-      <h2 class="form-title">FICHA GENERAL DEL PACIENTE</h2>
-      <SearchBar
-        placeholder="Buscar cliente por nombre o cédula..."
-        @search="handleSearch"
-        class="w-full sm:w-auto ml-auto"
-      />
-      <table v-if="resultadosBusqueda.length" class="tabla-busqueda">
-        <thead>
-          <tr>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Edad</th>
-            <th>Cédula</th>
-            <th>Seleccionar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="persona in resultadosBusqueda" :key="persona.idpersona">
-            <td>
-              <strong>{{ persona.perPrimernombre }} {{ persona.perSegundonombre }}</strong>
-            </td>
-            <td>{{ persona.perPrimerapellido }} {{ persona.perSegundoapellido }}</td>
-            <td>{{ persona.perEdad }} años</td>
-            <td>{{ persona.perCedula }}</td>
-            <td>
-              <button
-                @click="seleccionarPersona(persona)"
-                :disabled="idPersonaSeleccionada == persona.idpersona"
-                :style="
-                  idPersonaSeleccionada == persona.idpersona
-                    ? 'background-color: #22c55e; color: white;'
-                    : ''
-                "
-              >
-                {{ idPersonaSeleccionada == persona.idpersona ? 'Seleccionado' : 'Seleccionar' }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-else-if="busquedaRealizada && !idPersonaSeleccionada" class="mt-4 flex justify-center">
-        <button
-          @click="router.push('/personas/crear')"
-          class="submit-button"
-          style="background-color: coral"
-        >
-          Agregar paciente
+      <h2 class="form-title">
+        {{ isEditing ? 'EDITAR FICHA GENERAL DEL PACIENTE' : 'FICHA GENERAL DEL PACIENTE' }}
+      </h2>
+
+      <div v-if="isLoadingData" class="loading-state">
+        <div class="loader"></div>
+        <p>Cargando datos de la ficha...</p>
+      </div>
+
+      <div v-else>
+        <div v-if="!isEditing">
+          <SearchBar
+            placeholder="Buscar cliente por nombre o cédula..."
+            @search="handleSearch"
+            class="w-full sm:w-auto ml-auto"
+          />
+          <table v-if="resultadosBusqueda.length" class="tabla-busqueda">
+            <thead>
+              <tr>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Cédula</th>
+                <th>Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="persona in resultadosBusqueda" :key="persona.idpersona">
+                <td>
+                  <strong>{{ persona.perPrimernombre }} {{ persona.perSegundonombre }}</strong>
+                </td>
+                <td>{{ persona.perPrimerapellido }} {{ persona.perSegundoapellido }}</td>
+                <td>{{ persona.perEdad }} años</td>
+                <td>{{ persona.perCedula }}</td>
+                <td>
+                  <button
+                    @click="seleccionarPersona(persona)"
+                    :disabled="idPersonaSeleccionada == persona.idpersona"
+                    :style="
+                      idPersonaSeleccionada == persona.idpersona
+                        ? 'background-color: #22c55e; color: white;'
+                        : ''
+                    "
+                  >
+                    {{ idPersonaSeleccionada == persona.idpersona ? 'Seleccionado' : 'Seleccionar' }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-else-if="busquedaRealizada && !idPersonaSeleccionada" class="mt-4 flex justify-center">
+            <button
+              @click="router.push('/personas/crear')"
+              class="submit-button"
+              style="background-color: coral"
+            >
+              Agregar paciente
+            </button>
+          </div>
+        </div>
+
+        <div class="form-metadata">
+          <div class="form-group inline-group">
+            <label for="idFicha">Ficha N°:</label>
+            <input
+              id="idFicha"
+              v-model.trim="form.idFicha"
+              type="text"
+              placeholder="Ej: FCH02"
+              class="small-input"
+              required
+            />
+          </div>
+          <div class="form-group inline-group">
+            <label for="pacFechaprimercontacto">Fecha de Contacto:</label>
+            <input
+              id="pacFechaprimercontacto"
+              v-model="form.pacFechaprimercontacto"
+              type="date"
+              class="small-input"
+              :max="currentDate"
+              required
+            />
+          </div>
+        </div>
+
+        <section class="form-section">
+          <h3 class="section-title">🧍 Estado y Observaciones</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pacEstadogeneral">Estado General:</label>
+              <select id="pacEstadogeneral" v-model="form.pacEstadogeneral" required>
+                <option value="" disabled>Seleccione un estado</option>
+                <option value="Estable">Estable</option>
+                <option value="Delicado">Delicado</option>
+                <option value="Critico">Crítico</option>
+                <option value="En Recuperacion">En Recuperación</option>
+                <option value="Pendiente de Evaluacion">Pendiente de Evaluación</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pacObservaciones">Observaciones:</label>
+              <textarea
+                id="pacObservaciones"
+                v-model.trim="form.pacObservaciones"
+                rows="3"
+                placeholder="Observaciones generales del paciente"
+              ></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="section-title">👤 Datos del Encuestador</h3>
+          <div class="form-group">
+            <label for="dgNombreencuestador">Nombre del Encuestador:</label>
+            <input
+              id="dgNombreencuestador"
+              v-model.trim="form.dgNombreencuestador"
+              type="text"
+              placeholder="Ej: Dr. Juan Pérez"
+              required
+              pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+"
+              title="Solo letras y espacios permitidos."
+            />
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3 class="section-title">🩺 Signos Vitales y Diagnósticos</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="dgPasAcostado">PAS Acostado (mm Hg):</label>
+              <input
+                id="dgPasAcostado"
+                v-model.number="form.dgPasAcostado"
+                type="number"
+                min="70"
+                max="200"
+                placeholder="Ej: 120"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgPadAcostado">PAD Acostado (mm Hg):</label>
+              <input
+                id="dgPadAcostado"
+                v-model.number="form.dgPadAcostado"
+                type="number"
+                min="40"
+                max="120"
+                placeholder="Ej: 80"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgPasSentado">PAS Sentado (mm Hg):</label>
+              <input
+                id="dgPasSentado"
+                v-model.number="form.dgPasSentado"
+                type="number"
+                min="70"
+                max="200"
+                placeholder="Ej: 122"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgPadSentado">PAD Sentado (mm Hg):</label>
+              <input
+                id="dgPadSentado"
+                v-model.number="form.dgPadSentado"
+                type="number"
+                min="40"
+                max="120"
+                placeholder="Ej: 82"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgDiagnosticoha">Diagnóstico HA:</label>
+              <select id="dgDiagnosticoha" v-model="form.dgDiagnosticoha">
+                <option value="" disabled>Seleccione un diagnóstico</option>
+                <option value="Normotenso">Normotenso</option>
+                <option value="Hipertensión Etapa 1">Hipertensión Etapa 1</option>
+                <option value="Hipertensión Etapa 2">Hipertensión Etapa 2</option>
+                <option value="Crisis Hipertensiva">Crisis Hipertensiva</option>
+                <option value="Hipotension">Hipotensión</option>
+                <option value="Hipertension Controlada">Hipertensión Controlada</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dgPulsopormin">Pulso por Minuto (ppm):</label>
+              <input
+                id="dgPulsopormin"
+                v-model.number="form.dgPulsopormin"
+                type="number"
+                min="40"
+                max="180"
+                placeholder="Ej: 72"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgDiagnosticopulso">Diagnóstico Pulso:</label>
+              <select id="dgDiagnosticopulso" v-model="form.dgDiagnosticopulso">
+                <option value="" disabled>Seleccione un diagnóstico</option>
+                <option value="Normal">Normal</option>
+                <option value="Taquicardia">Taquicardia</option>
+                <option value="Bradicardia">Bradicardia</option>
+                <option value="Arrítmico">Arrítmico</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dgFrecrespiratoria">Frecuencia Respiratoria (rpm):</label>
+              <input
+                id="dgFrecrespiratoria"
+                v-model.number="form.dgFrecrespiratoria"
+                type="number"
+                min="10"
+                max="30"
+                placeholder="Ej: 18"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgDiagnosticofr">Diagnóstico FR:</label>
+              <select id="dgDiagnosticofr" v-model="form.dgDiagnosticofr">
+                <option value="" disabled>Seleccione un diagnóstico</option>
+                <option value="Normal">Normal</option>
+                <option value="Taquipnea">Taquipnea</option>
+                <option value="Bradipnea">Bradipnea</option>
+                <option value="Disnea">Disnea</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dgSaturacion">Saturación (%):</label>
+              <input
+                id="dgSaturacion"
+                v-model.number="form.dgSaturacion"
+                type="number"
+                min="85"
+                max="100"
+                placeholder="Ej: 98"
+                step="1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgDiagnosticosaturacion">Diagnóstico Saturación:</label>
+              <select id="dgDiagnosticosaturacion" v-model="form.dgDiagnosticosaturacion">
+                <option value="" disabled>Seleccione un diagnóstico</option>
+                <option value="Optima">Óptima</option>
+                <option value="Leve Hipoxemia">Leve Hipoxemia</option>
+                <option value="Moderada Hipoxemia">Moderada Hipoxemia</option>
+                <option value="Severa Hipoxemia">Severa Hipoxemia</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dgTemperatura">Temperatura (°C):</label>
+              <input
+                id="dgTemperatura"
+                v-model.number="form.dgTemperatura"
+                type="number"
+                min="34.0"
+                max="42.0"
+                placeholder="Ej: 36.7"
+                step="0.1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="dgDiagnosticotemperatura">Diagnóstico Temperatura:</label>
+              <select id="dgDiagnosticotemperatura" v-model="form.dgDiagnosticotemperatura">
+                <option value="" disabled>Seleccione un diagnóstico</option>
+                <option value="Normal">Normal</option>
+                <option value="Febril">Febril</option>
+                <option value="Hipetermia">Hipertermia</option>
+                <option value="Hipotermia">Hipotermia</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
+          {{ isSubmitting ? 'Guardando Ficha...' : (isEditing ? 'Actualizar Ficha General' : 'Guardar Ficha General') }}
         </button>
       </div>
-      <div class="form-metadata">
-        <div class="form-group inline-group">
-          <label for="idFicha">Ficha N°:</label>
-          <input
-            id="idFicha"
-            v-model.trim="form.idFicha"
-            type="text"
-            placeholder="Ej: FCH02"
-            class="small-input"
-            required
-          />
-        </div>
-        <div class="form-group inline-group">
-          <label for="pacFechaprimercontacto">Fecha de Contacto:</label>
-          <input
-            id="pacFechaprimercontacto"
-            v-model="form.pacFechaprimercontacto"
-            type="date"
-            class="small-input"
-            :max="currentDate"
-            required
-          />
-        </div>
-      </div>
-
-      <section class="form-section">
-        <h3 class="section-title">🧍 Estado y Observaciones</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="pacEstadogeneral">Estado General:</label>
-            <select id="pacEstadogeneral" v-model="form.pacEstadogeneral" required>
-              <option value="" disabled>Seleccione un estado</option>
-              <option value="Estable">Estable</option>
-              <option value="Delicado">Delicado</option>
-              <option value="Critico">Crítico</option>
-              <option value="En Recuperacion">En Recuperación</option>
-              <option value="Pendiente de Evaluacion">Pendiente de Evaluación</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="pacObservaciones">Observaciones:</label>
-            <textarea
-              id="pacObservaciones"
-              v-model.trim="form.pacObservaciones"
-              rows="3"
-              placeholder="Observaciones generales del paciente"
-            ></textarea>
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">👤 Datos del Encuestador</h3>
-        <div class="form-group">
-          <label for="dgNombreencuestador">Nombre del Encuestador:</label>
-          <input
-            id="dgNombreencuestador"
-            v-model.trim="form.dgNombreencuestador"
-            type="text"
-            placeholder="Ej: Dr. Juan Pérez"
-            required
-            pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+"
-            title="Solo letras y espacios permitidos."
-          />
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h3 class="section-title">🩺 Signos Vitales y Diagnósticos</h3>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="dgPasAcostado">PAS Acostado (mm Hg):</label>
-            <input
-              id="dgPasAcostado"
-              v-model.number="form.dgPasAcostado"
-              type="number"
-              min="70"
-              max="200"
-              placeholder="Ej: 120"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgPadAcostado">PAD Acostado (mm Hg):</label>
-            <input
-              id="dgPadAcostado"
-              v-model.number="form.dgPadAcostado"
-              type="number"
-              min="40"
-              max="120"
-              placeholder="Ej: 80"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgPasSentado">PAS Sentado (mm Hg):</label>
-            <input
-              id="dgPasSentado"
-              v-model.number="form.dgPasSentado"
-              type="number"
-              min="70"
-              max="200"
-              placeholder="Ej: 122"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgPadSentado">PAD Sentado (mm Hg):</label>
-            <input
-              id="dgPadSentado"
-              v-model.number="form.dgPadSentado"
-              type="number"
-              min="40"
-              max="120"
-              placeholder="Ej: 82"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgDiagnosticoha">Diagnóstico HA:</label>
-            <select id="dgDiagnosticoha" v-model="form.dgDiagnosticoha">
-              <option value="" disabled>Seleccione un diagnóstico</option>
-              <option value="Normotenso">Normotenso</option>
-              <option value="Hipertensión Etapa 1">Hipertensión Etapa 1</option>
-              <option value="Hipertensión Etapa 2">Hipertensión Etapa 2</option>
-              <option value="Crisis Hipertensiva">Crisis Hipertensiva</option>
-              <option value="Hipotension">Hipotensión</option>
-              <option value="Hipertension Controlada">Hipertensión Controlada</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="dgPulsopormin">Pulso por Minuto (ppm):</label>
-            <input
-              id="dgPulsopormin"
-              v-model.number="form.dgPulsopormin"
-              type="number"
-              min="40"
-              max="180"
-              placeholder="Ej: 72"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgDiagnosticopulso">Diagnóstico Pulso:</label>
-            <select id="dgDiagnosticopulso" v-model="form.dgDiagnosticopulso">
-              <option value="" disabled>Seleccione un diagnóstico</option>
-              <option value="Normal">Normal</option>
-              <option value="Taquicardia">Taquicardia</option>
-              <option value="Bradicardia">Bradicardia</option>
-              <option value="Arrítmico">Arrítmico</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="dgFrecrespiratoria">Frecuencia Respiratoria (rpm):</label>
-            <input
-              id="dgFrecrespiratoria"
-              v-model.number="form.dgFrecrespiratoria"
-              type="number"
-              min="10"
-              max="30"
-              placeholder="Ej: 18"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgDiagnosticofr">Diagnóstico FR:</label>
-            <select id="dgDiagnosticofr" v-model="form.dgDiagnosticofr">
-              <option value="" disabled>Seleccione un diagnóstico</option>
-              <option value="Normal">Normal</option>
-              <option value="Taquipnea">Taquipnea</option>
-              <option value="Bradipnea">Bradipnea</option>
-              <option value="Disnea">Disnea</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="dgSaturacion">Saturación (%):</label>
-            <input
-              id="dgSaturacion"
-              v-model.number="form.dgSaturacion"
-              type="number"
-              min="85"
-              max="100"
-              placeholder="Ej: 98"
-              step="1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgDiagnosticosaturacion">Diagnóstico Saturación:</label>
-            <select id="dgDiagnosticosaturacion" v-model="form.dgDiagnosticosaturacion">
-              <option value="" disabled>Seleccione un diagnóstico</option>
-              <option value="Optima">Óptima</option>
-              <option value="Leve Hipoxemia">Leve Hipoxemia</option>
-              <option value="Moderada Hipoxemia">Moderada Hipoxemia</option>
-              <option value="Severa Hipoxemia">Severa Hipoxemia</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="dgTemperatura">Temperatura (°C):</label>
-            <input
-              id="dgTemperatura"
-              v-model.number="form.dgTemperatura"
-              type="number"
-              min="34.0"
-              max="42.0"
-              placeholder="Ej: 36.7"
-              step="0.1"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="dgDiagnosticotemperatura">Diagnóstico Temperatura:</label>
-            <select id="dgDiagnosticotemperatura" v-model="form.dgDiagnosticotemperatura">
-              <option value="" disabled>Seleccione un diagnóstico</option>
-              <option value="Normal">Normal</option>
-              <option value="Febril">Febril</option>
-              <option value="Hipetermia">Hipertermia</option>
-              <option value="Hipotermia">Hipotermia</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
-        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha General' }}
-      </button>
-
       <p v-if="submitMessage" :class="['submit-info', submitStatus]">
         {{ submitMessage }}
       </p>
@@ -304,34 +316,35 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import SearchBar from '@/components/SearchBar.vue'
 
+const router = useRouter()
+const route = useRoute()
+
 const idPersonaSeleccionada = ref(localStorage.getItem('idpersona'))
 
-const router = useRouter()
-
 const form = reactive({
-  idFicha: '', // Ejemplo: FCH02
-  idpersona: null, // Se llena al seleccionar persona
-  pacFechaprimercontacto: '', // Fecha de contacto
-  pacEstadogeneral: '', // Estado general: Select
-  pacObservaciones: '', // Observaciones
-  dgNombreencuestador: '', // Nombre encuestador
-  dgPasAcostado: null, // Presión sistólica acostado (número entero)
-  dgPadAcostado: null, // Presión diastólica acostado (número entero)
-  dgPasSentado: null, // Presión sistólica sentado (número entero)
-  dgPadSentado: null, // Presión diastólica sentado (número entero)
-  dgDiagnosticoha: '', // Diagnóstico hipertensión arterial: Select
-  dgPulsopormin: null, // Pulso por minuto (número entero)
-  dgDiagnosticopulso: '', // Diagnóstico pulso: Select
-  dgFrecrespiratoria: null, // Frecuencia respiratoria (número entero)
-  dgDiagnosticofr: '', // Diagnóstico frecuencia respiratoria: Select
-  dgSaturacion: null, // Saturación (número entero)
-  dgDiagnosticosaturacion: '', // Diagnóstico saturación: Select
-  dgTemperatura: null, // Temperatura (número con decimales)
-  dgDiagnosticotemperatura: '', // Diagnóstico temperatura: Select
+  idFicha: '',
+  idpersona: null,
+  pacFechaprimercontacto: '',
+  pacEstadogeneral: '',
+  pacObservaciones: '',
+  dgNombreencuestador: '',
+  dgPasAcostado: null,
+  dgPadAcostado: null,
+  dgPasSentado: null,
+  dgPadSentado: null,
+  dgDiagnosticoha: '',
+  dgPulsopormin: null,
+  dgDiagnosticopulso: '',
+  dgFrecrespiratoria: null,
+  dgDiagnosticofr: '',
+  dgSaturacion: null,
+  dgDiagnosticosaturacion: '',
+  dgTemperatura: null,
+  dgDiagnosticotemperatura: '',
   dgFirmaconcentimiento: false,
   dgFirmamedicina: false,
   dgFirmaenfermeria: false,
@@ -344,60 +357,118 @@ const submitMessage = ref('')
 const submitStatus = ref('')
 const resultadosBusqueda = ref([])
 const busquedaRealizada = ref(false)
-const currentDate = ref('') // Para limitar la fecha de contacto
+const currentDate = ref('')
 
-onMounted(() => {
-  // Inicializa la fecha máxima para el input de fecha
-  currentDate.value = new Date().toISOString().split('T')[0]
-})
+const isEditing = ref(false)
+const fichaId = ref(null)
+const cedulaId = ref(null)
+const isLoadingData = ref(false)
+
+const fetchDataForEditing = async (cedula) => {
+  isLoadingData.value = true
+  submitMessage.value = ''
+  try {
+    // 1. Fetch patient data using cedula
+    const personaRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${cedula}`);
+    const persona = personaRes.data;
+    if (persona && persona.idpersona) {
+      form.idpersona = persona.idpersona;
+      idPersonaSeleccionada.value = persona.idpersona;
+    }
+
+    // 2. Fetch medical ficha data using cedula
+    const fichaRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/fichas-medicas/${cedula}`);
+    const fichaData = fichaRes.data[0];
+    if (fichaData) {
+      form.idFicha = fichaData.idficha;
+      form.pacFechaprimercontacto = fichaData.pacFechaprimercontacto;
+      form.pacEstadogeneral = fichaData.pacEstadogeneral;
+      form.pacObservaciones = fichaData.pacObservaciones;
+    }
+
+    // 3. Fetch general data using cedula
+    const datosGeneralesRes = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/personas/datos-generales/${cedula}`);
+    const datosGenerales = datosGeneralesRes.data[0];
+    if (datosGenerales) {
+      fichaId.value = datosGenerales.iddatosgenerales;
+      form.dgNombreencuestador = datosGenerales.dgNombreencuestador;
+      form.dgPasAcostado = parseFloat(datosGenerales.dgPasAcostado);
+      form.dgPadAcostado = parseFloat(datosGenerales.dgPadAcostado);
+      form.dgPasSentado = parseFloat(datosGenerales.dgPasSentado);
+      form.dgPadSentado = parseFloat(datosGenerales.dgPadSentado);
+      form.dgDiagnosticoha = datosGenerales.dgDiagnosticoha;
+      form.dgPulsopormin = datosGenerales.dgPulsopormin;
+      form.dgDiagnosticopulso = datosGenerales.dgDiagnosticopulso;
+      form.dgFrecrespiratoria = datosGenerales.dgFrecrespiratoria;
+      form.dgDiagnosticofr = datosGenerales.dgDiagnosticofr;
+      form.dgSaturacion = datosGenerales.dgSaturacion;
+      form.dgDiagnosticosaturacion = datosGenerales.dgDiagnosticosaturacion;
+      form.dgTemperatura = parseFloat(datosGenerales.dgTemperatura);
+      form.dgDiagnosticotemperatura = datosGenerales.dgDiagnosticotemperatura;
+      form.dgFirmaconcentimiento = !!datosGenerales.dgFirmaconcentimiento;
+      form.dgFirmamedicina = !!datosGenerales.dgFirmamedicina;
+      form.dgFirmaenfermeria = !!datosGenerales.dgFirmaenfermeria;
+      form.dgFirmanutricion = !!datosGenerales.dgFirmanutricion;
+      form.dgFirmafisioterapia = !!datosGenerales.dgFirmafisioterapia;
+    }
+
+    submitMessage.value = 'Ficha completa cargada exitosamente para su edición.';
+    submitStatus.value = 'success';
+  } catch (error) {
+    console.error('Error al cargar la ficha:', error);
+    submitMessage.value = 'Error al cargar la ficha. Verifique la cédula o la conexión.';
+    submitStatus.value = 'error';
+  } finally {
+    isLoadingData.value = false;
+  }
+};
 
 const handleSearch = async (busqueda) => {
-  localStorage.removeItem('idpersona') // Limpia el idpersona en localStorage al iniciar una nueva búsqueda
-  idPersonaSeleccionada.value = null // Limpia la variable reactiva
+  if (isEditing.value) return;
 
-  busquedaRealizada.value = false
-  resultadosBusqueda.value = []
+  localStorage.removeItem('idpersona');
+  idPersonaSeleccionada.value = null;
+
+  busquedaRealizada.value = false;
+  resultadosBusqueda.value = [];
   if (!busqueda) {
-    submitMessage.value = 'Por favor, ingrese un valor para buscar.'
-    submitStatus.value = 'error'
-    return
+    submitMessage.value = 'Por favor, ingrese un valor para buscar.';
+    submitStatus.value = 'error';
+    return;
   }
   try {
     const res = await axios.get(
       `${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${busqueda}`,
-    )
+    );
     if (Array.isArray(res.data) && res.data.length > 0) {
-      resultadosBusqueda.value = res.data
+      resultadosBusqueda.value = res.data;
     } else if (res.data && res.data.idpersona) {
-      resultadosBusqueda.value = [res.data]
+      resultadosBusqueda.value = [res.data];
     }
-    // Marca que la búsqueda se realizó
-    busquedaRealizada.value = true
+    busquedaRealizada.value = true;
   } catch (error) {
-    resultadosBusqueda.value = []
-    busquedaRealizada.value = true
+    resultadosBusqueda.value = [];
+    busquedaRealizada.value = true;
     submitMessage.value =
-      'No se encontraron resultados para la búsqueda o hubo un error en la conexión.'
-    submitStatus.value = 'error'
-    console.error('Error en la búsqueda:', error)
+      'No se encontraron resultados para la búsqueda o hubo un error en la conexión.';
+    submitStatus.value = 'error';
+    console.error('Error en la búsqueda:', error);
   }
-}
+};
 
 const seleccionarPersona = (persona) => {
-  form.pCedula = persona.perCedula
-  form.idpersona = persona.idpersona
-  localStorage.setItem('idpersona', persona.idpersona)
-  idPersonaSeleccionada.value = persona.idpersona // Actualiza la variable reactiva
-  submitMessage.value = `Paciente ${persona.perPrimernombre} ${persona.perPrimerapellido} seleccionado.`
-  submitStatus.value = 'success'
-}
+  form.pCedula = persona.perCedula;
+  form.idpersona = persona.idpersona;
+  localStorage.setItem('idpersona', persona.idpersona);
+  localStorage.setItem('last_cedula', persona.perCedula); // Save cedula to localStorage
+  idPersonaSeleccionada.value = persona.idpersona;
+  submitMessage.value = `Paciente ${persona.perPrimernombre} ${persona.perPrimerapellido} seleccionado.`;
+  submitStatus.value = 'success';
+};
 
 const validateForm = () => {
-  // Limpiar mensajes anteriores
-  submitMessage.value = ''
-  submitStatus.value = ''
-
-  // 1. Validación de campos obligatorios
+  submitMessage.value = '';
+  submitStatus.value = '';
   if (
     !form.idFicha ||
     !form.pacFechaprimercontacto ||
@@ -418,80 +489,59 @@ const validateForm = () => {
     form.dgTemperatura === null ||
     !form.dgDiagnosticotemperatura
   ) {
-    submitMessage.value = 'Por favor, complete todos los campos obligatorios.'
-    submitStatus.value = 'error'
-    return false
+    submitMessage.value = 'Por favor, complete todos los campos obligatorios.';
+    submitStatus.value = 'error';
+    return false;
   }
-
-  // 2. Validación de rangos numéricos y formatos
-  const errors = []
-
-  // ID Ficha - Formato específico (ej. FCH02)
+  const errors = [];
   if (!/^FCH\d{2,}$/.test(form.idFicha)) {
-    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).')
+    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).');
   }
-
-  // Fecha de contacto - No futura
-  const today = new Date(currentDate.value)
-  const contactDate = new Date(form.pacFechaprimercontacto)
+  const today = new Date(currentDate.value);
+  const contactDate = new Date(form.pacFechaprimercontacto);
   if (contactDate > today) {
-    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.')
+    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.');
   }
-
-  // Nombre del Encuestador - Solo letras y espacios
   if (!/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/.test(form.dgNombreencuestador.trim())) {
-    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.')
+    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.');
   }
-
-  // Presión Arterial (PAS/PAD) - Rangos
   if (form.dgPasAcostado < 70 || form.dgPasAcostado > 200)
-    errors.push('PAS Acostado fuera de rango (70-200).')
+    errors.push('PAS Acostado fuera de rango (70-200).');
   if (form.dgPadAcostado < 40 || form.dgPadAcostado > 120)
-    errors.push('PAD Acostado fuera de rango (40-120).')
+    errors.push('PAD Acostado fuera de rango (40-120).');
   if (form.dgPasSentado < 70 || form.dgPasSentado > 200)
-    errors.push('PAS Sentado fuera de rango (70-200).')
+    errors.push('PAS Sentado fuera de rango (70-200).');
   if (form.dgPadSentado < 40 || form.dgPadSentado > 120)
-    errors.push('PAD Sentado fuera de rango (40-120).')
-
-  // Pulso - Rango
+    errors.push('PAD Sentado fuera de rango (40-120).');
   if (form.dgPulsopormin < 40 || form.dgPulsopormin > 180)
-    errors.push('Pulso por Minuto fuera de rango (40-180).')
-
-  // Frecuencia Respiratoria - Rango
+    errors.push('Pulso por Minuto fuera de rango (40-180).');
   if (form.dgFrecrespiratoria < 10 || form.dgFrecrespiratoria > 30)
-    errors.push('Frecuencia Respiratoria fuera de rango (10-30).')
-
-  // Saturación - Rango
+    errors.push('Frecuencia Respiratoria fuera de rango (10-30).');
   if (form.dgSaturacion < 85 || form.dgSaturacion > 100)
-    errors.push('Saturación fuera de rango (85-100%).')
-
-  // Temperatura - Rango
+    errors.push('Saturación fuera de rango (85-100%).');
   if (form.dgTemperatura < 34.0 || form.dgTemperatura > 42.0)
-    errors.push('Temperatura fuera de rango (34.0-42.0°C).')
-
+    errors.push('Temperatura fuera de rango (34.0-42.0°C).');
   if (errors.length > 0) {
-    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>')
-    submitStatus.value = 'error'
-    return false
+    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>');
+    submitStatus.value = 'error';
+    return false;
   }
-
-  return true
-}
+  return true;
+};
 
 const handleSubmit = async () => {
-  if (!validateForm()) return
-
-  isSubmitting.value = true
+  if (!validateForm()) return;
+  isSubmitting.value = true;
 
   if (!form.idpersona) {
-    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.'
-    submitStatus.value = 'error'
-    isSubmitting.value = false
-    return
+    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.';
+    submitStatus.value = 'error';
+    isSubmitting.value = false;
+    return;
   }
 
   const payload = {
-    p_cedula: form.pCedula,
+    p_cedula: cedulaId.value,
     p_id_ficha_nueva: form.idFicha,
     p_fecha_primer_contacto: form.pacFechaprimercontacto,
     p_estado_general: form.pacEstadogeneral,
@@ -515,33 +565,52 @@ const handleSubmit = async () => {
     p_firma_enfermeria: form.dgFirmaenfermeria,
     p_firma_nutricion: form.dgFirmanutricion,
     p_firma_fisioterapia: form.dgFirmafisioterapia,
-  }
+  };
+
+  // The URL is now the same for both operations
+  const url = `${import.meta.env.VITE_URL_BACKEND}/fichas-general-completa`;
+
+  // The method (POST or PUT) changes based on isEditing
+  const method = isEditing.value ? axios.post : axios.post;
 
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_URL_BACKEND}/fichas-general-completa`,
-      payload,
-    )
-    submitMessage.value = 'Ficha general guardada exitosamente.'
-    submitStatus.value = 'success'
+    const response = await method(url, payload);
+    submitMessage.value = isEditing.value
+      ? 'Ficha general actualizada exitosamente.'
+      : 'Ficha general guardada exitosamente.';
+    submitStatus.value = 'success';
   } catch (error) {
-    console.error('Error guardando ficha:', error)
-    submitMessage.value = 'Error al guardar la ficha. Verifica los datos o intenta nuevamente.'
-    submitStatus.value = 'error'
+    console.error('Error guardando/actualizando ficha:', error);
+    submitMessage.value = `Error al ${isEditing.value ? 'actualizar' : 'guardar'} la ficha. Verifica los datos o intenta nuevamente.`;
+    submitStatus.value = 'error';
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
+};
+
+onMounted(() => {
+  currentDate.value = new Date().toISOString().split('T')[0];
+
+  // Exclusively get the cédula from localStorage for editing
+  const lastCedulaFromStorage = localStorage.getItem('last_cedula');
+
+  if (lastCedulaFromStorage) {
+    cedulaId.value = lastCedulaFromStorage;
+    isEditing.value = true;
+    fetchDataForEditing(cedulaId.value);
+  } else {
+    // This case handles a new form or an invalid state
+    isEditing.value = false;
+    const idFromUrl = route.params.id; // Still good to check for this for non-edit scenarios
+    if (idFromUrl) {
+      console.warn("No 'last_cedula' found in localStorage, but an ID was in the URL. Assuming new form.");
+    }
+    submitMessage.value = 'Por favor, busca y selecciona un paciente para crear una nueva ficha.';
+    submitStatus.value = 'info';
+  }
+});
 </script>
-
 <style scoped>
-/*
-  IMPORTANTE: Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
-  en tu main.js o App.vue (sin scoped), como se explicó anteriormente, para que sean accesibles aquí.
-  Asegúrate de que las variables para los inputs que definimos en RegistroForm.vue también estén disponibles:
-  --color-input-border-default, --color-input-background-default, --color-input-placeholder
-*/
-
 .ficha-container {
   display: flex;
   justify-content: center;
@@ -555,7 +624,6 @@ const handleSubmit = async () => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   padding: 40px 50px;
   width: 100%;
-  /* Ancho máximo para el diseño de escritorio (4 columnas) */
   max-width: 1200px;
   font-family: 'Montserrat', sans-serif;
 }
@@ -563,14 +631,14 @@ const handleSubmit = async () => {
 .ficha-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrar el encabezado */
+  justify-content: center;
   margin-bottom: 10px;
   gap: 20px;
-  flex-wrap: wrap; /* Permitir que el logo y el texto se envuelvan */
+  flex-wrap: wrap;
 }
 
 .puce-logo {
-  height: 80px; /* Ajusta el tamaño del logo */
+  height: 80px;
   width: auto;
 }
 
@@ -654,7 +722,6 @@ const handleSubmit = async () => {
 }
 
 .form-grid {
-  /* Por defecto, intentar 4 columnas en pantallas grandes */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 25px;
@@ -699,7 +766,7 @@ const handleSubmit = async () => {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--color-input-placeholder);
+  color: #a0a0a0;
   opacity: 1;
 }
 
@@ -726,7 +793,7 @@ const handleSubmit = async () => {
   gap: 25px;
   align-items: center;
   margin-top: 10px;
-  flex-wrap: wrap; /* Importante para que los checkboxes se envuelvan */
+  flex-wrap: wrap;
 }
 
 .checkbox-group label {
@@ -872,31 +939,49 @@ const handleSubmit = async () => {
   background: #174ea6;
 }
 
-/* --- RESPONSIVIDAD PARA MÓVILES --- */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 0;
+  color: var(--color-primary-dark);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
 
-/* Pantallas grandes / monitores (4 columnas) - Base ya definida */
-/* max-width: 1200px */
-/* grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); */
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--color-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
 
-/* Para pantallas de tabletas grandes o laptops pequeñas (hasta 1250px) - Transición a 3 columnas */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 1250px) {
   .ficha-card {
-    max-width: 980px; /* Reducir el ancho máximo para 3 columnas */
+    max-width: 980px;
     padding: 35px 40px;
   }
   .form-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajuste para 3 columnas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 
-/* Para tabletas verticales y laptops pequeñas (hasta 980px) - Transición a 2 columnas */
 @media (max-width: 980px) {
   .ficha-card {
-    max-width: 760px; /* Reducir el ancho máximo para 2 columnas */
+    max-width: 760px;
     padding: 30px 30px;
   }
   .form-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajuste para 2 columnas */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   .form-title {
     font-size: 2.2rem;
@@ -924,18 +1009,17 @@ const handleSubmit = async () => {
     width: 100%;
   }
   .checkbox-group {
-    flex-direction: column; /* Apilar checkboxes en móviles */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 15px; /* Reducir el espacio entre checkboxes apilados */
+    gap: 15px;
   }
 }
 
-/* Para teléfonos grandes y tabletas pequeñas (hasta 600px) - Transición a 1 columna */
 @media (max-width: 600px) {
   .ficha-card {
-    padding: 20px 15px; /* Reducir el padding para pantallas muy pequeñas */
-    max-width: 100%; /* Ocupar todo el ancho disponible */
-    box-shadow: none; /* Opcional: remover sombra para un look más "nativo" en móvil */
+    padding: 20px 15px;
+    max-width: 100%;
+    box-shadow: none;
   }
   .form-title {
     font-size: 1.8rem;
@@ -962,9 +1046,8 @@ const handleSubmit = async () => {
   }
   .form-grid,
   .stamp-grid {
-    grid-template-columns: 1fr; /* Una sola columna para la mejor legibilidad */
+    grid-template-columns: 1fr;
   }
-  /* Ajustar tamaño de texto y padding para una mejor lectura en pantallas pequeñas */
   .submit-button {
     font-size: 1rem;
     padding: 12px 20px;
@@ -975,7 +1058,6 @@ const handleSubmit = async () => {
   }
 }
 
-/* Ajustes finos para pantallas realmente pequeñas (ej. iPhone SE) */
 @media (max-width: 400px) {
   .ficha-card {
     padding: 15px 10px;

@@ -11,8 +11,7 @@
 
       <h2 class="form-title">FICHA MÉDICA DEL PACIENTE</h2>
 
-      <!-- FichaSelector para obtener el idficha -->
-      <FichaSelector v-model:idficha="form.idficha" />
+      <FichaSelector v-if="!isEditMode" v-model:idficha="form.idficha" />
 
       <div class="form-metadata">
         <div class="form-group inline-group">
@@ -166,8 +165,6 @@
             <label><input type="checkbox" v-model="form.examenregional.exrMiembrosinfer" /> Miembros Inferiores</label>
           </div>
         </div>
-        <!-- No hay un campo directo para 'examenDescripcion' en la nueva API. Se podría usar 'medObservacionesrevact' o 'medObservacionexamenes' si aplica. -->
-        <!-- Por ahora, lo mantendré como un campo de observación general si es necesario para el frontend, pero no se enviará al API directamente. -->
         <div class="form-group full-width">
           <label for="examenDescripcionGeneral"
             >Descripción Detallada del Examen Físico (General):</label
@@ -425,7 +422,6 @@
             placeholder="Ej: Metabólico, Cardiovascular"
           />
         </div>
-        <!-- Se eliminó la sección de Diagnósticos de Enfermería ya que no está en el API -->
       </section>
 
       <section class="form-section">
@@ -445,7 +441,7 @@
       </section>
 
       <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
-        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha Médica' }}
+        {{ isSubmitting ? 'Guardando...' : (isEditMode ? 'Actualizar Ficha Médica' : 'Guardar Ficha Médica') }}
       </button>
 
       <p v-if="submitMessage" :class="['submit-info', submitStatus]">
@@ -456,20 +452,19 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import axios from 'axios'
 import FichaSelector from '@/components/FichaSelector.vue'
 
 const form = reactive({
-  // Top-level fields
-  idficha: null, // Will be populated by FichaSelector
+  idmedicina: null, // Add ID field for editing
+  idficha: null,
   medNombreencuestador: '',
   medAnamnesis: '',
   medObservacionesrevact: '',
   medObservacionexamenes: '',
   medPlanintegral: '',
-
-  // Nested objects - direct mapping to API structure for clarity
   alerta: {
     alertCaida: false,
     alertDismovilidad: false,
@@ -478,7 +473,7 @@ const form = reactive({
     alertComportamiento: false,
   },
   andrologico: {
-    andEdadultantigeno: null, // Number
+    andEdadultantigeno: null,
     andTerapiahormonal: false,
     andObservaciones: '',
   },
@@ -530,7 +525,7 @@ const form = reactive({
   farmacologico: {
     farAines: false,
     farAnalgesicos: false,
-    farAntidiabeticos: '', // String for specific drug name
+    farAntidiabeticos: '',
     farAntihipertensivos: false,
     farAnticoagulantes: false,
     farPsicofarmacos: false,
@@ -552,12 +547,12 @@ const form = reactive({
     genObservaciones: '',
   },
   ginecologico: {
-    ginEdadmenopausia: null, // Number
-    ginEdadultmamografia: null, // Number
-    ginEdadultcitologia: null, // Number
-    ginCantembarazos: null, // Number
-    ginCantpartos: null, // Number
-    ginCantcesareas: null, // Number
+    ginEdadmenopausia: null,
+    ginEdadultmamografia: null,
+    ginEdadultcitologia: null,
+    ginCantembarazos: null,
+    ginCantpartos: null,
+    ginCantcesareas: null,
     ginTerapiahormonal: false,
     ginObservaciones: '',
   },
@@ -585,7 +580,7 @@ const form = reactive({
     patoMusculoesqueletico: false,
     patoPsiquiatrico: false,
     patoQuirurgico: false,
-    patoObservaciones: '',
+    patoObservaciones: null,
   },
   revisionactual: {
     revactVision: false,
@@ -601,7 +596,7 @@ const form = reactive({
     revactHemolinf: false,
     revactNervioso: false,
     revactMetabolico: false,
-    revactObservaciones: '',
+    revactObservaciones: null,
   },
   sindromesgeriatricos: {
     sgFragilidad: false,
@@ -615,28 +610,118 @@ const form = reactive({
     sgIncontinencia: false,
     sgIatrogenia: false,
   },
-});
+})
 
+const route = useRoute()
 const isSubmitting = ref(false)
 const submitMessage = ref('')
-const submitStatus = ref('') // 'success' o 'error'
+const submitStatus = ref('')
+const isEditMode = ref(false)
 
-// No longer needed with direct boolean bindings
-// const addDiagnosticoEnfermeria = () => {
-//   form.diagnosticosEnfermeria.push('')
-// }
-// const removeDiagnosticoEnfermeria = () => {
-//   if (form.diagnosticosEnfermeria.length > 1) {
-//     form.diagnosticosEnfermeria.pop()
-//   }
-// }
+const mapApiDataToForm = (data) => {
+  // Simple fields
+  form.idmedicina = data.idmedicina
+  form.idficha = data.idficha
+  form.medNombreencuestador = data.medNombreencuestador
+  form.medAnamnesis = data.medAnamnesis
+  form.medObservacionesrevact = data.medObservacionesrevact
+  form.medObservacionexamenes = data.medObservacionexamenes
+  form.medPlanintegral = data.medPlanintegral
+
+  // Map boolean fields (1/0 to true/false) and other nested data
+  const mapBooleans = (source, target) => {
+    for (const key in source) {
+      if (typeof source[key] === 'number') {
+        target[key] = source[key] === 1
+      }
+    }
+  }
+
+  mapBooleans(data.alerta, form.alerta)
+  form.andrologico.andEdadultantigeno = data.andrologico.andEdadultantigeno
+  form.andrologico.andTerapiahormonal = data.andrologico.andTerapiahormonal === 1
+  form.andrologico.andObservaciones = data.andrologico.andObservaciones
+  mapBooleans(data.antecedentesfamiliares, form.antecedentesfamiliares)
+  form.antecedentesfamiliares.afObservaciones = data.antecedentesfamiliares.afObservaciones
+  form.diagnostico.diagDiagnostico = data.diagnostico.diagDiagnostico
+  form.diagnostico.diagPresundefini = data.diagnostico.diagPresundefini
+  form.diagnostico.diagCie = data.diagnostico.diagCie
+  form.diagnostico.diagClinicocindromico = data.diagnostico.diagClinicocindromico
+  mapBooleans(data.examenregional, form.examenregional)
+  Object.assign(form.examensistemico, data.examensistemico)
+  mapBooleans(data.farmacologico, form.farmacologico)
+  form.farmacologico.farAntidiabeticos = data.farmacologico.farAntidiabeticos
+  form.farmacologico.farObservaciones = data.farmacologico.farObservaciones
+  mapBooleans(data.general, form.general)
+  form.general.genObservaciones = data.general.genObservaciones
+  Object.assign(form.ginecologico, {
+    ginEdadmenopausia: data.ginecologico.ginEdadmenopausia,
+    ginEdadultmamografia: data.ginecologico.ginEdadultmamografia,
+    ginEdadultcitologia: data.ginecologico.ginEdadultcitologia,
+    ginCantembarazos: data.ginecologico.ginCantembarazos,
+    ginCantpartos: data.ginecologico.ginCantpartos,
+    ginCantcesareas: data.ginecologico.ginCantcesareas,
+    ginTerapiahormonal: data.ginecologico.ginTerapiahormonal === 1,
+    ginObservaciones: data.ginecologico.ginObservaciones,
+  })
+  mapBooleans(data.habitosnocivos, form.habitosnocivos)
+  form.habitosnocivos.nocObservaciones = data.habitosnocivos.nocObservaciones
+  mapBooleans(data.patologico, form.patologico)
+  form.patologico.patoObservaciones = data.patologico.patoObservaciones
+  mapBooleans(data.revisionactual, form.revisionactual)
+  form.revisionactual.revactObservaciones = data.revisionactual.revactObservaciones
+  mapBooleans(data.sindromesgeriatricos, form.sindromesgeriatricos)
+}
+
+// CORRECTED mapFormToApiPayload
+const mapFormToApiPayload = (source) => {
+  const payload = {}
+  for (const key in source) {
+    if (key === 'idmedicina') {
+      // Do not include top-level ID in payload for PATCH, it's in the URL
+      continue
+    }
+    if (typeof source[key] === 'object' && source[key] !== null) {
+      payload[key] = {}
+      for (const subKey in source[key]) {
+        // Exclude idmedicina from nested objects
+        if (subKey === 'idmedicina') {
+          continue
+        }
+        if (typeof source[key][subKey] === 'boolean') {
+          // Send as true/false as per error message
+          payload[key][subKey] = source[key][subKey]
+        } else {
+          payload[key][subKey] = source[key][subKey]
+        }
+      }
+    } else {
+      payload[key] = source[key]
+    }
+  }
+  return payload
+}
+
+onMounted(async () => {
+  const idmedicina = route.params.id
+  if (idmedicina) {
+    isEditMode.value = true
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/medicina/${idmedicina}`)
+      mapApiDataToForm(response.data)
+    } catch (error) {
+      console.error('Error al cargar la ficha médica:', error)
+      submitMessage.value = 'Error al cargar la ficha médica para editar.'
+      submitStatus.value = 'error'
+    }
+  }
+})
 
 const validateForm = () => {
   submitMessage.value = ''
   submitStatus.value = ''
-
-  // Validate top-level required fields
-  if (!form.idficha) {
+  // idficha is not required in edit mode
+  if (!isEditMode.value && !form.idficha) {
     submitMessage.value = 'Debe seleccionar una ficha médica.'
     submitStatus.value = 'error'
     return false
@@ -662,25 +747,6 @@ const validateForm = () => {
     return false
   }
 
-  // Basic validation for number fields (can be null, but if filled, must be valid)
-  const numberFields = [
-    { field: form.andrologico.andEdadultantigeno, name: 'Edad Último Antígeno Prostático' },
-    { field: form.ginecologico.ginEdadmenopausia, name: 'Edad Menopausia' },
-    { field: form.ginecologico.ginEdadultmamografia, name: 'Edad Última Mamografía' },
-    { field: form.ginecologico.ginEdadultcitologia, name: 'Edad Última Citología' },
-    { field: form.ginecologico.ginCantembarazos, name: 'Cantidad Embarazos' },
-    { field: form.ginecologico.ginCantpartos, name: 'Cantidad Partos' },
-    { field: form.ginecologico.ginCantcesareas, name: 'Cantidad Cesáreas' },
-  ];
-
-  for (const field of numberFields) {
-    if (field.field !== null && (isNaN(field.field) || field.field < 0)) {
-      submitMessage.value = `El campo "${field.name}" debe ser un número válido y no negativo.`
-      submitStatus.value = 'error'
-      return false
-    }
-  }
-
   return true
 }
 
@@ -691,196 +757,46 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true
 
-  // Construct the payload directly from the form reactive object
-  const payload = {
-    idficha: form.idficha,
-    medNombreencuestador: form.medNombreencuestador.trim(),
-    medAnamnesis: form.medAnamnesis.trim(),
-    medObservacionesrevact: form.medObservacionesrevact.trim() || null,
-    medObservacionexamenes: form.medObservacionexamenes.trim() || null,
-    medPlanintegral: form.medPlanintegral.trim(),
-    alerta: {
-      alertCaida: form.alerta.alertCaida,
-      alertDismovilidad: form.alerta.alertDismovilidad,
-      alertAstenia: form.alerta.alertAstenia,
-      alertDesorientacion: form.alerta.alertDesorientacion,
-      alertComportamiento: form.alerta.alertComportamiento,
-    },
-    andrologico: {
-      andEdadultantigeno: form.andrologico.andEdadultantigeno !== null ? Number(form.andrologico.andEdadultantigeno) : null,
-      andTerapiahormonal: form.andrologico.andTerapiahormonal,
-      andObservaciones: form.andrologico.andObservaciones.trim() || null,
-    },
-    antecedentesfamiliares: {
-      afCardiopatias: form.antecedentesfamiliares.afCardiopatias,
-      afDiabetes: form.antecedentesfamiliares.afDiabetes,
-      afHipertension: form.antecedentesfamiliares.afHipertension,
-      afNeoplasia: form.antecedentesfamiliares.afNeoplasia,
-      afAlzheimer: form.antecedentesfamiliares.afAlzheimer,
-      afParkinson: form.antecedentesfamiliares.afParkinson,
-      afTuberculosis: form.antecedentesfamiliares.afTuberculosis,
-      afViolenciaintra: form.antecedentesfamiliares.afViolenciaintra,
-      afSindromecuidador: form.antecedentesfamiliares.afSindromecuidador,
-      afObservaciones: form.antecedentesfamiliares.afObservaciones.trim() || null,
-    },
-    diagnostico: {
-      diagDiagnostico: form.diagnostico.diagDiagnostico.trim(),
-      diagPresundefini: form.diagnostico.diagPresundefini || null,
-      diagCie: form.diagnostico.diagCie.trim() || null,
-      diagClinicocindromico: form.diagnostico.diagClinicocindromico.trim() || null,
-    },
-    examenregional: {
-      exrPiel: form.examenregional.exrPiel,
-      exrCabeza: form.examenregional.exrCabeza,
-      exrOjos: form.examenregional.exrOjos,
-      exrOidos: form.examenregional.exrOidos,
-      exrBoca: form.examenregional.exrBoca,
-      exrNariz: form.examenregional.exrNariz,
-      exrCuello: form.examenregional.exrCuello,
-      exrAxilamama: form.examenregional.exrAxilamama,
-      exrTorax: form.examenregional.exrTorax,
-      exrAbdomen: form.examenregional.exrAbdomen,
-      exrColumna: form.examenregional.exrColumna,
-      exrPerine: form.examenregional.exrPerine,
-      exrMiembrossuper: form.examenregional.exrMiembrossuper,
-      exrMiembrosinfer: form.examenregional.exrMiembrosinfer,
-    },
-    examensistemico: {
-      exsOrgsentidos: form.examensistemico.exsOrgsentidos,
-      exsRespiratorio: form.examensistemico.exsRespiratorio,
-      exsCardiovascular: form.examensistemico.exsCardiovascular,
-      exsDigestivo: form.examensistemico.exsDigestivo,
-      exsGenitourinario: form.examensistemico.exsGenitourinario,
-      exsMusculoesqueletico: form.examensistemico.exsMusculoesqueletico,
-      exsEndocrino: form.examensistemico.exsEndocrino,
-      exsHemolinfatico: form.examensistemico.exsHemolinfatico,
-      exsNeurologico: form.examensistemico.exsNeurologico,
-    },
-    farmacologico: {
-      farAines: form.farmacologico.farAines,
-      farAnalgesicos: form.farmacologico.farAnalgesicos,
-      farAntidiabeticos: form.farmacologico.farAntidiabeticos.trim() || null,
-      farAntihipertensivos: form.farmacologico.farAntihipertensivos,
-      farAnticoagulantes: form.farmacologico.farAnticoagulantes,
-      farPsicofarmacos: form.farmacologico.farPsicofarmacos,
-      farAntibioticos: form.farmacologico.farAntibioticos,
-      farAlergias: form.farmacologico.farAlergias,
-      farEfectosadversos: form.farmacologico.farEfectosadversos,
-      farPoliprescriptor: form.farmacologico.farPoliprescriptor,
-      farPolifarmacia: form.farmacologico.farPolifarmacia,
-      farOtros: form.farmacologico.farOtros,
-      farObservaciones: form.farmacologico.farObservaciones.trim() || null,
-    },
-    general: {
-      genVacunascompletas: form.general.genVacunascompletas,
-      genHigienecuerpo: form.general.genHigienecuerpo,
-      genControlsalud: form.general.genControlsalud,
-      genHigieneoral: form.general.genHigieneoral,
-      genActrecreativa: form.general.genActrecreativa,
-      genOtrossaludables: form.general.genOtrossaludables,
-      genObservaciones: form.general.genObservaciones.trim() || null,
-    },
-    ginecologico: {
-      ginEdadmenopausia: form.ginecologico.ginEdadmenopausia !== null ? Number(form.ginecologico.ginEdadmenopausia) : null,
-      ginEdadultmamografia: form.ginecologico.ginEdadultmamografia !== null ? Number(form.ginecologico.ginEdadultmamografia) : null,
-      ginEdadultcitologia: form.ginecologico.ginEdadultcitologia !== null ? Number(form.ginecologico.ginEdadultcitologia) : null,
-      ginCantembarazos: form.ginecologico.ginCantembarazos !== null ? Number(form.ginecologico.ginCantembarazos) : null,
-      ginCantpartos: form.ginecologico.ginCantpartos !== null ? Number(form.ginecologico.ginCantpartos) : null,
-      ginCantcesareas: form.ginecologico.ginCantcesareas !== null ? Number(form.ginecologico.ginCantcesareas) : null,
-      ginTerapiahormonal: form.ginecologico.ginTerapiahormonal,
-      ginObservaciones: form.ginecologico.ginObservaciones.trim() || null,
-    },
-    habitosnocivos: {
-      nocTabaquismo: form.habitosnocivos.nocTabaquismo,
-      nocAlcoholismo: form.habitosnocivos.nocAlcoholismo,
-      nocAdicciones: form.habitosnocivos.nocAdicciones,
-      nocOtros: form.habitosnocivos.nocOtros,
-      nocObservaciones: form.habitosnocivos.nocObservaciones.trim() || null,
-    },
-    patologico: {
-      patoDermatologico: form.patologico.patoDermatologico,
-      patoVisuales: form.patologico.patoVisuales,
-      patoOtorrino: form.patologico.patoOtorrino,
-      patoEstomatologicos: form.patologico.patoEstomatologicos,
-      patoEndocrinos: form.patologico.patoEndocrinos,
-      patoCardiovasculares: form.patologico.patoCardiovasculares,
-      patoRespiratorio: form.patologico.patoRespiratorio,
-      patoDigestivo: form.patologico.patoDigestivo,
-      patoNeurologico: form.patologico.patoNeurologico,
-      patoUrologico: form.patologico.patoUrologico,
-      patoHemolinfatico: form.patologico.patoHemolinfatico,
-      patoInfeccioso: form.patologico.patoInfeccioso,
-      patoOncologico: form.patologico.patoOncologico,
-      patoMusculoesqueletico: form.patologico.patoMusculoesqueletico,
-      patoPsiquiatrico: form.patologico.patoPsiquiatrico,
-      patoQuirurgico: form.patologico.patoQuirurgico,
-      patoObservaciones: form.patologico.patoObservaciones.trim() || null,
-    },
-    revisionactual: {
-      revactVision: form.revisionactual.revactVision,
-      revactAudicion: form.revisionactual.revactAudicion,
-      revactOlfatogusto: form.revisionactual.revactOlfatogusto,
-      revactRespiratorio: form.revisionactual.revactRespiratorio,
-      revactCardiovascular: form.revisionactual.revactCardiovascular,
-      revactDigestivo: form.revisionactual.revactDigestivo,
-      revactGenital: form.revisionactual.revactGenital,
-      revactUrinario: form.revisionactual.revactUrinario,
-      revactMusculoesqueletico: form.revisionactual.revactMusculoesqueletico,
-      revactEndocrino: form.revisionactual.revactEndocrino,
-      revactHemolinf: form.revisionactual.revactHemolinf,
-      revactNervioso: form.revisionactual.revactNervioso,
-      revactMetabolico: form.revisionactual.revactMetabolico,
-      revactObservaciones: form.revisionactual.revactObservaciones.trim() || null,
-    },
-    sindromesgeriatricos: {
-      sgFragilidad: form.sindromesgeriatricos.sgFragilidad,
-      sgDismovilidad: form.sindromesgeriatricos.sgDismovilidad,
-      sgDepresion: form.sindromesgeriatricos.sgDepresion,
-      sgCaida: form.sindromesgeriatricos.sgCaida,
-      sgDelirio: form.sindromesgeriatricos.sgDelirio,
-      sgMalnutricion: form.sindromesgeriatricos.sgMalnutricion,
-      sgUlceraspresion: form.sindromesgeriatricos.sgUlceraspresion,
-      sgDemencia: form.sindromesgeriatricos.sgDemencia,
-      sgIncontinencia: form.sindromesgeriatricos.sgIncontinencia,
-      sgIatrogenia: form.sindromesgeriatricos.sgIatrogenia,
-    },
-  };
+  // For PATCH, we need to handle the payload carefully
+  let payload
+  let url = `${import.meta.env.VITE_URL_BACKEND}/api/medicina`
 
-  console.log('Payload a enviar:', payload); // For debugging
+  if (isEditMode.value) {
+    payload = mapFormToApiPayload(form)
+    url = `${url}/${form.idmedicina}`
+  } else {
+    payload = mapFormToApiPayload(form) // Use the same mapping for new records
+  }
 
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_URL_BACKEND}/api/medicina`,
-      payload
-    );
-    console.log('Respuesta del servidor:', response.data);
-    submitMessage.value = '¡Ficha médica guardada correctamente!';
-    submitStatus.value = 'success';
-    // Optionally reset form or redirect
-    // Object.keys(form).forEach(key => { /* reset logic */ });
+    let response
+    if (isEditMode.value) {
+      response = await axios.patch(url, payload)
+      console.log('Respuesta de actualización:', response.data)
+      submitMessage.value = '¡Ficha médica actualizada correctamente!'
+      submitStatus.value = 'success'
+    } else {
+      response = await axios.post(url, payload)
+      console.log('Respuesta de creación:', response.data)
+      submitMessage.value = '¡Ficha médica guardada correctamente!'
+      submitStatus.value = 'success'
+    }
   } catch (error) {
-    console.error('Error al guardar la ficha médica:', error);
-    submitMessage.value = 'Ocurrió un error al guardar la ficha médica. Por favor, intente de nuevo.';
-    submitStatus.value = 'error';
+    console.error('Error al guardar/actualizar la ficha médica:', error)
+    submitMessage.value = 'Ocurrió un error. Por favor, intente de nuevo.'
+    submitStatus.value = 'error'
     if (error.response && error.response.data && error.response.data.message) {
-      submitMessage.value += ` Detalles: ${error.response.data.message}`;
+      submitMessage.value += ` Detalles: ${error.response.data.message}`
     } else if (error.message) {
-      submitMessage.value += ` Detalles: ${error.message}`;
+      submitMessage.value += ` Detalles: ${error.message}`
     }
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
-};
+}
 </script>
-
 <style scoped>
-/*
-  Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
-  en tu main.js o App.vue (sin scoped), como se explicó anteriormente, para que sean accesibles aquí.
-  Asegúrate de que las variables para los inputs que definimos en RegistroForm.vue también estén disponibles:
-  --color-input-border-default, --color-input-background-default, --color-input-placeholder
-*/
-
+/* Estilos CSS (sin cambios) */
 .ficha-container {
   display: flex;
   justify-content: center;
@@ -894,21 +810,21 @@ const handleSubmit = async () => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   padding: 40px 50px;
   width: 100%;
-  max-width: 1200px; /* Ancho máximo para el diseño de escritorio (4 columnas) */
+  max-width: 1200px;
   font-family: 'Montserrat', sans-serif;
 }
 
 .ficha-header {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrar el encabezado */
+  justify-content: center;
   margin-bottom: 30px;
   gap: 20px;
-  flex-wrap: wrap; /* Permitir que el logo y el texto se envuelvan */
+  flex-wrap: wrap;
 }
 
 .puce-logo {
-  height: 80px; /* Ajusta el tamaño del logo */
+  height: 80px;
   width: auto;
 }
 
@@ -997,11 +913,10 @@ const handleSubmit = async () => {
   margin-top: 15px;
   margin-bottom: 10px;
   font-weight: 600;
-  display: block; /* Para que ocupe su propia línea */
+  display: block;
 }
 
 .form-grid {
-  /* Por defecto, intentar 4 columnas en pantallas grandes */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 25px;
@@ -1067,13 +982,12 @@ const handleSubmit = async () => {
   padding-right: 30px;
 }
 
-/* Checkbox group */
 .checkbox-group {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se envuelvan */
-  gap: 15px; /* Espacio entre checkboxes */
+  flex-wrap: wrap;
+  gap: 15px;
   padding-top: 5px;
-  margin-bottom: 15px; /* Espacio después del grupo */
+  margin-bottom: 15px;
 }
 
 .checkbox-group label {
@@ -1083,7 +997,7 @@ const handleSubmit = async () => {
   cursor: pointer;
   font-weight: 500;
   color: var(--color-text-primary);
-  flex: 0 0 auto; /* Asegura que no crezcan ni se encojan demasiado */
+  flex: 0 0 auto;
 }
 
 .checkbox-group input[type='checkbox'] {
@@ -1095,18 +1009,16 @@ const handleSubmit = async () => {
 }
 
 .form-group.full-width {
-  grid-column: 1 / -1; /* Ocupa todo el ancho de la cuadrícula padre */
-  margin-bottom: 20px; /* Espacio entre textareas grandes o grupos de checkboxes */
+  grid-column: 1 / -1;
+  margin-bottom: 20px;
 }
-/* Para que los inputs dentro de un form-grid se expandan correctamente */
 .form-group.full-width .form-grid {
   grid-template-columns: repeat(
     auto-fit,
     minmax(250px, 1fr)
-  ); /* Ejemplo: 2 columnas mínimas para inputs de diagnóstico */
+  );
 }
 
-/* Estilos del botón de envío y mensajes de estado - reutilizados */
 .submit-button {
   background-color: var(--color-primary-dark);
   color: var(--color-text-light);
@@ -1120,7 +1032,6 @@ const handleSubmit = async () => {
     background-color 0.3s ease,
     transform 0.2s ease,
     box-shadow 0.3s ease;
-
   box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
   width: auto;
   display: block;
@@ -1163,18 +1074,16 @@ const handleSubmit = async () => {
   border: 1px solid var(--color-error);
 }
 
-/* Estilo para el indicador de campo requerido */
 .required {
-  color: var(--color-error); /* Usa un color rojo o distintivo */
+  color: var(--color-error);
   margin-left: 4px;
 }
 
-/* Botones para añadir/eliminar diagnósticos de enfermería */
 .button-group {
   display: flex;
   gap: 10px;
-  margin-top: 15px; /* Espacio encima del grupo de botones */
-  flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+  margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 .add-remove-button {
@@ -1201,10 +1110,9 @@ const handleSubmit = async () => {
   background-color: var(--color-error-dark);
 }
 
-/* --- Estilos para la barra de búsqueda y resultados de fichas --- */
-.titulo-search{
- width: 100%;
- padding: 2rem;
+.titulo-search {
+  width: 100%;
+  padding: 2rem;
 }
 
 .search-section {
@@ -1312,7 +1220,6 @@ const handleSubmit = async () => {
   display: inline-block;
 }
 
-/* Responsive para la tabla */
 @media (max-width: 700px) {
   .results-section table,
   .results-section thead,
@@ -1349,40 +1256,32 @@ const handleSubmit = async () => {
   }
 }
 
-/* --- RESPONSIVIDAD PARA MÓVILES --- */
-
-/* Pantallas grandes / monitores (4 columnas) - Base ya definida */
-/* max-width: 1200px */
-/* grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); */
-
-/* Para pantallas de tabletas grandes o laptops pequeñas (hasta 1250px) - Transición a 3 columnas */
 @media (max-width: 1250px) {
   .ficha-card {
-    max-width: 980px; /* Reducir el ancho máximo para 3 columnas */
+    max-width: 980px;
     padding: 35px 40px;
   }
   .form-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajuste para 3 columnas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
   .form-group.full-width .form-grid {
     grid-template-columns: repeat(
       auto-fit,
       minmax(220px, 1fr)
-    ); /* Mantener 2-3 columnas para inputs de diagnóstico */
+    );
   }
 }
 
-/* Para tabletas verticales y laptops pequeñas (hasta 980px) - Transición a 2 columnas */
 @media (max-width: 980px) {
   .ficha-card {
-    max-width: 760px; /* Reducir el ancho máximo para 2 columnas */
+    max-width: 760px;
     padding: 30px 30px;
   }
   .form-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajuste para 2 columnas */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   .form-group.full-width .form-grid {
-    grid-template-columns: 1fr; /* 1 columna para inputs de diagnóstico en pantallas más pequeñas */
+    grid-template-columns: 1fr;
   }
   .form-title {
     font-size: 2.2rem;
@@ -1410,23 +1309,21 @@ const handleSubmit = async () => {
     width: 100%;
   }
   .checkbox-group {
-    flex-direction: column; /* Apilar checkboxes en móviles */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 15px; /* Reducir el espacio entre checkboxes apilados */
+    gap: 15px;
   }
   .checkbox-group.form-grid {
-    /* Ajustar si un checkbox-group está dentro de un form-grid */
     grid-template-columns: 1fr;
     gap: 10px;
   }
 }
 
-/* Para teléfonos grandes y tabletas pequeñas (hasta 600px) - Transición a 1 columna */
 @media (max-width: 600px) {
   .ficha-card {
-    padding: 20px 15px; /* Reducir el padding para pantallas muy pequeñas */
-    max-width: 100%; /* Ocupar todo el ancho disponible */
-    box-shadow: none; /* Opcional: remover sombra para un look más "nativo" en móvil */
+    padding: 20px 15px;
+    max-width: 100%;
+    box-shadow: none;
   }
   .form-title {
     font-size: 1.8rem;
@@ -1452,12 +1349,11 @@ const handleSubmit = async () => {
     font-size: 0.9rem;
   }
   .form-grid {
-    grid-template-columns: 1fr; /* Una sola columna para la mejor legibilidad */
+    grid-template-columns: 1fr;
   }
   .form-group.full-width .form-grid {
-    grid-template-columns: 1fr; /* 1 columna para inputs de diagnóstico en móviles */
+    grid-template-columns: 1fr;
   }
-  /* Ajustar tamaño de texto y padding para una mejor lectura en pantallas pequeñas */
   .submit-button {
     font-size: 1rem;
     padding: 12px 20px;
@@ -1467,18 +1363,17 @@ const handleSubmit = async () => {
     padding: 10px;
   }
   .button-group {
-    flex-direction: column; /* Apilar botones */
-    gap: 5px; /* Reducir espacio entre botones apilados */
+    flex-direction: column;
+    gap: 5px;
   }
   .add-remove-button {
-    width: 100%; /* Botones de añadir/eliminar ocupan todo el ancho */
+    width: 100%;
   }
   .add-remove-button.remove {
-    margin-left: 0; /* Asegurar que no haya margen extra */
+    margin-left: 0;
   }
 }
 
-/* Ajustes finos para pantallas realmente pequeñas (ej. iPhone SE) */
 @media (max-width: 400px) {
   .ficha-card {
     padding: 15px 10px;
