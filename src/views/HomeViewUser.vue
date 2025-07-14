@@ -8,7 +8,7 @@
             <span class="highlight">SIRMA</span> <span >PUCE</span>
         </h1>
         <p>
-          Este sistema busca optimizar la gestión de fichas médicas, permitiendo un seguimiento efectivo del estado de salud de los pacientes en zonas rurales, incluye un agente de Inteligencia Artificialgit .
+          Este sistema busca optimizar la gestión de fichas médicas, permitiendo un seguimiento efectivo del estado de salud de los pacientes en zonas rurales, incluye un agente de Inteligencia Artificial.
         </p>
         <div class="hero-buttons">
           <button class="btn-primary" @click="goToReportes">
