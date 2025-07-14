@@ -5,7 +5,7 @@
         <img src="@/assets/images/puce-logo.png" alt="Logo PUCE" class="puce-logo" />
         <div class="header-text">
           <p class="university-name">PONTIFICIA UNIVERSIDAD CATÓLICA DEL ECUADOR</p>
-          <p class="faculty-name">FICHA DE ENFERMERÍA</p>
+          <p class="faculty-name">FICHA DE NUTRICION</p>
         </div>
       </div>
 
@@ -34,7 +34,6 @@
       </div>
 
       <FichaSelector v-model:idficha="selectedFichaId" />
-
 
       <section class="form-section">
         <h3 class="section-title">📊 Escalas Geriátricas</h3>
@@ -637,10 +636,63 @@
 <script setup>
 import { reactive, ref, computed, watch } from 'vue'
 import FichaSelector from '@/components/FichaSelector.vue'
+import axios from 'axios'
+import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
 
 const selectedFichaId = ref(null)
+const route = useRoute()
 
+const fillFormFromPayload = (p) => {
+  selectedFichaId.value = p.idFicha
+  form.evaluadorMNA = p.nombreEncuestador ?? ''
+  form.imc = p.imc
+  form.peso = p.peso
+  form.talla = p.talla ? p.talla * 100 : null // la API lo guarda en metros
+  form.circunferenciaBraquial = p.circunBraquial
+  /* --- Escalas MNA --- */
+  form.mna.a = p.perdidaApetito
+  form.mna.b = p.perdidaPeso
+  form.mna.c = p.movilidad
+  form.mna.d = p.enfermedadAguda
+  form.mna.e = p.neuropsico
+  form.mna.f = p.imc // mismo valor
+  form.mna.g = p.viveDomicilio
+  form.mna.h = p.masTresMedicinas
+  form.mna.i = p.ulceraLesionCutanea
+  form.mna.j = p.comidaCompleta
+  /* K: se reparte como desees; aquí dejamos todo en k1 para el ejemplo */
+  form.mna.k1 = p.consumePaciente
+  form.mna.l = p.frutaVerdura
+  form.mna.m = p.vasosAgua
+  form.mna.n = p.formaAlimento
+  form.mna.o = p.bienNutrido
+  form.mna.p = p.estadoSalud
+  /* --- Flags booleanos --- */
+  form.dietaBalanceada = p.dietaBalanceada ? 'si' : 'no'
+  form.piezasDentales = p.dentalesCompletas ? 'si' : 'no'
+  form.dificultadMasticar = p.dificultadMasticar ? 'si' : 'no'
+  form.estrenimiento = p.estrenimientoFrecu ? 'si' : 'no'
+  form.alergiaAlimentos = p.alergiaAlimentaria ? 'si' : 'no'
+  /* --- Observaciones y comidas --- */
+  form.observacionesNutricionales = p.preferencias ?? ''
+  form.desayuno = p.desayuno ?? ''
+  form.almuerzo = p.almuerzo ?? ''
+  form.cena = p.cena ?? ''
+  form.snacks = p.snacks ?? ''
+}
 
+const fetchFichaIfNeeded = async (id) => {
+  if (!id) return
+  try {
+    const { data } = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto/${id}`)
+    fillFormFromPayload(data)
+  } catch (err) {
+    console.error(`No se pudo cargar la ficha ${id}:`, err)
+  }
+}
+
+onMounted(() => fetchFichaIfNeeded(route.params.id))
 
 const form = reactive({
   fechaAplicacion: '',
@@ -776,6 +828,61 @@ watch([() => form.peso, () => form.talla], ([newPeso, newTalla]) => {
     form.imc = null
   }
 })
+const mapFormToPayload = () => {
+  // Mini helpers para convertir radios “si / no” a boolean y radios numéricas a Number
+  const yesNoToBool = (v) => v === 'si'
+  const num = (v) => (v !== null && v !== '' ? Number(v) : null)
+
+  return {
+    idFicha: selectedFichaId.value, // ← el ID que elegiste en FichaSelector
+    nombreEncuestador: form.evaluadorMNA,
+    evalGlobal: totalMnaFinal.value,
+    estadoNutricional: num(form.estadoNutricional), // Ej.: 0 = malnutrición, 1 = riesgo, 2 = normal
+    /* --- Parte de cribaje (A-F) --- */
+    perdidaApetito: num(form.mna.a),
+    perdidaPeso: num(form.mna.b),
+    movilidad: num(form.mna.c),
+    enfermedadAguda: num(form.mna.d),
+    neuropsico: num(form.mna.e),
+    imc: num(form.imc), // calculado en el watcher
+    totales: totalMnaCribaje.value,
+    /* --- Preguntas G-P (solo se envían si existen) --- */
+    viveDomicilio: num(form.mna.g),
+    masTresMedicinas: num(form.mna.h),
+    ulceraLesionCutanea: num(form.mna.i),
+    comidaCompleta: num(form.mna.j),
+    consumePaciente: (+form.mna.k1 || 0) + (+form.mna.k2 || 0) + (+form.mna.k3 || 0),
+    frutaVerdura: num(form.mna.l),
+    vasosAgua: num(form.mna.m),
+    formaAlimento: num(form.mna.n),
+    bienNutrido: num(form.mna.o),
+    estadoSalud: num(form.mna.p),
+    /* --- Datos antropométricos y MNA final --- */
+    circunBraquial: num(form.circunferenciaBraquial),
+    circunPantorrilla: null, // añade campo si lo capturas en la UI
+    evaTotal: totalMnaFinal.value,
+    dietaBalanceada: yesNoToBool(form.dietaBalanceada),
+    dentalesCompletas: yesNoToBool(form.piezasDentales),
+    dificultadMasticar: yesNoToBool(form.dificultadMasticar),
+    estrenimientoFrecu: yesNoToBool(form.estrenimiento),
+    diarreaFrecu: false, // no se captura en esta view → ajusta si lo añades
+    alergiaAlimentaria: yesNoToBool(form.alergiaAlimentos),
+    desayuno: form.desayuno || '',
+    almuerzo: form.almuerzo || '',
+    cena: form.cena || '',
+    snacks: form.snacks || '',
+    preferencias: form.observacionesNutricionales,
+    quienCocina: form.quienCocina || '',
+    /* --- Datos de composición corporal (“DA”) --- */
+    imcDA: num(form.imc),
+    cintura: num(form.cintura),
+    cadera: num(form.cadera),
+    pantorrilla: num(form.pantorrilla),
+    brazo: num(form.brazo),
+    talla: num(form.talla ? form.talla / 100 : null), // lo pide en metros
+    peso: num(form.peso),
+  }
+}
 
 // Lógica de envío del formulario
 const isSubmitting = ref(false)
@@ -787,23 +894,21 @@ const handleSubmit = async () => {
   submitStatus.value = ''
   isSubmitting.value = true
 
-  // Aquí podrías añadir validación similar a la de los formularios anteriores
-  // Por ejemplo, verificar que los campos requeridos estén llenos antes de enviar.
-
   try {
-    // Simular una llamada a API para guardar la ficha
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // 1️⃣ Construye el payload
+    const payload = mapFormToPayload()
 
-    console.log('Datos de la Ficha de Enfermería:', JSON.parse(JSON.stringify(form)))
+    // 2️⃣ Lanza la petición PUT
+    await axios.put(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-    submitMessage.value = 'Ficha de enfermería guardada exitosamente.'
+    submitMessage.value = 'Ficha de nutrición guardada correctamente'
     submitStatus.value = 'success'
-    // Opcional: resetear el formulario después de un envío exitoso
-    // Para simplificar, no se resetea aquí, pero se puede añadir la lógica.
-  } catch (error) {
-    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
+  } catch (err) {
+    console.error('Error enviando ficha de nutrición:', err)
+    submitMessage.value = 'Ocurrió un error al guardar la ficha. Intenta de nuevo.'
     submitStatus.value = 'error'
-    console.error('Error guardando ficha de enfermería:', error)
   } finally {
     isSubmitting.value = false
   }
