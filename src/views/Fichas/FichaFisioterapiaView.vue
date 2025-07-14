@@ -13,11 +13,8 @@
 
       <!-- Progress Indicator -->
       <div class="progress-indicator">
-        <div
-          v-for="stepNum in totalSteps"
-          :key="stepNum"
-          :class="['step-circle', { active: currentStep === stepNum, completed: currentStep > stepNum }]"
-        >
+        <div v-for="stepNum in totalSteps" :key="stepNum"
+          :class="['step-circle', { active: currentStep === stepNum, completed: currentStep > stepNum }]">
           {{ stepNum }}
         </div>
         <div class="step-label">{{ getStepLabel(currentStep) }}</div>
@@ -33,14 +30,8 @@
           </div>
           <div class="form-group inline-group">
             <label for="nombreFisioterapeuta">Fisioterapeuta:<span class="required">*</span></label>
-            <input
-              id="nombreFisioterapeuta"
-              v-model.trim="form.nombreFisioterapeuta"
-              type="text"
-              placeholder="Ej. Ana García"
-              class="small-input"
-              required
-            />
+            <input id="nombreFisioterapeuta" v-model.trim="form.nombreFisioterapeuta" type="text"
+              placeholder="Ej. Ana García" class="small-input" required />
           </div>
         </div>
 
@@ -48,13 +39,9 @@
 
         <div class="form-group full-width mt-4">
           <label for="problemasActuales">Descripción de Problemas:<span class="required">*</span></label>
-          <textarea
-            id="problemasActuales"
-            v-model.trim="form.problemasActuales"
-            rows="4"
+          <textarea id="problemasActuales" v-model.trim="form.problemasActuales" rows="4"
             placeholder="Ej. Paciente presenta dolor en la columna lumbar a la palpación. No puede hacer movimientos de flexoextensión."
-            required
-          ></textarea>
+            required></textarea>
         </div>
 
         <div class="form-grid-3-col">
@@ -68,69 +55,36 @@
           </div>
           <div class="form-group">
             <label for="fisDiscapacidad">Discapacidad (%):</label>
-            <input id="fisDiscapacidad" v-model.number="form.fisDiscapacidad" type="number" step="1" placeholder="Ej. 25" />
+            <input id="fisDiscapacidad" v-model.number="form.fisDiscapacidad" type="number" step="1"
+              placeholder="Ej. 25" />
           </div>
         </div>
 
         <h4 class="section-subtitle">Marcha:</h4>
         <div class="form-grid-2-col">
           <div class="form-group radio-group-horizontal">
-            <label
-              ><input type="radio" value="Libre" v-model="form.marcha.tipo" /> Libre</label
-            >
-            <label
-              ><input type="radio" value="Claudicante" v-model="form.marcha.tipo" />
-              Claudicante</label
-            >
-            <label
-              ><input type="radio" value="Con Ayudas" v-model="form.marcha.tipo" /> Con
-              Ayudas</label
-            >
-            <label
-              ><input type="radio" value="Espastica" v-model="form.marcha.tipo" /> Espástica</label
-            >
-            <label
-              ><input type="radio" value="Ataxica" v-model="form.marcha.tipo" /> Atáxica</label
-            >
-          </div>
-          <div class="form-group inline-group">
-            <label for="marchaValInicial">Val. Inicial:</label>
-            <input
-              id="marchaValInicial"
-              v-model.trim="form.marcha.valInicial"
-              type="text"
-              placeholder="Puntaje/Observación"
-            />
+            <label><input type="radio" value="Libre" v-model="form.marcha.tipo" /> Libre</label>
+            <label><input type="radio" value="Claudicante" v-model="form.marcha.tipo" />
+              Claudicante</label>
+            <label><input type="radio" value="Con Ayudas" v-model="form.marcha.tipo" /> Con
+              Ayudas</label>
+            <label><input type="radio" value="Espastica" v-model="form.marcha.tipo" /> Espástica</label>
+            <label><input type="radio" value="Atáxica" v-model="form.marcha.tipo" /> Atáxica</label>
           </div>
         </div>
         <h4 class="section-subtitle">Traslados:</h4>
         <div class="form-grid-2-col">
           <div class="form-group radio-group-horizontal">
-            <label
-              ><input type="radio" value="Independiente" v-model="form.traslados.tipo" />
-              Independiente</label
-            >
-            <label
-              ><input type="radio" value="Silla de Ruedas" v-model="form.traslados.tipo" /> Silla de
-              Ruedas</label
-            >
-            <label
-              ><input type="radio" value="Con Ayudas" v-model="form.traslados.tipo" /> Con
-              Ayudas</label
-            >
-            <label
-              ><input type="radio" value="Camilla" v-model="form.traslados.tipo" /> Camilla</label
-            >
+            <label><input type="radio" value="Independiente" v-model="form.traslados.tipo" />
+              Independiente</label>
+            <label><input type="radio" value="Silla de Ruedas" v-model="form.traslados.tipo" /> Silla de
+              Ruedas</label>
+            <label><input type="radio" value="Con Ayudas" v-model="form.traslados.tipo" /> Con
+              Ayudas</label>
+            <label><input type="radio" value="Camilla" v-model="form.traslados.tipo" /> Camilla</label>
             <label><input type="radio" value="Otro" v-model="form.traslados.tipo" /> Otro</label>
-          </div>
-          <div class="form-group inline-group">
-            <label for="trasladosObservacion">Otros:</label>
-            <input
-              id="trasladosObservacion"
-              v-model.trim="form.traslados.observacion"
-              type="text"
-              placeholder="Detalle si aplica"
-            />
+            <label><input type="radio" value="Asistencia para levantarse" v-model="form.traslados.tipo" /> Asistencia
+              para levantarse</label>
           </div>
         </div>
       </section>
@@ -142,65 +96,38 @@
           <div class="form-group">
             <h4 class="section-subtitle">Escala de Ashworth (Marque con una X)<span class="required">*</span></h4>
             <div class="radio-group ashworth-scale">
-              <label
-                ><input type="radio" :value="0" v-model.number="form.tonoMuscular.ashworth" /> 0:
-                Tono normal. No incremento del tono muscular.</label
-              >
-              <label
-                ><input type="radio" :value="1" v-model.number="form.tonoMuscular.ashworth" /> 1:
-                Ligero incremento de tono, detectable al final del recorrido articular.</label
-              >
-              <label
-                ><input type="radio" :value="2" v-model.number="form.tonoMuscular.ashworth" /> 2:
+              <label><input type="radio" :value="0" v-model.number="form.tonoMuscular.ashworth" /> 0:
+                Tono normal. No incremento del tono muscular.</label>
+              <label><input type="radio" :value="1" v-model.number="form.tonoMuscular.ashworth" /> 1:
+                Ligero incremento de tono, detectable al final del recorrido articular.</label>
+              <label><input type="radio" :value="2" v-model.number="form.tonoMuscular.ashworth" /> 2:
                 Ligero incremento de tono, detectable en menos de la mitad del recorrido
-                articular.</label
-              >
-              <label
-                ><input type="radio" :value="3" v-model.number="form.tonoMuscular.ashworth" /> 3:
-                Notable aumento del tono, detención en más de la mitad del recorrido.</label
-              >
-              <label
-                ><input type="radio" :value="4" v-model.number="form.tonoMuscular.ashworth" /> 4:
-                Considerable aumento del tono, la movilización pasiva es difícil.</label
-              >
-              <label
-                ><input type="radio" :value="5" v-model.number="form.tonoMuscular.ashworth" /> 5:
-                Extremidades rígidas, en flexión o extensión.</label
-              >
+                articular.</label>
+              <label><input type="radio" :value="3" v-model.number="form.tonoMuscular.ashworth" /> 3:
+                Notable aumento del tono, detención en más de la mitad del recorrido.</label>
+              <label><input type="radio" :value="4" v-model.number="form.tonoMuscular.ashworth" /> 4:
+                Considerable aumento del tono, la movilización pasiva es difícil.</label>
+              <label><input type="radio" :value="5" v-model.number="form.tonoMuscular.ashworth" /> 5:
+                Extremidades rígidas, en flexión o extensión.</label>
             </div>
             <div class="form-group mt-3">
               <label for="ashworthObservaciones">Observaciones Ashworth:</label>
-              <textarea
-                id="ashworthObservaciones"
-                v-model.trim="form.tonoMuscular.ashworthObservaciones"
-                rows="2"
-              ></textarea>
+              <textarea id="ashworthObservaciones" v-model.trim="form.tonoMuscular.ashworthObservaciones"
+                rows="2"></textarea>
             </div>
           </div>
 
           <div class="form-group">
             <h4 class="section-subtitle">Escala de Campbell (Marque con una X)<span class="required">*</span></h4>
             <div class="radio-group campbell-scale">
-              <label
-                ><input type="radio" :value="0" v-model.number="form.tonoMuscular.campbell" /> Normal
-                (0)</label
-              >
-              <label
-                ><input type="radio" :value="1" v-model.number="form.tonoMuscular.campbell" />
-                Hipotonía leve (1)</label
-              >
-              <label
-                ><input
-                  type="radio"
-                  :value="2"
-                  v-model.number="form.tonoMuscular.campbell"
-                />
-                Hipotonía moderada (2)</label
-              >
-              <label
-                ><input type="radio" :value="3" v-model.number="form.tonoMuscular.campbell" />
-                Hipotonía grave (3)</label
-              >
+              <label><input type="radio" :value="0" v-model.number="form.tonoMuscular.campbell" /> Normal
+                (0)</label>
+              <label><input type="radio" :value="1" v-model.number="form.tonoMuscular.campbell" />
+                Hipotonía leve (1)</label>
+              <label><input type="radio" :value="2" v-model.number="form.tonoMuscular.campbell" />
+                Hipotonía moderada (2)</label>
+              <label><input type="radio" :value="3" v-model.number="form.tonoMuscular.campbell" />
+                Hipotonía grave (3)</label>
             </div>
           </div>
         </div>
@@ -289,12 +216,8 @@
         </div>
         <div class="form-group full-width">
           <label for="fuerzaObservaciones">Observaciones Fuerza:</label>
-          <textarea
-            id="fuerzaObservaciones"
-            v-model.trim="form.fuerza.observaciones"
-            rows="2"
-            placeholder="Detalle hallazgos adicionales."
-          ></textarea>
+          <textarea id="fuerzaObservaciones" v-model.trim="form.fuerza.observaciones" rows="2"
+            placeholder="Detalle hallazgos adicionales."></textarea>
         </div>
 
         <h4 class="section-subtitle mt-4">Fuerza por Segmento (Marque con una X)</h4>
@@ -302,72 +225,64 @@
           <div class="form-group">
             <label>Brazos Izquierdo:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.brazoIzq" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.brazoIzq" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.brazoIzq" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Brazos Derecho:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.brazoDer" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.brazoDer" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.brazoDer" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Piernas Izquierda:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.piernaIzq" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.piernaIzq" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.piernaIzq" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Piernas Derecha:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.piernaDer" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.piernaDer" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.piernaDer" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Tronco Izquierdo:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.troncoIzq" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.troncoIzq" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.troncoIzq" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Tronco Derecho:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.troncoDer" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.troncoDer" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.troncoDer" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Cuello Izquierdo:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.cuelloIzq" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.cuelloIzq" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.cuelloIzq" /> 0</label>
             </div>
           </div>
           <div class="form-group">
             <label>Cuello Derecho:<span class="required">*</span></label>
             <div class="radio-group horizontal-group">
-              <label v-for="n in 5" :key="n"
-                ><input type="radio" :value="n" v-model.number="form.fuerza.cuelloDer" /> {{ n }}</label
-              >
+              <label v-for="n in 5" :key="n"><input type="radio" :value="n" v-model.number="form.fuerza.cuelloDer" /> {{
+                n }}</label>
               <label><input type="radio" value="0" v-model.number="form.fuerza.cuelloDer" /> 0</label>
             </div>
           </div>
@@ -381,138 +296,61 @@
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Inicio de la marcha:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.inicioMarcha"
-              />
-              1 punto si se levanta sin oscilaciones, 0 si no.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.inicioMarcha"
-              />
-              0 si no.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.inicioMarcha" />
+              1 punto si se levanta sin oscilaciones, 0 si no.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.inicioMarcha" />
+              0 si no.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Paso continuo:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoContinuo"
-              />
-              1 punto si el paso es continuo y no detenido, 0 si no.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoContinuo"
-              />
-              0 si no.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.pasoContinuo" />
+              1 punto si el paso es continuo y no detenido, 0 si no.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.pasoContinuo" />
+              0 si no.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Longitud del paso:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.longitudPaso"
-              />
-              1 punto si la longitud es adecuada, 0 si no.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.longitudPaso"
-              />
-              0 si no.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.longitudPaso" />
+              1 punto si la longitud es adecuada, 0 si no.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.longitudPaso" />
+              0 si no.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Paso elevado:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoElevado"
-              />
-              1 punto si el paso es elevado, 0 si no.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoElevado"
-              />
-              0 si no.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.pasoElevado" />
+              1 punto si el paso es elevado, 0 si no.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.pasoElevado" />
+              0 si no.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Rotación del tronco:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.rotacionTronco"
-              />
-              1 punto si no hay rotación, 0 si hay.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.rotacionTronco"
-              />
-              0 si hay.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.rotacionTronco" />
+              1 punto si no hay rotación, 0 si hay.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.rotacionTronco" />
+              0 si hay.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Paso final:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoFinal"
-              />
-              1 punto si es estable, 0 si no.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioDinamico.pasoFinal"
-              />
-              0 si no.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioDinamico.pasoFinal" />
+              1 punto si es estable, 0 si no.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioDinamico.pasoFinal" />
+              0 si no.</label>
           </div>
         </div>
         <div class="form-group inline-group mt-3">
           <label for="totalEquilibrioDinamico">Total Equilibrio Dinámico:</label>
-          <input
-            id="totalEquilibrioDinamico"
-            v-model.number="totalEquilibrioDinamico"
-            type="number"
-            disabled
-            class="small-input"
-          />
+          <input id="totalEquilibrioDinamico" v-model.number="totalEquilibrioDinamico" type="number" disabled
+            class="small-input" />
         </div>
       </section>
 
@@ -523,54 +361,25 @@
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Sentado sin apoyos:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioEstatico.sentadoSinApoyos"
-              />
-              1 punto si es capaz, 0 si no lo es.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioEstatico.sentadoSinApoyos"
-              />
-              0 si no lo es.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioEstatico.sentadoSinApoyos" />
+              1 punto si es capaz, 0 si no lo es.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioEstatico.sentadoSinApoyos" />
+              0 si no lo es.</label>
           </div>
         </div>
         <div class="tinetti-question-group">
           <label class="tinetti-question-label">Parado sin apoyos:<span class="required">*</span></label>
           <div class="radio-group horizontal-group">
-            <label
-              ><input
-                type="radio"
-                :value="1"
-                v-model.number="form.tinetti.equilibrioEstatico.paradoSinApoyos"
-              />
-              1 punto si es capaz, 0 si no lo es.</label
-            >
-            <label
-              ><input
-                type="radio"
-                :value="0"
-                v-model.number="form.tinetti.equilibrioEstatico.paradoSinApoyos"
-              />
-              0 si no lo es.</label
-            >
+            <label><input type="radio" :value="1" v-model.number="form.tinetti.equilibrioEstatico.paradoSinApoyos" />
+              1 punto si es capaz, 0 si no lo es.</label>
+            <label><input type="radio" :value="0" v-model.number="form.tinetti.equilibrioEstatico.paradoSinApoyos" />
+              0 si no lo es.</label>
           </div>
         </div>
         <div class="form-group inline-group mt-3">
           <label for="totalEquilibrioEstatico">Total Equilibrio Estático:</label>
-          <input
-            id="totalEquilibrioEstatico"
-            v-model.number="totalEquilibrioEstatico"
-            type="number"
-            disabled
-            class="small-input"
-          />
+          <input id="totalEquilibrioEstatico" v-model.number="totalEquilibrioEstatico" type="number" disabled
+            class="small-input" />
         </div>
       </section>
 
@@ -585,12 +394,8 @@
             <input type="checkbox" v-model="form.dolor.evaNoValorado" />
             <span class="eva-separator">|</span>
             <span v-for="n in 10" :key="n" class="eva-input-wrapper">
-              <input
-                type="radio"
-                :value="n"
-                v-model.number="form.dolor.evaScore"
-                :disabled="form.dolor.evaNoValorado"
-              />
+              <input type="radio" :value="n" v-model.number="form.dolor.evaScore"
+                :disabled="form.dolor.evaNoValorado" />
             </span>
           </div>
           <div class="eva-labels-bottom">
@@ -612,93 +417,102 @@
         <div class="body-chart-container">
           <svg viewBox="0 0 300 500" class="body-chart-svg">
             <!-- Head -->
-            <circle cx="150" cy="50" r="40" data-idzona="1" data-name="Cabeza" @click="togglePainZone(1)" :class="{ 'pain-active': isPainActive(1) }"></circle>
+            <circle cx="150" cy="50" r="40" data-idzona="1" data-name="Cabeza" @click="togglePainZone(1)"
+              :class="{ 'pain-active': isPainActive(1) }"></circle>
             <!-- Neck -->
-            <rect x="140" y="90" width="20" height="20" data-idzona="2" data-name="Cuello" @click="togglePainZone(2)" :class="{ 'pain-active': isPainActive(2) }"></rect>
+            <rect x="140" y="90" width="20" height="20" data-idzona="2" data-name="Cuello" @click="togglePainZone(2)"
+              :class="{ 'pain-active': isPainActive(2) }"></rect>
             <!-- Shoulders -->
             <polygon points="150,110 120,130 180,130" class="shoulder-base" />
-            <circle cx="120" cy="130" r="15" data-idzona="4" data-name="Hombro Izquierdo" @click="togglePainZone(4)" :class="{ 'pain-active': isPainActive(4) }"></circle>
-            <circle cx="180" cy="130" r="15" data-idzona="3" data-name="Hombro Derecho" @click="togglePainZone(3)" :class="{ 'pain-active': isPainActive(3) }"></circle>
+            <circle cx="120" cy="130" r="15" data-idzona="4" data-name="Hombro Izquierdo" @click="togglePainZone(4)"
+              :class="{ 'pain-active': isPainActive(4) }"></circle>
+            <circle cx="180" cy="130" r="15" data-idzona="3" data-name="Hombro Derecho" @click="togglePainZone(3)"
+              :class="{ 'pain-active': isPainActive(3) }"></circle>
 
             <!-- Arms -->
-            <rect x="105" y="145" width="15" height="60" data-idzona="6" data-name="Brazo Izquierdo" @click="togglePainZone(6)" :class="{ 'pain-active': isPainActive(6) }"></rect>
-            <rect x="180" y="145" width="15" height="60" data-idzona="5" data-name="Brazo Derecho" @click="togglePainZone(5)" :class="{ 'pain-active': isPainActive(5) }"></rect>
+            <rect x="105" y="145" width="15" height="60" data-idzona="6" data-name="Brazo Izquierdo"
+              @click="togglePainZone(6)" :class="{ 'pain-active': isPainActive(6) }"></rect>
+            <rect x="180" y="145" width="15" height="60" data-idzona="5" data-name="Brazo Derecho"
+              @click="togglePainZone(5)" :class="{ 'pain-active': isPainActive(5) }"></rect>
             <!-- Elbows -->
-            <circle cx="112.5" cy="205" r="7.5" data-idzona="8" data-name="Codo Izquierdo" @click="togglePainZone(8)" :class="{ 'pain-active': isPainActive(8) }"></circle>
-            <circle cx="187.5" cy="205" r="7.5" data-idzona="7" data-name="Codo Derecho" @click="togglePainZone(7)" :class="{ 'pain-active': isPainActive(7) }"></circle>
+            <circle cx="112.5" cy="205" r="7.5" data-idzona="8" data-name="Codo Izquierdo" @click="togglePainZone(8)"
+              :class="{ 'pain-active': isPainActive(8) }"></circle>
+            <circle cx="187.5" cy="205" r="7.5" data-idzona="7" data-name="Codo Derecho" @click="togglePainZone(7)"
+              :class="{ 'pain-active': isPainActive(7) }"></circle>
             <!-- Forearms -->
-            <rect x="105" y="212.5" width="15" height="60" data-idzona="10" data-name="Antebrazo Izquierdo" @click="togglePainZone(10)" :class="{ 'pain-active': isPainActive(10) }"></rect>
-            <rect x="180" y="212.5" width="15" height="60" data-idzona="9" data-name="Antebrazo Derecho" @click="togglePainZone(9)" :class="{ 'pain-active': isPainActive(9) }"></rect>
+            <rect x="105" y="212.5" width="15" height="60" data-idzona="10" data-name="Antebrazo Izquierdo"
+              @click="togglePainZone(10)" :class="{ 'pain-active': isPainActive(10) }"></rect>
+            <rect x="180" y="212.5" width="15" height="60" data-idzona="9" data-name="Antebrazo Derecho"
+              @click="togglePainZone(9)" :class="{ 'pain-active': isPainActive(9) }"></rect>
             <!-- Wrists -->
-            <circle cx="112.5" cy="272.5" r="7.5" data-idzona="12" data-name="Muñeca Izquierda" @click="togglePainZone(12)" :class="{ 'pain-active': isPainActive(12) }"></circle>
-            <circle cx="187.5" cy="272.5" r="7.5" data-idzona="11" data-name="Muñeca Derecha" @click="togglePainZone(11)" :class="{ 'pain-active': isPainActive(11) }"></circle>
+            <circle cx="112.5" cy="272.5" r="7.5" data-idzona="12" data-name="Muñeca Izquierda"
+              @click="togglePainZone(12)" :class="{ 'pain-active': isPainActive(12) }"></circle>
+            <circle cx="187.5" cy="272.5" r="7.5" data-idzona="11" data-name="Muñeca Derecha"
+              @click="togglePainZone(11)" :class="{ 'pain-active': isPainActive(11) }"></circle>
             <!-- Hands -->
-            <rect x="100" y="280" width="25" height="20" data-idzona="14" data-name="Mano Izquierda" @click="togglePainZone(14)" :class="{ 'pain-active': isPainActive(14) }"></rect>
-            <rect x="175" y="280" width="25" height="20" data-idzona="13" data-name="Mano Derecha" @click="togglePainZone(13)" :class="{ 'pain-active': isPainActive(13) }"></rect>
+            <rect x="100" y="280" width="25" height="20" data-idzona="14" data-name="Mano Izquierda"
+              @click="togglePainZone(14)" :class="{ 'pain-active': isPainActive(14) }"></rect>
+            <rect x="175" y="280" width="25" height="20" data-idzona="13" data-name="Mano Derecha"
+              @click="togglePainZone(13)" :class="{ 'pain-active': isPainActive(13) }"></rect>
 
             <!-- Trunk -->
-            <rect x="125" y="110" width="50" height="100" data-idzona="15" data-name="Tronco Superior" @click="togglePainZone(15)" :class="{ 'pain-active': isPainActive(15) }"></rect>
-            <rect x="125" y="210" width="50" height="80" data-idzona="16" data-name="Tronco Inferior" @click="togglePainZone(16)" :class="{ 'pain-active': isPainActive(16) }"></rect>
+            <rect x="125" y="110" width="50" height="100" data-idzona="15" data-name="Tronco Superior"
+              @click="togglePainZone(15)" :class="{ 'pain-active': isPainActive(15) }"></rect>
+            <rect x="125" y="210" width="50" height="80" data-idzona="16" data-name="Tronco Inferior"
+              @click="togglePainZone(16)" :class="{ 'pain-active': isPainActive(16) }"></rect>
 
             <!-- Hips -->
-            <circle cx="115" cy="290" r="15" data-idzona="18" data-name="Cadera Izquierda" @click="togglePainZone(18)" :class="{ 'pain-active': isPainActive(18) }"></circle>
-            <circle cx="185" cy="290" r="15" data-idzona="17" data-name="Cadera Derecha" @click="togglePainZone(17)" :class="{ 'pain-active': isPainActive(17) }"></circle>
+            <circle cx="115" cy="290" r="15" data-idzona="18" data-name="Cadera Izquierda" @click="togglePainZone(18)"
+              :class="{ 'pain-active': isPainActive(18) }"></circle>
+            <circle cx="185" cy="290" r="15" data-idzona="17" data-name="Cadera Derecha" @click="togglePainZone(17)"
+              :class="{ 'pain-active': isPainActive(17) }"></circle>
 
             <!-- Legs -->
-            <rect x="110" y="305" width="20" height="80" data-idzona="20" data-name="Muslo Izquierdo" @click="togglePainZone(20)" :class="{ 'pain-active': isPainActive(20) }"></rect>
-            <rect x="170" y="305" width="20" height="80" data-idzona="19" data-name="Muslo Derecho" @click="togglePainZone(19)" :class="{ 'pain-active': isPainActive(19) }"></rect>
+            <rect x="110" y="305" width="20" height="80" data-idzona="20" data-name="Muslo Izquierdo"
+              @click="togglePainZone(20)" :class="{ 'pain-active': isPainActive(20) }"></rect>
+            <rect x="170" y="305" width="20" height="80" data-idzona="19" data-name="Muslo Derecho"
+              @click="togglePainZone(19)" :class="{ 'pain-active': isPainActive(19) }"></rect>
             <!-- Knees -->
-            <circle cx="120" cy="385" r="10" data-idzona="22" data-name="Rodilla Izquierda" @click="togglePainZone(22)" :class="{ 'pain-active': isPainActive(22) }"></circle>
-            <circle cx="180" cy="385" r="10" data-idzona="21" data-name="Rodilla Derecha" @click="togglePainZone(21)" :class="{ 'pain-active': isPainActive(21) }"></circle>
+            <circle cx="120" cy="385" r="10" data-idzona="22" data-name="Rodilla Izquierda" @click="togglePainZone(22)"
+              :class="{ 'pain-active': isPainActive(22) }"></circle>
+            <circle cx="180" cy="385" r="10" data-idzona="21" data-name="Rodilla Derecha" @click="togglePainZone(21)"
+              :class="{ 'pain-active': isPainActive(21) }"></circle>
             <!-- Calves -->
-            <rect x="110" y="395" width="20" height="70" data-idzona="24" data-name="Pierna Izquierda" @click="togglePainZone(24)" :class="{ 'pain-active': isPainActive(24) }"></rect>
-            <rect x="170" y="395" width="20" height="70" data-idzona="23" data-name="Pierna Derecha" @click="togglePainZone(23)" :class="{ 'pain-active': isPainActive(23) }"></rect>
+            <rect x="110" y="395" width="20" height="70" data-idzona="24" data-name="Pierna Izquierda"
+              @click="togglePainZone(24)" :class="{ 'pain-active': isPainActive(24) }"></rect>
+            <rect x="170" y="395" width="20" height="70" data-idzona="23" data-name="Pierna Derecha"
+              @click="togglePainZone(23)" :class="{ 'pain-active': isPainActive(23) }"></rect>
             <!-- Ankles -->
-            <circle cx="120" cy="465" r="8" data-idzona="26" data-name="Tobillo Izquierdo" @click="togglePainZone(26)" :class="{ 'pain-active': isPainActive(26) }"></circle>
-            <circle cx="180" cy="465" r="8" data-idzona="25" data-name="Tobillo Derecho" @click="togglePainZone(25)" :class="{ 'pain-active': isPainActive(25) }"></circle>
+            <circle cx="120" cy="465" r="8" data-idzona="26" data-name="Tobillo Izquierdo" @click="togglePainZone(26)"
+              :class="{ 'pain-active': isPainActive(26) }"></circle>
+            <circle cx="180" cy="465" r="8" data-idzona="25" data-name="Tobillo Derecho" @click="togglePainZone(25)"
+              :class="{ 'pain-active': isPainActive(25) }"></circle>
             <!-- Feet -->
-            <polygon points="110,473 130,473 135,490 105,490" data-idzona="28" data-name="Pie Izquierdo" @click="togglePainZone(28)" :class="{ 'pain-active': isPainActive(28) }"></polygon>
-            <polygon points="170,473 190,473 195,490 165,490" data-idzona="27" data-name="Pie Derecho" @click="togglePainZone(27)" :class="{ 'pain-active': isPainActive(27) }"></polygon>
+            <polygon points="110,473 130,473 135,490 105,490" data-idzona="28" data-name="Pie Izquierdo"
+              @click="togglePainZone(28)" :class="{ 'pain-active': isPainActive(28) }"></polygon>
+            <polygon points="170,473 190,473 195,490 165,490" data-idzona="27" data-name="Pie Derecho"
+              @click="togglePainZone(27)" :class="{ 'pain-active': isPainActive(27) }"></polygon>
           </svg>
         </div>
         <div class="form-group full-width mt-4">
           <label for="dolorZonaEspecifica">Observaciones Adicionales sobre el Dolor:</label>
-          <textarea
-            id="dolorZonaEspecifica"
-            v-model.trim="form.dolor.zonaEspecifica"
-            rows="3"
-            placeholder="Detalle cualquier observación adicional sobre las zonas de dolor seleccionadas o no seleccionadas."
-          ></textarea>
+          <textarea id="dolorZonaEspecifica" v-model.trim="form.dolor.zonaEspecifica" rows="3"
+            placeholder="Detalle cualquier observación adicional sobre las zonas de dolor seleccionadas o no seleccionadas."></textarea>
         </div>
       </section>
 
       <!-- Navigation Buttons -->
       <div class="form-navigation">
-        <button
-          v-if="currentStep > 1"
-          type="button"
-          class="nav-button prev-button"
-          @click="prevStep"
-          :disabled="isSubmitting"
-        >
+        <button v-if="currentStep > 1" type="button" class="nav-button prev-button" @click="prevStep"
+          :disabled="isSubmitting">
           Anterior
         </button>
-        <button
-          v-if="currentStep < totalSteps"
-          type="button"
-          class="nav-button next-button"
-          @click="nextStep"
-          :disabled="isSubmitting"
-        >
+        <button v-if="currentStep < totalSteps" type="button" class="nav-button next-button" @click="nextStep"
+          :disabled="isSubmitting">
           {{ isSubmitting ? 'Cargando...' : 'Siguiente' }}
         </button>
-        <button
-          v-if="currentStep === totalSteps"
-          type="submit"
-          class="submit-button"
-          :disabled="isSubmitting"
-          @click="submitFinalForm"
-        >
+        <button v-if="currentStep === totalSteps" type="submit" class="submit-button" :disabled="isSubmitting"
+          @click="submitFinalForm">
           {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha de Fisioterapia' }}
         </button>
       </div>
@@ -711,13 +525,16 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, watch } from 'vue' // Added watch
+import { reactive, ref, computed, watch, onMounted } from 'vue'
 import axios from 'axios'
+import { useRoute } from 'vue-router' // Import useRoute for accessing URL params
 import FichaSelector from '@/components/FichaSelector.vue'
+
+const route = useRoute() // Get access to the current route
 
 // Reactive state for the form
 const form = reactive({
-  idficha: null, // Populated by FichaSelector
+  idficha: null, // Populated by FichaSelector or fetched data
   fechaContacto: '',
   nombreFisioterapeuta: '',
   problemasActuales: '',
@@ -726,11 +543,11 @@ const form = reactive({
   fisDiscapacidad: null,
   marcha: {
     tipo: '',
-    valInicial: '',
+    valInicial: '', // Ensure this matches your API if used, otherwise remove
   },
   traslados: {
     tipo: '',
-    observacion: '',
+    observacion: '', // Ensure this matches your API if used, otherwise remove
   },
 
   dolor: {
@@ -738,7 +555,7 @@ const form = reactive({
     evaScore: null,
     wongBakerScore: null,
     zonaEspecifica: '',
-    zonasDolorosas: [], // New: Array to store idzona of painful areas
+    zonasDolorosas: [], // Array to store idzona of painful areas
   },
 
   fuerza: {
@@ -788,177 +605,193 @@ const form = reactive({
     },
   },
 
-  // Fields for the /api/medicina payload (final submission) - These will no longer be sent in submitFinalForm
+  // Note: These 'medicina' related fields are part of your initial form state
+  // but are not covered by the /api/fisioterapia/:id endpoint you provided.
+  // If they need to be pre-filled, you'd need a separate API call or
+  // to extend your /api/fisioterapia endpoint to include them.
   medNombreencuestador: '',
   medAnamnesis: '',
   medObservacionesrevact: '',
   medObservacionexamenes: '',
-  medPlanintegral: '', // This field will no longer be part of the final submission
-  alerta: {
-    alertCaida: false,
-    alertDismovilidad: false,
-    alertAstenia: false,
-    alertDesorientacion: false,
-    alertComportamiento: false,
-  },
-  andrologico: {
-    andEdadultantigeno: null,
-    andTerapiahormonal: false,
-    andObservaciones: '',
-  },
-  antecedentesfamiliares: {
-    afCardiopatias: false,
-    afDiabetes: false,
-    afHipertension: false,
-    afNeoplasia: false,
-    afAlzheimer: false,
-    afParkinson: false,
-    afTuberculosis: false,
-    afViolenciaintra: false,
-    afSindromecuidador: false,
-    afObservaciones: '',
-  },
-  diagnostico: {
-    diagDiagnostico: '',
-    diagPresundefini: '',
-    diagCie: '',
-    diagClinicocindromico: '',
-  },
-  examenregional: {
-    exrPiel: false,
-    exrCabeza: false,
-    exrOjos: false,
-    exrOidos: false,
-    exrBoca: false,
-    exrNariz: false,
-    exrCuello: false,
-    exrAxilamama: false,
-    exrTorax: false,
-    exrAbdomen: false,
-    exrColumna: false,
-    exrPerine: false,
-    exrMiembrossuper: false,
-    exrMiembrosinfer: false,
-  },
-  examensistemico: {
-    exsOrgsentidos: 'Normal',
-    exsRespiratorio: 'Normal',
-    exsCardiovascular: 'Normal',
-    exsDigestivo: 'Normal',
-    exsGenitourinario: 'Normal',
-    exsMusculoesqueletico: 'Normal',
-    exsEndocrino: 'Normal',
-    exsHemolinfatico: 'Normal',
-    exsNeurologico: 'Normal',
-  },
-  farmacologico: {
-    farAines: false,
-    farAnalgesicos: false,
-    farAntidiabeticos: '',
-    farAntihipertensivos: false,
-    farAnticoagulantes: false,
-    farPsicofarmacos: false,
-    farAntibioticos: false,
-    farAlergias: false,
-    farEfectosadversos: false,
-    farPoliprescriptor: false,
-    farPolifarmacia: false,
-    farOtros: false,
-    farObservaciones: '',
-  },
-  general: {
-    genVacunascompletas: false,
-    genHigienecuerpo: false,
-    genControlsalud: false,
-    genHigieneoral: false,
-    genActrecreativa: false,
-    genOtrossaludables: false,
-    genObservaciones: '',
-  },
-  ginecologico: {
-    ginEdadmenopausia: null,
-    ginEdadultmamografia: null,
-    ginEdadultcitologia: null,
-    ginCantembarazos: null,
-    ginCantpartos: null,
-    ginCantcesareas: null,
-    ginTerapiahormonal: false,
-    ginObservaciones: '',
-  },
-  habitosnocivos: {
-    nocTabaquismo: false,
-    nocAlcoholismo: false,
-    nocAdicciones: false,
-    nocOtros: false,
-    nocObservaciones: '',
-  },
-  patologico: {
-    patoDermatologico: false,
-    patoVisuales: false,
-    patoOtorrino: false,
-    patoEstomatologicos: false,
-    patoEndocrinos: false,
-    patoCardiovasculares: false,
-    patoRespiratorio: false,
-    patoDigestivo: false,
-    patoNeurologico: false,
-    patoUrologico: false,
-    patoHemolinfatico: false,
-    patoInfeccioso: false,
-    patoOncologico: false,
-    patoMusculoesqueletico: false,
-    patoPsiquiatrico: false,
-    patoQuirurgico: false,
-    patoObservaciones: '',
-  },
-  revisionactual: {
-    revactVision: false,
-    revactAudicion: false,
-    revactOlfatogusto: false,
-    revactRespiratorio: false,
-    revactCardiovascular: false,
-    revactDigestivo: false,
-    revactGenital: false,
-    revactUrinario: false,
-    revactMusculoesqueletico: false,
-    revactEndocrino: false,
-    revactHemolinf: false,
-    revactNervioso: false,
-    revactMetabolico: false,
-    revactObservaciones: '',
-  },
-  sindromesgeriatricos: {
-    sgFragilidad: false,
-    sgDismovilidad: false,
-    sgDepresion: false,
-    sgCaida: false,
-    sgDelirio: false,
-    sgMalnutricion: false,
-    sgUlceraspresion: false,
-    sgDemencia: false,
-    sgIncontinencia: false,
-    sgIatrogenia: false,
-  },
+  medPlanintegral: '',
+  alerta: { /* ... */ },
+  andrologico: { /* ... */ },
+  antecedentesfamiliares: { /* ... */ },
+  diagnostico: { /* ... */ },
+  examenregional: { /* ... */ },
+  examensistemico: { /* ... */ },
+  farmacologico: { /* ... */ },
+  general: { /* ... */ },
+  ginecologico: { /* ... */ },
+  habitosnocivos: { /* ... */ },
+  patologico: { /* ... */ },
+  revisionactual: { /* ... */ },
+  sindromesgeriatricos: { /* ... */ },
 });
 
 // Multi-step form state
 const currentStep = ref(1);
-const totalSteps = 6; // Total number of steps
-const fisioterapiaId = ref(null); // To store idfisioterapia from the first API call
-const initialZonasDolorosasState = reactive({}); // Stores initial state of pain zones from backend
+const totalSteps = 6;
+const fisioterapiaId = ref(null); // Stores the idfisioterapia for current record
+const initialZonasDolorosasState = reactive({}); // Tracks initial state of pain zones from backend
 
-// Watch for changes in idficha to fetch initial pain zones
-watch(() => form.idficha, async (newIdFicha) => {
-  if (newIdFicha) {
-    fisioterapiaId.value = newIdFicha; // Assuming idficha can directly be used as idfisioterapia for fetching
-    await fetchInitialPainZones(newIdFicha);
-  }
-}, { immediate: true }); // immediate: true to run on component mount if idficha is already set
+// --- API Fetching Functions ---
 
-// Function to fetch initial pain zones
-const fetchInitialPainZones = async (idFicha) => {
+/**
+ * Fetches the main physiotherapy data and populates form fields.
+ * Also triggers fetching of associated sub-records.
+ * @param {number} id The idfisioterapia to fetch.
+ */
+const fetchFisioterapiaData = async (id) => {
+  submitMessage.value = 'Cargando datos principales de la ficha...';
+  submitStatus.value = 'info';
   try {
-    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio?idfisioterapia=${idFicha}`);
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/fisioterapia/${id}`);
+    const data = response.data;
+
+    // Populate main form fields
+    form.idficha = data.idficha;
+    form.fechaContacto = data.idficha2?.pacFechaprimercontacto || '';
+    form.nombreFisioterapeuta = data.fisNombreencuestador || '';
+    form.problemasActuales = data.fisProblemasactual || '';
+    form.fisPeso = data.fisPeso ? parseFloat(data.fisPeso) : null;
+    form.fisTalla = data.fisTalla ? parseFloat(data.fisTalla) : null;
+    form.fisDiscapacidad = data.fisDiscapacidad || null;
+
+    // Populate Marcha and Traslados radio buttons
+    // IMPORTANT: Ensure your HTML radio button 'value' attributes EXACTLY match these API strings.
+    form.marcha.tipo = data.fisMarcha || '';
+    form.traslados.tipo = data.fisTraslado || '';
+
+    form.dolor.evaScore = data.fisDolor || null;
+    form.dolor.evaNoValorado = data.fisDolor === null; // If API sends null, mark as 'No Valorada'
+
+    // Fetch associated sub-records now that main ID is confirmed
+    await fetchTonoMuscularData(id);
+    await fetchFuerzaData(id);
+    await fetchEquilibrioDinamicoData(id);
+    await fetchEquilibrioEstaticoData(id);
+    await fetchInitialPainZones(id); // Already called via watch, but good to ensure
+
+    submitMessage.value = 'Datos cargados exitosamente.';
+    submitStatus.value = 'success';
+  } catch (error) {
+    submitStatus.value = 'error';
+    submitMessage.value = 'Error al cargar los datos de la ficha principal. Verifique el ID o cree una nueva ficha.';
+    console.error('Error fetching fisioterapia data:', error);
+    fisioterapiaId.value = null; // Clear ID if fetching failed
+  }
+};
+
+/**
+ * Fetches tono muscular data.
+ * @param {number} idfisioterapia
+ */
+const fetchTonoMuscularData = async (idfisioterapia) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/tono-muscular/${idfisioterapia}`);
+    const data = response.data;
+    form.tonoMuscular.ashworth = data.musAshworth;
+    form.tonoMuscular.campbell = data.musCampbell;
+    form.tonoMuscular.ashworthObservaciones = data.musObservaciones || '';
+  } catch (error) {
+    console.warn(`No Tono Muscular data found for ID ${idfisioterapia} or error:`, error);
+    // Reset fields if data not found
+    form.tonoMuscular.ashworth = null;
+    form.tonoMuscular.campbell = '';
+    form.tonoMuscular.ashworthObservaciones = '';
+  }
+};
+
+/**
+ * Fetches fuerza data.
+ * @param {number} idfisioterapia
+ */
+const fetchFuerzaData = async (idfisioterapia) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/fuerza/${idfisioterapia}`);
+    const data = response.data;
+    form.fuerza.brazoIzq = data.fueBrazoizq;
+    form.fuerza.brazoDer = data.fueBrazoder;
+    form.fuerza.piernaIzq = data.fuePiernaizq;
+    form.fuerza.piernaDer = data.fuePiernader;
+    form.fuerza.troncoIzq = data.fueTroncoizq;
+    form.fuerza.troncoDer = data.fueTroncoder;
+    form.fuerza.cuelloIzq = data.fueCuelloizq;
+    form.fuerza.cuelloDer = data.fueCuelloder;
+    form.fuerza.izq = data.fueBrazoizq; // Assuming these are meant to be mapped from specific force fields
+    form.fuerza.der = data.fueBrazoder; // Assuming these are meant to be mapped from specific force fields
+    form.fuerza.observaciones = data.fueObservaciones || ''; // If your API provides this
+  } catch (error) {
+    console.warn(`No Fuerza data found for ID ${idfisioterapia} or error:`, error);
+    // Reset fields if data not found
+    form.fuerza.izq = null;
+    form.fuerza.der = null;
+    form.fuerza.observaciones = '';
+    form.fuerza.brazoIzq = null;
+    form.fuerza.brazoDer = null;
+    form.fuerza.piernaIzq = null;
+    form.fuerza.piernaDer = null;
+    form.fuerza.troncoIzq = null;
+    form.fuerza.troncoDer = null;
+    form.fuerza.cuelloIzq = null;
+    form.fuerza.cuelloDer = null;
+  }
+};
+
+/**
+ * Fetches equilibrio dinámico data.
+ * @param {number} idfisioterapia
+ */
+const fetchEquilibrioDinamicoData = async (idfisioterapia) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-dinamico/${idfisioterapia}`);
+    const data = response.data;
+    // Convert boolean to 1 or 0 for radio buttons
+    form.tinetti.equilibrioDinamico.inicioMarcha = data.edLevantarse ? 1 : 0;
+    form.tinetti.equilibrioDinamico.pasoContinuo = data.edPasocontinuo ? 1 : 0;
+    form.tinetti.equilibrioDinamico.longitudPaso = data.edLongpaso ? 1 : 0;
+    form.tinetti.equilibrioDinamico.pasoElevado = data.edPasoelevado ? 1 : 0;
+    form.tinetti.equilibrioDinamico.rotacionTronco = data.edRotaciontronco ? 1 : 0;
+    form.tinetti.equilibrioDinamico.pasoFinal = data.edPasofinal ? 1 : 0;
+  } catch (error) {
+    console.warn(`No Equilibrio Dinámico data found for ID ${idfisioterapia} or error:`, error);
+    // Reset fields if data not found
+    form.tinetti.equilibrioDinamico.inicioMarcha = null;
+    form.tinetti.equilibrioDinamico.pasoContinuo = null;
+    form.tinetti.equilibrioDinamico.longitudPaso = null;
+    form.tinetti.equilibrioDinamico.pasoElevado = null;
+    form.tinetti.equilibrioDinamico.rotacionTronco = null;
+    form.tinetti.equilibrioDinamico.pasoFinal = null;
+  }
+};
+
+/**
+ * Fetches equilibrio estático data.
+ * @param {number} idfisioterapia
+ */
+const fetchEquilibrioEstaticoData = async (idfisioterapia) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-estatico/${idfisioterapia}`);
+    const data = response.data;
+    // Convert boolean to 1 or 0 for radio buttons
+    form.tinetti.equilibrioEstatico.sentadoSinApoyos = data.eeSentadonoapoyo ? 1 : 0;
+    form.tinetti.equilibrioEstatico.paradoSinApoyos = data.eeParadonoapoyo ? 1 : 0;
+  } catch (error) {
+    console.warn(`No Equilibrio Estático data found for ID ${idfisioterapia} or error:`, error);
+    // Reset fields if data not found
+    form.tinetti.equilibrioEstatico.sentadoSinApoyos = null;
+    form.tinetti.equilibrioEstatico.paradoSinApoyos = null;
+  }
+};
+
+/**
+ * Fetches initial pain zones data.
+ * @param {number} idfisioterapia
+ */
+const fetchInitialPainZones = async (idfisioterapia) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio?idfisioterapia=${idfisioterapia}`);
     // Clear previous state
     form.dolor.zonasDolorosas = [];
     for (const key in initialZonasDolorosasState) {
@@ -973,13 +806,11 @@ const fetchInitialPainZones = async (idFicha) => {
     });
     console.log('Initial pain zones fetched:', initialZonasDolorosasState);
   } catch (error) {
-    console.error('Error fetching initial pain zones:', error);
-    // It's okay if no records exist, just means no pain zones are pre-selected
+    console.warn('Error fetching initial pain zones (may not exist yet):', error);
   }
 };
 
-
-// Computed properties for Tinetti totals
+// --- Computed Properties ---
 const totalEquilibrioEstatico = computed(() => {
   return (
     (form.tinetti.equilibrioEstatico.sentadoSinApoyos || 0) +
@@ -1014,12 +845,11 @@ const totalTinetti = computed(() => {
   return totalEquilibrioEstatico.value + totalEquilibrioDinamico.value;
 });
 
-// Form submission and status
+// --- Form State and Helpers ---
 const isSubmitting = ref(false);
 const submitMessage = ref('');
-const submitStatus = ref(''); // 'success' or 'error'
+const submitStatus = ref(''); // 'success', 'error', 'info'
 
-// Helper to get step label for progress indicator
 const getStepLabel = (step) => {
   switch (step) {
     case 1: return 'Información General';
@@ -1032,7 +862,6 @@ const getStepLabel = (step) => {
   }
 };
 
-// Validation logic for each step
 const validateStep = (step) => {
   submitMessage.value = '';
   submitStatus.value = '';
@@ -1043,13 +872,15 @@ const validateStep = (step) => {
       if (!form.fechaContacto) { submitMessage.value = 'La fecha de contacto es requerida.'; submitStatus.value = 'error'; return false; }
       if (!form.nombreFisioterapeuta.trim()) { submitMessage.value = 'El nombre del fisioterapeuta es requerido.'; submitStatus.value = 'error'; return false; }
       if (!form.problemasActuales.trim()) { submitMessage.value = 'La descripción de problemas actuales es requerida.'; submitStatus.value = 'error'; return false; }
+      if (!form.marcha.tipo) { submitMessage.value = 'Debe seleccionar un tipo de marcha.'; submitStatus.value = 'error'; return false; }
+      if (!form.traslados.tipo) { submitMessage.value = 'Debe seleccionar un tipo de traslado.'; submitStatus.value = 'error'; return false; }
       return true;
     case 2:
       if (form.tonoMuscular.ashworth === null) { submitMessage.value = 'Debe seleccionar un grado en la Escala de Ashworth.'; submitStatus.value = 'error'; return false; }
       if (form.tonoMuscular.campbell === null || form.tonoMuscular.campbell === '') { submitMessage.value = 'Debe seleccionar un valor en la Escala de Campbell.'; submitStatus.value = 'error'; return false; }
       return true;
     case 3:
-      if (form.fuerza.izq === null || form.fuerza.der === null) { submitMessage.value = 'Debe seleccionar un grado de fuerza para ambos lados (IZQ y DER) en la escala de Daniels.'; submitStatus.value = 'error'; return false; }
+      // Simplified validation for main strength indicators, adjust as per your UI's direct inputs for izq/der
       if (form.fuerza.brazoIzq === null || form.fuerza.brazoDer === null ||
           form.fuerza.piernaIzq === null || form.fuerza.piernaDer === null ||
           form.fuerza.troncoIzq === null || form.fuerza.troncoDer === null ||
@@ -1108,67 +939,81 @@ const isPainActive = (idzona) => {
   return form.dolor.zonasDolorosas.includes(idzona);
 };
 
-// Handle navigation to the next step and API calls
+// --- Navigation and Submission Logic ---
+
 const nextStep = async () => {
   if (!validateStep(currentStep.value)) {
-    return;
+    return; // Stop if validation fails
   }
 
   isSubmitting.value = true;
   submitMessage.value = 'Guardando datos...';
-  submitStatus.value = '';
+  submitStatus.value = 'info';
 
   try {
     let response;
+    const backendUrl = import.meta.env.VITE_URL_BACKEND;
+
     switch (currentStep.value) {
       case 1:
-        response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/fisioterapia`, {
-          idficha: form.idficha,
-          fisNombreencuestador: form.nombreFisioterapeuta.trim(),
-          fisProblemasactual: form.problemasActuales.trim(),
-          fisMarcha: form.marcha.tipo,
-          fisTraslado: form.traslados.tipo,
-          fisDolor: form.dolor.evaNoValorado ? null : form.dolor.evaScore, // Assuming EVA score is used here
-          fisPeso: form.fisPeso,
-          fisTalla: form.fisTalla,
-          fisDiscapacidad: form.fisDiscapacidad,
-        });
-        fisioterapiaId.value = response.data.idfisioterapia; // Store the ID for subsequent calls
-        submitMessage.value = 'Información general guardada.';
+        if (fisioterapiaId.value) {
+          // Attempt to PATCH existing main fisioterapia record
+          response = await axios.patch(`${backendUrl}/api/fisioterapia/${fisioterapiaId.value}`, {
+            idficha: form.idficha,
+            fisNombreencuestador: form.nombreFisioterapeuta.trim(),
+            fisProblemasactual: form.problemasActuales.trim(),
+            fisMarcha: form.marcha.tipo,
+            fisTraslado: form.traslados.tipo,
+            fisDolor: form.dolor.evaNoValorado ? null : form.dolor.evaScore,
+            fisPeso: form.fisPeso,
+            fisTalla: form.fisTalla,
+            fisDiscapacidad: form.fisDiscapacidad,
+          });
+          submitMessage.value = 'Información general actualizada.';
+        } else {
+          // POST a new main fisioterapia record
+          response = await axios.post(`${backendUrl}/api/fisioterapia`, {
+            idficha: form.idficha,
+            fisNombreencuestador: form.nombreFisioterapeuta.trim(),
+            fisProblemasactual: form.problemasActuales.trim(),
+            fisMarcha: form.marcha.tipo,
+            fisTraslado: form.traslados.tipo,
+            fisDolor: form.dolor.evaNoValorado ? null : form.dolor.evaScore,
+            fisPeso: form.fisPeso,
+            fisTalla: form.fisTalla,
+            fisDiscapacidad: form.fisDiscapacidad,
+          });
+          fisioterapiaId.value = response.data.idfisioterapia; // Store the newly created ID
+          submitMessage.value = 'Información general guardada.';
+        }
         submitStatus.value = 'success';
         break;
       case 2:
-        if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso anterior.');
+        // Tono Muscular: Try PATCH, then POST if 404 (not found)
         try {
-          response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/tono-muscular`, {
-            idfisioterapia: fisioterapiaId.value,
+          response = await axios.patch(`${backendUrl}/api/tono-muscular/${fisioterapiaId.value}`, {
             musAshworth: Number(form.tonoMuscular.ashworth),
             musCampbell: Number(form.tonoMuscular.campbell),
             musObservaciones: form.tonoMuscular.ashworthObservaciones.trim() || null,
           });
-          submitMessage.value = 'Tono muscular guardado.';
-          submitStatus.value = 'success';
+          submitMessage.value = 'Tono muscular actualizado.';
         } catch (error) {
-          if (error.response && error.response.data && error.response.data.message && error.response.data.message.includes('Ya existe un registro de Tono Muscular')) {
-            console.warn('Tono Muscular record already exists, attempting PATCH.');
-            response = await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/tono-muscular/${fisioterapiaId.value}`, {
+          if (error.response && error.response.status === 404) {
+            response = await axios.post(`${backendUrl}/api/tono-muscular`, {
               idfisioterapia: fisioterapiaId.value,
               musAshworth: Number(form.tonoMuscular.ashworth),
               musCampbell: Number(form.tonoMuscular.campbell),
               musObservaciones: form.tonoMuscular.ashworthObservaciones.trim() || null,
             });
-            submitMessage.value = 'Tono muscular actualizado.';
-            submitStatus.value = 'success';
-          } else {
-            throw error;
-          }
+            submitMessage.value = 'Tono muscular guardado.';
+          } else { throw error; } // Re-throw other errors
         }
+        submitStatus.value = 'success';
         break;
       case 3:
-        if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso anterior.');
+        // Fuerza: Try PATCH, then POST if 404
         try {
-          response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/fuerza`, {
-            idfisioterapia: fisioterapiaId.value,
+          response = await axios.patch(`${backendUrl}/api/fuerza/${fisioterapiaId.value}`, {
             fueBrazoizq: form.fuerza.brazoIzq,
             fueBrazoder: form.fuerza.brazoDer,
             fuePiernaizq: form.fuerza.piernaIzq,
@@ -1178,12 +1023,10 @@ const nextStep = async () => {
             fueCuelloizq: form.fuerza.cuelloIzq,
             fueCuelloder: form.fuerza.cuelloDer,
           });
-          submitMessage.value = 'Fuerza muscular guardada.';
-          submitStatus.value = 'success';
+          submitMessage.value = 'Fuerza muscular actualizada.';
         } catch (error) {
-          if (error.response && error.response.data && error.response.data.message && error.response.data.message.includes('Ya existe un registro de Fuerza')) {
-            console.warn('Fuerza record already exists, attempting PATCH.');
-            response = await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/fuerza/${fisioterapiaId.value}`, {
+          if (error.response && error.response.status === 404) {
+            response = await axios.post(`${backendUrl}/api/fuerza`, {
               idfisioterapia: fisioterapiaId.value,
               fueBrazoizq: form.fuerza.brazoIzq,
               fueBrazoder: form.fuerza.brazoDer,
@@ -1194,18 +1037,15 @@ const nextStep = async () => {
               fueCuelloizq: form.fuerza.cuelloIzq,
               fueCuelloder: form.fuerza.cuelloDer,
             });
-            submitMessage.value = 'Fuerza muscular actualizada.';
-            submitStatus.value = 'success';
-          } else {
-            throw error;
-          }
+            submitMessage.value = 'Fuerza muscular guardada.';
+          } else { throw error; }
         }
+        submitStatus.value = 'success';
         break;
       case 4:
-        if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso anterior.');
+        // Equilibrio Dinámico: Try PATCH, then POST if 404
         try {
-          response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-dinamico`, {
-            idfisioterapia: fisioterapiaId.value,
+          response = await axios.patch(`${backendUrl}/api/equilibrio-dinamico/${fisioterapiaId.value}`, {
             edLevantarse: form.tinetti.equilibrioDinamico.inicioMarcha === 1,
             edPasocontinuo: form.tinetti.equilibrioDinamico.pasoContinuo === 1,
             edLongpaso: form.tinetti.equilibrioDinamico.longitudPaso === 1,
@@ -1213,13 +1053,10 @@ const nextStep = async () => {
             edRotaciontronco: form.tinetti.equilibrioDinamico.rotacionTronco === 1,
             edPasofinal: form.tinetti.equilibrioDinamico.pasoFinal === 1,
           });
-          submitMessage.value = 'Equilibrio dinámico guardado.';
-          submitStatus.value = 'success';
+          submitMessage.value = 'Equilibrio dinámico actualizado.';
         } catch (error) {
-          // Check if the error indicates a record already exists
-          if (error.response && error.response.data && error.response.data.message && error.response.data.message.includes('Ya existe un registro de Equilibrio Dinámico')) {
-            console.warn('Equilibrio Dinámico record already exists, attempting PATCH.');
-            response = await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-dinamico/${fisioterapiaId.value}`, {
+          if (error.response && error.response.status === 404) {
+            response = await axios.post(`${backendUrl}/api/equilibrio-dinamico`, {
               idfisioterapia: fisioterapiaId.value,
               edLevantarse: form.tinetti.equilibrioDinamico.inicioMarcha === 1,
               edPasocontinuo: form.tinetti.equilibrioDinamico.pasoContinuo === 1,
@@ -1228,47 +1065,39 @@ const nextStep = async () => {
               edRotaciontronco: form.tinetti.equilibrioDinamico.rotacionTronco === 1,
               edPasofinal: form.tinetti.equilibrioDinamico.pasoFinal === 1,
             });
-            submitMessage.value = 'Equilibrio dinámico actualizado.';
-            submitStatus.value = 'success';
-          } else {
-            throw error; // Re-throw other errors
-          }
+            submitMessage.value = 'Equilibrio dinámico guardado.';
+          } else { throw error; }
         }
+        submitStatus.value = 'success';
         break;
       case 5:
-        if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso anterior.');
+        // Equilibrio Estático: Try PATCH, then POST if 404
         try {
-          response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-estatico`, {
-            idfisioterapia: fisioterapiaId.value,
+          response = await axios.patch(`${backendUrl}/api/equilibrio-estatico/${fisioterapiaId.value}`, {
             eeSentadonoapoyo: form.tinetti.equilibrioEstatico.sentadoSinApoyos === 1,
             eeParadonoapoyo: form.tinetti.equilibrioEstatico.paradoSinApoyos === 1,
           });
-          submitMessage.value = 'Equilibrio estático guardado.';
-          submitStatus.value = 'success';
+          submitMessage.value = 'Equilibrio estático actualizado.';
         } catch (error) {
-          // Check if the error indicates a record already exists
-          if (error.response && error.response.data && error.response.data.message && error.response.data.message.includes('Ya existe un registro de Equilibrio Estático')) {
-            console.warn('Equilibrio Estático record already exists, attempting PATCH.');
-            response = await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/equilibrio-estatico/${fisioterapiaId.value}`, {
+          if (error.response && error.response.status === 404) {
+            response = await axios.post(`${backendUrl}/api/equilibrio-estatico`, {
               idfisioterapia: fisioterapiaId.value,
               eeSentadonoapoyo: form.tinetti.equilibrioEstatico.sentadoSinApoyos === 1,
               eeParadonoapoyo: form.tinetti.equilibrioEstatico.paradoSinApoyos === 1,
             });
-            submitMessage.value = 'Equilibrio estático actualizado.';
-            submitStatus.value = 'success';
-          } else {
-            throw error; // Re-throw other errors
-          }
+            submitMessage.value = 'Equilibrio estático guardado.';
+          } else { throw error; }
         }
+        submitStatus.value = 'success';
         break;
     }
 
-    currentStep.value++;
+    currentStep.value++; // Advance to the next step on success
   } catch (error) {
-    submitMessage.value = 'Error al guardar los datos. Por favor, intente de nuevo.';
+    submitMessage.value = `Error al guardar los datos para el Paso ${currentStep.value}.`;
     submitStatus.value = 'error';
     console.error('Error submitting step:', error);
-    if (error.response && error.response.data && error.response.data.message) {
+    if (error.response?.data?.message) {
       submitMessage.value += ` Detalles: ${error.response.data.message}`;
     } else if (error.message) {
       submitMessage.value += ` Detalles: ${error.message}`;
@@ -1278,7 +1107,6 @@ const nextStep = async () => {
   }
 };
 
-// Handle navigation to the previous step
 const prevStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--;
@@ -1287,7 +1115,6 @@ const prevStep = () => {
   }
 };
 
-// Final form submission (Step 6)
 const submitFinalForm = async () => {
   if (!validateStep(currentStep.value)) {
     return;
@@ -1295,13 +1122,17 @@ const submitFinalForm = async () => {
 
   isSubmitting.value = true;
   submitMessage.value = 'Guardando zonas de dolor...';
-  submitStatus.value = '';
+  submitStatus.value = 'info';
 
   try {
-    if (!fisioterapiaId.value) throw new Error('ID de fisioterapia no disponible. Vuelva al paso 1 para iniciar la ficha.');
+    if (!fisioterapiaId.value) {
+      throw new Error('ID de fisioterapia no disponible. Vuelva al paso 1 para iniciar la ficha.');
+    }
 
+    const backendUrl = import.meta.env.VITE_URL_BACKEND;
     const allPossibleZoneIds = Array.from({ length: 28 }, (_, i) => i + 1); // IDs from 1 to 28
 
+    // Iterate through all possible zones to determine POST/PATCH
     for (const idzona of allPossibleZoneIds) {
       const isCurrentlySelected = form.dolor.zonasDolorosas.includes(idzona);
       const wasPreviouslyActive = initialZonasDolorosasState[idzona] === true;
@@ -1309,16 +1140,16 @@ const submitFinalForm = async () => {
       if (isCurrentlySelected && !wasPreviouslyActive) {
         // Zone is selected now, but wasn't active before (or didn't exist) -> POST
         try {
-          await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio`, {
+          await axios.post(`${backendUrl}/api/dolor-fisio`, {
             idfisioterapia: fisioterapiaId.value,
             idzona: idzona,
             zonaDuele: true,
           });
           console.log(`Zona ${idzona} POSTed as true.`);
         } catch (error) {
-          if (error.response && error.response.status === 409) { // Assuming 409 Conflict for "already exists"
+          if (error.response?.status === 409) { // Assuming 409 Conflict for "already exists"
             console.warn(`Zona ${idzona} already exists, attempting PATCH to set true.`);
-            await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
+            await axios.patch(`${backendUrl}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
               zonaDuele: true,
             });
             console.log(`Zona ${idzona} PATCHed to true.`);
@@ -1331,7 +1162,7 @@ const submitFinalForm = async () => {
       } else if (!isCurrentlySelected && wasPreviouslyActive) {
         // Zone is not selected now, but was active before -> PATCH to false
         try {
-          await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
+          await axios.patch(`${backendUrl}/api/dolor-fisio/${fisioterapiaId.value}/${idzona}`, {
             zonaDuele: false,
           });
           console.log(`Zona ${idzona} PATCHed to false.`);
@@ -1341,12 +1172,13 @@ const submitFinalForm = async () => {
           submitStatus.value = 'error';
         }
       }
-      // If isCurrentlySelected && wasPreviouslyActive, do nothing (already true and remains true)
-      // If !isCurrentlySelected && !wasPreviouslyActive, do nothing (already false and remains false, or never existed)
+      // No action needed if:
+      // - isCurrentlySelected && wasPreviouslyActive (remains true)
+      // - !isCurrentlySelected && !wasPreviouslyActive (remains false or never existed)
     }
 
     if (submitStatus.value !== 'error') {
-      submitMessage.value = '¡Zonas de dolor guardadas correctamente!';
+      submitMessage.value = '¡Ficha de fisioterapia completada y guardada correctamente!';
       submitStatus.value = 'success';
     }
 
@@ -1354,7 +1186,7 @@ const submitFinalForm = async () => {
     console.error('Error general al guardar las zonas de dolor:', error);
     submitMessage.value = 'Ocurrió un error general al guardar las zonas de dolor. Por favor, intente de nuevo.';
     submitStatus.value = 'error';
-    if (error.response && error.response.data && error.response.data.message) {
+    if (error.response?.data?.message) {
       submitMessage.value += ` Detalles: ${error.response.data.message}`;
     } else if (error.message) {
       submitMessage.value += ` Detalles: ${error.message}`;
@@ -1368,7 +1200,30 @@ const submitFinalForm = async () => {
 const getWongBakerFace = (score) => {
   return new URL(`../assets/images/wong-baker/face${score}.png`, import.meta.url).href;
 };
+
+// --- Initial Load Logic (onMounted and watch) ---
+
+// onMounted is used to check the URL parameter when the component is first loaded.
+onMounted(() => {
+  const idFromUrl = route.params.id; // Get the ID from the URL (e.g., /fichas/fisioterapia/238 -> 238)
+  if (idFromUrl) {
+    fisioterapiaId.value = idFromUrl; // Set the ID, which will trigger the watch
+  } else {
+    // If no ID in URL, it's a new form, set today's date
+    form.fechaContacto = new Date().toISOString().slice(0, 10);
+  }
+});
+
+// Watch 'fisioterapiaId' to trigger data fetching
+// This watch will run whenever fisioterapiaId changes (e.g., from URL, or after a new POST in step 1)
+watch(fisioterapiaId, async (newId) => {
+  if (newId) {
+    console.log(`Fisioterapia ID set to: ${newId}. Fetching all related data.`);
+    await fetchFisioterapiaData(newId);
+  }
+}, { immediate: false }); // Set to false because onMounted handles initial URL check
 </script>
+
 
 <style scoped>
 /*
@@ -1391,7 +1246,8 @@ const getWongBakerFace = (score) => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   padding: 40px 50px;
   width: 100%;
-  max-width: 950px; /* Ancho similar a la ficha de enfermería */
+  max-width: 950px;
+  /* Ancho similar a la ficha de enfermería */
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -1420,6 +1276,7 @@ const getWongBakerFace = (score) => {
   color: var(--color-primary);
   margin-bottom: 5px;
 }
+
 .faculty-name {
   font-size: 0.9rem;
   color: var(--color-text-secondary);
@@ -1461,15 +1318,20 @@ const getWongBakerFace = (score) => {
   align-items: center;
   font-weight: 700;
   font-size: 1.1rem;
-  transition: all 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added transitions */
+  transition: all 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  /* Added transitions */
 }
 
 .step-circle.active {
-  background-color: var(--color-primary-dark); /* Changed as per user request */
+  background-color: var(--color-primary-dark);
+  /* Changed as per user request */
   color: white;
-  border-color: var(--color-primary); /* Updated as per user request */
-  box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0.4), 0 6px 15px rgba(0, 0, 0, 0.3); /* More pronounced shadow */
-  transform: scale(1.15); /* Slightly more pronounced scale */
+  border-color: var(--color-primary);
+  /* Updated as per user request */
+  box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0.4), 0 6px 15px rgba(0, 0, 0, 0.3);
+  /* More pronounced shadow */
+  transform: scale(1.15);
+  /* Slightly more pronounced scale */
 }
 
 .step-circle.completed {
@@ -1486,11 +1348,14 @@ const getWongBakerFace = (score) => {
   transition: all 0.3s ease;
 }
 
-.step-circle.active + .step-label {
-  font-weight: 900; /* Even bolder */
+.step-circle.active+.step-label {
+  font-weight: 900;
+  /* Even bolder */
   color: var(--color-primary-dark);
-  transform: translateY(-3px) translateX(5px); /* More noticeable lift and slight shift */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+  transform: translateY(-3px) translateX(5px);
+  /* More noticeable lift and slight shift */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  /* Subtle text shadow */
 }
 
 
@@ -1679,6 +1544,7 @@ const getWongBakerFace = (score) => {
   grid-column: span 1;
   gap: 10px 20px;
 }
+
 .form-grid-2-col .inline-group {
   justify-content: flex-start;
 }
@@ -1697,7 +1563,8 @@ const getWongBakerFace = (score) => {
 
 .eva-number {
   display: inline-block;
-  width: calc(100% / 10 - 5px); /* Ajusta según el espaciado deseado */
+  width: calc(100% / 10 - 5px);
+  /* Ajusta según el espaciado deseado */
   text-align: center;
   font-weight: 600;
   color: var(--color-text-secondary);
@@ -1713,7 +1580,8 @@ const getWongBakerFace = (score) => {
 }
 
 .eva-selector-row .eva-label {
-  flex-basis: 100px; /* Ancho fijo para "No Valorada" */
+  flex-basis: 100px;
+  /* Ancho fijo para "No Valorada" */
   text-align: left;
   font-weight: 600;
   color: var(--color-primary-dark);
@@ -1761,7 +1629,8 @@ const getWongBakerFace = (score) => {
 .wong-baker-scale {
   display: flex;
   justify-content: space-around;
-  align-items: flex-end; /* Alinea los inputs en la parte inferior */
+  align-items: flex-end;
+  /* Alinea los inputs en la parte inferior */
   margin-top: 20px;
   padding: 15px;
   border: 1px solid var(--color-border);
@@ -1779,12 +1648,14 @@ const getWongBakerFace = (score) => {
   border-radius: 5px;
   transition: background-color 0.2s ease;
 }
+
 .face-option:hover {
   background-color: var(--color-hover-light);
 }
 
 .wong-baker-face {
-  width: 80px; /* Ajusta el tamaño de la imagen de la cara */
+  width: 80px;
+  /* Ajusta el tamaño de la imagen de la cara */
   height: auto;
   display: block;
 }
@@ -1852,11 +1723,13 @@ const getWongBakerFace = (score) => {
   align-items: flex-start;
   gap: 10px;
 }
+
 .ashworth-scale label,
 .campbell-scale label {
   margin-bottom: 0;
   line-height: 1.3;
 }
+
 .mt-3 {
   margin-top: 15px;
 }
@@ -1869,6 +1742,7 @@ const getWongBakerFace = (score) => {
   border-radius: 8px;
   background-color: #fdfdfd;
 }
+
 .tinetti-question-label {
   font-size: 1rem;
   font-weight: 600;
@@ -1876,8 +1750,10 @@ const getWongBakerFace = (score) => {
   margin-bottom: 10px;
   display: block;
 }
+
 .tinetti-question-group .radio-group {
-  gap: 10px 25px; /* Espaciado entre las opciones de radio */
+  gap: 10px 25px;
+  /* Espaciado entre las opciones de radio */
 }
 
 /* Body Chart Styles */
@@ -1895,7 +1771,8 @@ const getWongBakerFace = (score) => {
 
 .body-chart-svg {
   width: 100%;
-  max-width: 300px; /* Limit width for better display */
+  max-width: 300px;
+  /* Limit width for better display */
   height: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -1905,21 +1782,25 @@ const getWongBakerFace = (score) => {
 .body-chart-svg circle,
 .body-chart-svg rect,
 .body-chart-svg polygon {
-  fill: #e0e0e0; /* Default color for body parts */
+  fill: #e0e0e0;
+  /* Default color for body parts */
   stroke: #999;
   stroke-width: 1;
-  transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out; /* Removed transform */
+  transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
+  /* Removed transform */
   cursor: pointer;
 }
 
 .body-chart-svg circle:hover,
 .body-chart-svg rect:hover,
 .body-chart-svg polygon:hover {
-  fill: #c0c0c0; /* Hover color */
+  fill: #c0c0c0;
+  /* Hover color */
 }
 
 .body-chart-svg .pain-active {
-  fill: #ff6b6b; /* Red color for painful areas */
+  fill: #ff6b6b;
+  /* Red color for painful areas */
   stroke: #c0392b;
   stroke-width: 2;
   /* Removed transform: scale(1.05); */
@@ -1929,7 +1810,8 @@ const getWongBakerFace = (score) => {
 .body-chart-svg .shoulder-base {
   fill: #e0e0e0;
   stroke: #999;
-  pointer-events: none; /* Make it not clickable */
+  pointer-events: none;
+  /* Make it not clickable */
 }
 
 /* Navigation Buttons */
@@ -1995,7 +1877,8 @@ const getWongBakerFace = (score) => {
   box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.2);
   width: auto;
   display: block;
-  margin-left: auto; /* Centers the button if it's the only one */
+  margin-left: auto;
+  /* Centers the button if it's the only one */
   margin-right: auto;
 }
 
@@ -2036,7 +1919,8 @@ const getWongBakerFace = (score) => {
 
 /* Estilo para el indicador de campo requerido */
 .required {
-  color: var(--color-error); /* Usa un color rojo o distintivo */
+  color: var(--color-error);
+  /* Usa un color rojo o distintivo */
   margin-left: 4px;
 }
 
@@ -2091,9 +1975,11 @@ const getWongBakerFace = (score) => {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .horizontal-group {
     flex-direction: column;
   }
+
   .radio-group-horizontal {
     flex-direction: column;
     gap: 8px;
@@ -2104,6 +1990,7 @@ const getWongBakerFace = (score) => {
     padding: 8px 10px;
     font-size: 0.85rem;
   }
+
   .checkbox-cell {
     width: auto;
   }
@@ -2112,19 +1999,23 @@ const getWongBakerFace = (score) => {
     flex-wrap: wrap;
     justify-content: flex-start;
   }
+
   .eva-number {
     width: auto;
     margin-right: 10px;
   }
+
   .eva-input-wrapper {
     flex-basis: auto;
     margin-right: 10px;
   }
+
   .eva-labels-bottom {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
   }
+
   .pull-right {
     margin-left: 0;
   }
@@ -2133,12 +2024,16 @@ const getWongBakerFace = (score) => {
     flex-wrap: wrap;
     gap: 15px;
   }
+
   .face-option {
-    width: 45%; /* Dos caras por fila */
+    width: 45%;
+    /* Dos caras por fila */
   }
+
   .wong-baker-face {
     width: 60px;
   }
+
   .tinetti-question-group .radio-group {
     flex-direction: column;
   }
@@ -2147,7 +2042,9 @@ const getWongBakerFace = (score) => {
     flex-direction: column;
     gap: 15px;
   }
-  .nav-button, .submit-button {
+
+  .nav-button,
+  .submit-button {
     width: 100%;
   }
 }
@@ -2161,36 +2058,45 @@ const getWongBakerFace = (score) => {
     font-size: 1.8rem;
     margin-bottom: 25px;
   }
+
   .university-name {
     font-size: 1.2rem;
   }
+
   .faculty-name {
     font-size: 0.8rem;
   }
+
   .section-title {
     font-size: 1.3rem;
     margin-bottom: 20px;
   }
+
   .form-group input,
   .form-group select,
   .form-group textarea {
     padding: 10px 12px;
     font-size: 0.9rem;
   }
+
   .form-group label {
     font-size: 0.85rem;
   }
+
   .wong-baker-face {
     width: 50px;
   }
+
   .face-option {
-    width: 100%; /* Una cara por fila */
+    width: 100%;
+    /* Una cara por fila */
   }
 
   .progress-indicator {
     flex-direction: column;
     gap: 8px;
   }
+
   .step-label {
     margin-left: 0;
     margin-top: 5px;
