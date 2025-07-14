@@ -96,12 +96,7 @@ const toggleCard = (fichaId) => {
 
 const goToFicha = (tipo, id) => {
   const baseRoute = `/fichas/${tipo}`
-  if (tipo === 'generales') {
-    const cedula = localStorage.getItem('last_cedula')
-    router.push(`${baseRoute}/${cedula}`)
-  } else {
-    router.push(`${baseRoute}/${id}`)
-  }
+  router.push(`${baseRoute}/${id}`)
 }
 
 onMounted(() => {

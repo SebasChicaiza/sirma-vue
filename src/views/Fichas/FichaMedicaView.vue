@@ -640,7 +640,7 @@ const mapApiDataToForm = (data) => {
   mapBooleans(data.alerta, form.alerta)
   form.andrologico.andEdadultantigeno = data.andrologico.andEdadultantigeno
   form.andrologico.andTerapiahormonal = data.andrologico.andTerapiahormonal === 1
-  form.andrologico.andObservaciones = data.andrologico.andObservaciones
+  form.andrologico.andObservaciones = data.andrologico.andObservaciones || 'N/A';
   mapBooleans(data.antecedentesfamiliares, form.antecedentesfamiliares)
   form.antecedentesfamiliares.afObservaciones = data.antecedentesfamiliares.afObservaciones
   form.diagnostico.diagDiagnostico = data.diagnostico.diagDiagnostico
@@ -753,6 +753,9 @@ const validateForm = () => {
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
+  }
+  if (!form.andrologico.andObservaciones?.trim()) {
+    form.andrologico.andObservaciones = 'N/A';
   }
 
   isSubmitting.value = true
