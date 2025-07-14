@@ -120,6 +120,7 @@ export default {
   font-family: 'Arial', sans-serif;
   color: #333;
   background-color: #f8f9fa;
+  overflow-x: hidden; /* Previene scroll horizontal */
 }
 
 .section-title {
@@ -249,13 +250,16 @@ export default {
   top: 0;
   height: 100%;
   width: 50%; /* Adjust based on desired visibility */
+  overflow: hidden;
 }
 
 .hero-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   display: block;
+  transition: transform 0.3s ease;
 }
 
 /* ¿Cómo funciona? Section - Card Layout (UPDATED) */
@@ -446,7 +450,84 @@ export default {
   color: #34495e;
 }
 
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-banner {
+    padding: 60px 4%;
+    min-height: 450px;
+  }
+
+  .hero-content {
+    max-width: 60%;
+    padding-right: 20px;
+  }
+
+  .hero-image {
+    width: 40%;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+  }
+
+  .cards-container {
+    gap: 25px;
+  }
+
+  .card {
+    width: 280px;
+  }
+
+  .tecnologias-lista {
+    gap: 40px;
+  }
+}
+
+/* Large phones in landscape (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .hero-banner {
+    min-height: 380px;
+    padding: 35px 4%;
+  }
+
+  .hero-content {
+    padding: 1.3rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+  }
+
+  .card {
+    width: 85%;
+    max-width: 350px;
+  }
+
+  .card-image-wrapper {
+    height: 150px;
+  }
+}
+
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+  .hero-image {
+    width: 45%;
+    opacity: 0.8;
+  }
+
+  .hero-content {
+    max-width: 55%;
+  }
+}
+
 @media (max-width: 992px) {
   .hero-banner {
     flex-direction: column;
@@ -454,6 +535,7 @@ export default {
     padding: 60px 5%;
     /* Adjust clip-path for smaller screens */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 0 100%); /* Less pronounced angle */
+    min-height: 500px;
   }
 
   .hero-banner::before {
@@ -463,13 +545,26 @@ export default {
   .hero-content {
     padding-right: 0;
     margin-bottom: 40px;
+    max-width: 100%;
+    z-index: 3;
+    position: relative;
+    background: rgba(44, 62, 80, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
   }
 
   .hero-image {
-    position: static;
-    width: 80%;
-    height: auto;
-    margin-top: 30px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0.3;
+  }
+
+  .hero-image img {
+    object-position: center top;
   }
 
   .hero-title {
@@ -492,12 +587,23 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .hero-banner {
+    min-height: 400px;
+    padding: 40px 5%;
+  }
+
+  .hero-content {
+    padding: 1.5rem;
+  }
+
   .hero-title {
     font-size: 2.2rem;
+    margin-bottom: 15px;
   }
 
   .hero-description {
     font-size: 1rem;
+    margin-bottom: 25px;
   }
 
   .read-more-button {
@@ -516,11 +622,27 @@ export default {
   .tecnologias-lista {
     gap: 30px;
   }
+
+  .card-image-wrapper {
+    height: 160px;
+  }
+
+  .card-icon-square {
+    width: 50px;
+    height: 50px;
+    top: 10px;
+    left: 10px;
+  }
+
+  .card-icon-square .fa-icon {
+    font-size: 22px;
+  }
 }
 
 @media (max-width: 480px) {
   .hero-banner {
-    padding: 40px 5%;
+    padding: 30px 3%;
+    min-height: 350px;
     /* Even less pronounced angle for very small screens */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
   }
@@ -529,16 +651,36 @@ export default {
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
   }
 
+  .hero-content {
+    padding: 1rem;
+  }
+
   .hero-title {
     font-size: 1.8rem;
+    margin-bottom: 12px;
   }
 
   .hero-description {
     font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .hero-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  .read-more-button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
+    justify-content: center;
   }
 
   .section-title {
     font-size: 1.5rem;
+    margin-bottom: 30px;
   }
 
   .card-title {
@@ -549,8 +691,34 @@ export default {
     font-size: 0.9rem;
   }
 
+  .card-body {
+    padding: 15px;
+  }
+
+  .card-image-wrapper {
+    height: 140px;
+  }
+
+  .card-icon-square {
+    width: 45px;
+    height: 45px;
+    top: 8px;
+    left: 8px;
+  }
+
+  .card-icon-square .fa-icon {
+    font-size: 18px;
+  }
+
   .features-list li {
     font-size: 1rem;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+  }
+
+  .feature-icon {
+    font-size: 1.3rem;
+    margin-right: 12px;
   }
 
   .tech-icon {
@@ -558,8 +726,18 @@ export default {
     height: 50px;
   }
 
+  .tecnologia-item {
+    padding: 15px;
+  }
+
   .tecnologia-item span {
     font-size: 1rem;
+  }
+
+  .como-funciona-section,
+  .caracteristicas-section,
+  .tecnologias-section {
+    padding: 50px 3%;
   }
 }
 </style>

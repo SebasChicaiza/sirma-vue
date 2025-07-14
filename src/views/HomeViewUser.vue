@@ -8,7 +8,7 @@
             <span class="highlight">SIRMA</span> <span >PUCE</span>
         </h1>
         <p>
-          Este sistema busca optimizar la gestión de fichas médicas, permitiendo un seguimiento efectivo del estado de salud de los pacientes en zonas rurales, incluso sin conexión a internet.
+          Este sistema busca optimizar la gestión de fichas médicas, permitiendo un seguimiento efectivo del estado de salud de los pacientes en zonas rurales, incluye un agente de Inteligencia Artificialgit .
         </p>
         <div class="hero-buttons">
           <button class="btn-primary" @click="goToReportes">
@@ -170,6 +170,27 @@ const departments = [
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
   color: #333;
+  overflow-x: hidden; /* Previene scroll horizontal */
+  -webkit-overflow-scrolling: touch; /* Suaviza el scroll en iOS */
+}
+
+/* Mejoras de accesibilidad táctil */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Permitir selección de texto donde sea necesario */
+p, h1, h2, h3, h4, h5, h6 {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 .hero-section {
@@ -205,7 +226,7 @@ const departments = [
 }
 
 .highlight {
-  color: ffff;
+  color: #fff;
   letter-spacing: 2px;
   font-size: 8rem;
 }
@@ -218,6 +239,7 @@ const departments = [
 .hero-buttons {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .btn-primary {
@@ -228,6 +250,13 @@ const departments = [
   font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px; /* Tamaño táctil mínimo */
+}
+
+.btn-primary:hover {
+  background: #1bb8b8;
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -238,6 +267,13 @@ const departments = [
   font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px; /* Tamaño táctil mínimo */
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .doctor-img {
@@ -271,6 +307,50 @@ const departments = [
   }
   .hero-content {
     margin-left: 2vw;
+    margin-right: 2vw;
+    max-width: none;
+  }
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  .highlight {
+    font-size: 4rem;
+  }
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 70vh;
+    min-height: 500px;
+  }
+  .hero-content {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  .hero-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  .highlight {
+    font-size: 3rem;
+    letter-spacing: 1px;
+  }
+  .hero-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
   }
 }
 
@@ -332,7 +412,7 @@ const departments = [
   cursor: pointer;
   width: 100%;
   min-height: 180px;
-  text-align: left;
+  text-align: center;
   transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
   outline: none;
   padding: 2.5rem 1.5rem 2rem 1.5rem;
@@ -340,6 +420,8 @@ const departments = [
   flex-direction: column;
   align-items: center;
   font-size: 1.25rem;
+  touch-action: manipulation; /* Mejora la interacción táctil */
+  -webkit-tap-highlight-color: transparent; /* Elimina highlight en iOS */
 }
 
 .info-btn h3 {
@@ -361,6 +443,38 @@ const departments = [
   .info-card {
     margin: 0;
     width: 100%;
+    min-height: 160px;
+  }
+  .info-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+  }
+  .info-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  .info-card p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-section {
+    padding: 1.5rem 0.8rem;
+    gap: 1rem;
+  }
+  .info-card {
+    padding: 2rem 1rem;
+    min-height: 140px;
+  }
+  .info-icon {
+    font-size: 2rem;
+  }
+  .info-card h3 {
+    font-size: 1.2rem;
+  }
+  .info-card p {
+    font-size: 0.95rem;
   }
 }
 
@@ -464,26 +578,163 @@ const departments = [
   margin: 0 auto;
 }
 
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .highlight {
+    font-size: 5rem;
+  }
+
+  .hero-content p {
+    font-size: 1.2rem;
+  }
+
+  .info-section {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .info-card {
+    min-height: 170px;
+  }
+
+  .info-card h3 {
+    font-size: 1.4rem;
+  }
+
+  .carousel-container {
+    width: 60vw;
+    max-width: 500px;
+    height: 65vh;
+    min-height: 450px;
+  }
+
+  .carousel-image {
+    width: 60vw;
+    max-width: 500px;
+    height: 65vh;
+    min-height: 450px;
+  }
+
+  .departments-grid.grid-2x2 {
+    grid-template-columns: 1fr 1fr;
+    max-width: 800px;
+    gap: 2.5rem;
+  }
+
+  .department-card {
+    min-height: 320px;
+    padding: 2.2rem 1.8rem;
+  }
+}
+
+/* Landscape phones (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .highlight {
+    font-size: 4.5rem;
+  }
+
+  .carousel-container {
+    width: 85vw;
+    max-width: 360px;
+    height: 55vh;
+    min-height: 380px;
+  }
+
+  .carousel-image {
+    width: 85vw;
+    max-width: 360px;
+    height: 55vh;
+    min-height: 380px;
+  }
+}
+
 @media (max-width: 1100px) {
   .departments-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 @media (max-width: 900px) {
+  .departments {
+    padding: 3rem 1rem;
+  }
+
+  .departments-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
   .departments-grid.grid-2x2 {
     grid-template-columns: 1fr;
     grid-template-rows: none;
     gap: 2rem;
+    max-width: 500px;
+  }
+
+  .department-card {
+    min-height: 280px;
+    padding: 2rem 1.5rem;
+  }
+
+  .department-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.2rem;
+  }
+
+  .department-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .department-card p {
+    font-size: 1rem;
+    line-height: 1.6;
   }
 }
-@media (max-width: 700px) {
-  .departments-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+
+@media (max-width: 480px) {
+  .departments {
+    padding: 2rem 0.8rem;
   }
+
+  .departments-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .departments-grid.grid-2x2 {
+    gap: 1.5rem;
+    max-width: 350px;
+  }
+
   .department-card {
-    min-height: 0;
-    padding: 2rem 1rem;
+    min-height: 250px;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+
+  .department-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+
+  .department-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .department-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 }
 
@@ -539,10 +790,14 @@ const departments = [
   font-size: 1.5rem;
   cursor: pointer;
   z-index: 2;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation; /* Mejora la interacción táctil */
+  -webkit-tap-highlight-color: transparent; /* Elimina highlight en iOS */
+  min-height: 44px; /* Tamaño táctil mínimo */
+  min-width: 44px;
 }
 
 .carousel-btn.prev {
@@ -570,6 +825,57 @@ const departments = [
     max-width: 400px;
     height: 60vh;
     min-height: 400px;
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .carousel-btn.prev {
+    left: 12px;
+  }
+
+  .carousel-btn.next {
+    right: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hospital-info {
+    padding: 2rem 0;
+    min-height: 50vh;
+  }
+
+  .carousel-container {
+    width: 90vw;
+    max-width: 320px;
+    height: 50vh;
+    min-height: 350px;
+    border-radius: 20px;
+  }
+
+  .carousel-image {
+    width: 90vw;
+    max-width: 320px;
+    height: 50vh;
+    min-height: 350px;
+    border-radius: 20px;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .carousel-btn.prev {
+    left: 8px;
+  }
+
+  .carousel-btn.next {
+    right: 8px;
   }
 }
 
