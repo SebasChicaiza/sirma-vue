@@ -84,29 +84,7 @@
               </div>
             </div>
             <!-- New item for aiCuidaCasa -->
-            <div class="scale-item">
-              <label>CUIDADO DE LA CASA:</label>
-              <div class="radio-options">
-                <label
-                  ><input
-                    type="radio"
-                    name="lawton_aiCuidaCasa"
-                    :value="0"
-                    v-model="scales.actividad_instrumental.aiCuidaCasa.value"
-                  />
-                  No hace/Dependiente</label
-                >
-                <label
-                  ><input
-                    type="radio"
-                    name="lawton_aiCuidaCasa"
-                    :value="1"
-                    v-model="scales.actividad_instrumental.aiCuidaCasa.value"
-                  />
-                  Independiente</label
-                >
-              </div>
-            </div>
+
             <div class="scale-total form-group">
               <label>TOTAL ACTIVIDAD INSTRUMENTAL:</label>
               <input type="number" v-model="scales.total_actividad_instrumental" readonly />
@@ -410,7 +388,7 @@
       </section>
 
       <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
-        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha Médica' }}
+        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha' }}
       </button>
 
       <p v-if="submitMessage" :class="['submit-info', submitStatus]">
@@ -1376,7 +1354,7 @@ const handleSubmit = async () => {
 }
 
 .submit-button:hover {
-  background-color: var(--color-accent-green-dark);
+  background-color: blue;
   transform: translateY(-2px);
 }
 
