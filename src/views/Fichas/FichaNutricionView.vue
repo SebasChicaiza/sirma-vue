@@ -643,49 +643,75 @@ import { onMounted } from 'vue'
 const selectedFichaId = ref(null)
 const route = useRoute()
 
-const fillFormFromPayload = (p) => {
-  selectedFichaId.value = p.idFicha
-  form.evaluadorMNA = p.nombreEncuestador ?? ''
-  form.imc = p.imc
-  form.peso = p.peso
-  form.talla = p.talla ? p.talla * 100 : null // la API lo guarda en metros
-  form.circunferenciaBraquial = p.circunBraquial
-  /* --- Escalas MNA --- */
-  form.mna.a = p.perdidaApetito
-  form.mna.b = p.perdidaPeso
-  form.mna.c = p.movilidad
-  form.mna.d = p.enfermedadAguda
-  form.mna.e = p.neuropsico
-  form.mna.f = p.imc // mismo valor
-  form.mna.g = p.viveDomicilio
-  form.mna.h = p.masTresMedicinas
-  form.mna.i = p.ulceraLesionCutanea
-  form.mna.j = p.comidaCompleta
-  /* K: se reparte como desees; aquí dejamos todo en k1 para el ejemplo */
-  form.mna.k1 = p.consumePaciente
-  form.mna.l = p.frutaVerdura
-  form.mna.m = p.vasosAgua
-  form.mna.n = p.formaAlimento
-  form.mna.o = p.bienNutrido
-  form.mna.p = p.estadoSalud
-  /* --- Flags booleanos --- */
-  form.dietaBalanceada = p.dietaBalanceada ? 'si' : 'no'
-  form.piezasDentales = p.dentalesCompletas ? 'si' : 'no'
-  form.dificultadMasticar = p.dificultadMasticar ? 'si' : 'no'
-  form.estrenimiento = p.estrenimientoFrecu ? 'si' : 'no'
-  form.alergiaAlimentos = p.alergiaAlimentaria ? 'si' : 'no'
-  /* --- Observaciones y comidas --- */
-  form.observacionesNutricionales = p.preferencias ?? ''
-  form.desayuno = p.desayuno ?? ''
-  form.almuerzo = p.almuerzo ?? ''
-  form.cena = p.cena ?? ''
-  form.snacks = p.snacks ?? ''
+/* ------------------------------------------------------------- */
+/*      FUNCIÓN INVERSA: payload de la API  ➜  formulario Vue    */
+/* ------------------------------------------------------------- */
+const fillFormFromPayload = (data) => {
+  if (!data) return
+
+  /* ==== 1.  Atajos a cada bloque  ==== */
+  const { cribaje = {}, evaluacion = {}, antecedentesNutri = {}, datosAntropometricos = {} } = data
+
+  /* ==== 2.  Helpers de conversión ==== */
+  const bool01ToSiNo = (v) => (v === 1 ? 'si' : v === 0 ? 'no' : '')
+  const safeNum = (v) => v ?? null
+
+  /* ==== 3.  Datos “de cabecera” ==== */
+  selectedFichaId.value = data.idFicha
+  form.evaluadorMNA = data.nombreEncuestador ?? ''
+  form.estadoNutricional = safeNum(data.estadoNutricional) // tu radio espera 0-mal,1-riesgo,2-normal
+
+  /* ==== 4.  Bloque de cribaje (A-F) ==== */
+  form.mna.a = safeNum(cribaje.perdidaApetito)
+  form.mna.b = safeNum(cribaje.perdidaPeso)
+  form.mna.c = safeNum(cribaje.movilidad)
+  form.mna.d = safeNum(cribaje.enfermedadAguda)
+  form.mna.e = safeNum(cribaje.neuropsico)
+  form.mna.f = safeNum(cribaje.imc) // IMC inicial
+
+  /* ==== 5.  Bloque de evaluación (G-P) ==== */
+  form.mna.g = safeNum(evaluacion.viveDomicilio)
+  form.mna.h = safeNum(evaluacion.masTresMedicinas)
+  form.mna.i = safeNum(evaluacion.ulceraLesionCutanea)
+  form.mna.j = safeNum(evaluacion.comidaCompleta)
+  form.mna.k1 = safeNum(evaluacion.consumePaciente) // total proteínas; ajusta si haces split
+  form.mna.l = safeNum(evaluacion.frutaVerdura)
+  form.mna.m = safeNum(evaluacion.vasosAgua)
+  form.mna.n = safeNum(evaluacion.formaAlimento)
+  form.mna.o = safeNum(evaluacion.bienNutrido)
+  form.mna.p = safeNum(evaluacion.estadoSalud)
+
+  /* ==== 6.  Datos antropométricos ==== */
+  form.peso = safeNum(datosAntropometricos.peso)
+  form.talla = datosAntropometricos.talla ? datosAntropometricos.talla * 100 : null // a cm
+  form.imc = safeNum(cribaje.imc) // o datosAntropometricos.imcDA
+  form.circunferenciaBraquial = safeNum(evaluacion.circunbraquial)
+
+  /* ==== 7.  Antecedentes Nutricionales (radios/booleans) ==== */
+  form.dietaBalanceada = bool01ToSiNo(antecedentesNutri.dietaBalanceada)
+  form.piezasDentales = bool01ToSiNo(antecedentesNutri.dentalesCompletas)
+  form.dificultadMasticar = bool01ToSiNo(antecedentesNutri.dificultadMasticar)
+  form.estrenimiento = bool01ToSiNo(antecedentesNutri.estrenimientoFrecu)
+  form.alergiaAlimentos = bool01ToSiNo(antecedentesNutri.alergiaAlimentaria)
+
+  /* ==== 8.  Textos libres / comidas ==== */
+  form.observacionesNutricionales = antecedentesNutri.preferencias ?? ''
+  form.desayuno = antecedentesNutri.desayuno ?? ''
+  form.almuerzo = antecedentesNutri.almuerzo ?? ''
+  form.cena = antecedentesNutri.cena ?? ''
+  form.snacks = antecedentesNutri.snacks ?? ''
+  form.quienCocina = antecedentesNutri.quienCocina ?? ''
+
+  /* ==== 9.  Forzar recálculo de computeds (peso/talla → imc) ==== */
+  // Si quieres recalcular IMC de forma reactiva basta con asignar peso/talla
 }
 
 const fetchFichaIfNeeded = async (id) => {
   if (!id) return
   try {
-    const { data } = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto/${id}`)
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto/header/${id}`,
+    )
     fillFormFromPayload(data)
   } catch (err) {
     console.error(`No se pudo cargar la ficha ${id}:`, err)
