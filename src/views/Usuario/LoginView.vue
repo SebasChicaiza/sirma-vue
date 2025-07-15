@@ -45,9 +45,6 @@
           <router-link to="/recuperar-clave" class="forgot-password-link">
             ¿Olvidaste tu contraseña?
           </router-link>
-          <router-link to="/registro" class="register-link">
-            ¿No tienes cuenta? Regístrate aquí
-          </router-link>
         </div>
       </form>
     </div>

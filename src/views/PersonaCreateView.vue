@@ -235,24 +235,24 @@ const guardar = async () => {
         </div>
         <div>
           <label for="perOcupacion" class="input-label">Ocupación</label>
-          <input
-            id="perOcupacion"
-            v-model.trim="form.perOcupacion"
-            type="text"
-            placeholder="Ej: Jubilado/a"
-            class="input-style"
-          />
+          <select id="perOcupacion" v-model="form.perOcupacion" class="input-style">
+            <option disabled value="">Seleccionar</option>
+            <option value="Jornalero">Jornalero</option>
+            <option value="Agricultor">Agricultor</option>
+            <option value="Jubilado/Pensionista">Jubilado/Pensionista</option>
+            <option value="Otro">Otro</option>
+          </select>
         </div>
 
         <div>
           <label for="perInstruccion" class="input-label">Nivel de Instrucción</label>
-          <input
-            id="perInstruccion"
-            v-model.trim="form.perInstruccion"
-            type="text"
-            placeholder="Ej: Primaria completa"
-            class="input-style"
-          />
+          <select id="perInstruccion" v-model="form.perInstruccion" class="input-style">
+            <option disabled value="">Seleccionar</option>
+            <option value="Ninguna">Ninguna</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+            <option value="Superior">Superior</option>
+          </select>
         </div>
         <div>
           <label for="perCuidador" class="input-label">Nombre del Cuidador</label>
@@ -278,13 +278,13 @@ const guardar = async () => {
         </div>
         <div>
           <label for="perComunidad" class="input-label">Comunidad</label>
-          <input
-            id="perComunidad"
-            v-model.trim="form.perComunidad"
-            type="text"
-            placeholder="Ej: La Esperanza"
-            class="input-style"
-          />
+          <select id="perComunidad" v-model="form.perComunidad" class="input-style">
+            <option disabled value="">Seleccionar</option>
+            <option value="Chugchilan">Chugchilán</option>
+            <option value="Moreta">Moreta</option>
+            <option value="Tondoto">Tondoto</option>
+            <option value="Moya">Moya</option>
+          </select>
         </div>
 
         <div class="md:col-span-2">

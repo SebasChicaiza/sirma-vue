@@ -53,13 +53,18 @@
                         : ''
                     "
                   >
-                    {{ idPersonaSeleccionada == persona.idpersona ? 'Seleccionado' : 'Seleccionar' }}
+                    {{
+                      idPersonaSeleccionada == persona.idpersona ? 'Seleccionado' : 'Seleccionar'
+                    }}
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <div v-else-if="busquedaRealizada && !idPersonaSeleccionada" class="mt-4 flex justify-center">
+          <div
+            v-else-if="busquedaRealizada && !idPersonaSeleccionada"
+            class="mt-4 flex justify-center"
+          >
             <button
               @click="router.push('/personas/crear')"
               class="submit-button"
@@ -102,7 +107,12 @@
           <div class="form-grid">
             <div class="form-group">
               <label for="pacEstadogeneral">Estado General:</label>
-              <select id="pacEstadogeneral" v-model="form.pacEstadogeneral" required :disabled="isEditing">
+              <select
+                id="pacEstadogeneral"
+                v-model="form.pacEstadogeneral"
+                required
+                :disabled="isEditing"
+              >
                 <option value="" disabled>Seleccione un estado</option>
                 <option value="Estable">Estable</option>
                 <option value="Delicado">Delicado</option>
@@ -307,7 +317,13 @@
         </section>
 
         <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
-          {{ isSubmitting ? 'Guardando Ficha...' : (isEditing ? 'Actualizar Ficha General' : 'Guardar Ficha General') }}
+          {{
+            isSubmitting
+              ? 'Guardando Ficha...'
+              : isEditing
+                ? 'Actualizar Ficha General'
+                : 'Guardar Ficha General'
+          }}
         </button>
       </div>
       <p v-if="submitMessage" :class="['submit-info', submitStatus]">
@@ -374,100 +390,100 @@ const fetchDataForEditing = async (id, cedula) => {
   try {
     const [fichaMedicaRes, datosGeneralesRes] = await Promise.all([
       axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/pacientes/ficha/cedula/${cedula}`),
-      axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/datos-generales/${id}`)
-    ]);
+      axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/datos-generales/${id}`),
+    ])
 
-    const fichaMedica = fichaMedicaRes.data[0];
-    const datosGenerales = datosGeneralesRes.data;
+    const fichaMedica = fichaMedicaRes.data[0]
+    const datosGenerales = datosGeneralesRes.data
 
     // Set the reactive variables for a complete update
-    form.idFicha = fichaMedica.idFicha;
-    form.pacFechaprimercontacto = fichaMedica.PAC_FECHAPRIMERCONTACTO.split('T')[0];
-    form.pacEstadogeneral = fichaMedica.PAC_ESTADOGENERAL;
-    form.pacObservaciones = fichaMedica.PAC_OBSERVACIONES;
+    form.idFicha = fichaMedica.idFicha
+    form.pacFechaprimercontacto = fichaMedica.PAC_FECHAPRIMERCONTACTO.split('T')[0]
+    form.pacEstadogeneral = fichaMedica.PAC_ESTADOGENERAL
+    form.pacObservaciones = fichaMedica.PAC_OBSERVACIONES
 
     // Populate form with datos generales from the ID-based API
-    form.dgNombreencuestador = datosGenerales.dgNombreencuestador;
-    form.dgPasAcostado = parseFloat(datosGenerales.dgPasAcostado);
-    form.dgPadAcostado = parseFloat(datosGenerales.dgPadAcostado);
-    form.dgPasSentado = parseFloat(datosGenerales.dgPasSentado);
-    form.dgPadSentado = parseFloat(datosGenerales.dgPadSentado);
-    form.dgDiagnosticoha = datosGenerales.dgDiagnosticoha;
-    form.dgPulsopormin = datosGenerales.dgPulsopormin;
-    form.dgDiagnosticopulso = datosGenerales.dgDiagnosticopulso;
-    form.dgFrecrespiratoria = datosGenerales.dgFrecrespiratoria;
-    form.dgDiagnosticofr = datosGenerales.dgDiagnosticofr;
-    form.dgSaturacion = datosGenerales.dgSaturacion;
-    form.dgDiagnosticosaturacion = datosGenerales.dgDiagnosticosaturacion;
-    form.dgTemperatura = parseFloat(datosGenerales.dgTemperatura);
-    form.dgDiagnosticotemperatura = datosGenerales.dgDiagnosticotemperatura;
-    form.dgFirmaconcentimiento = !!datosGenerales.dgFirmaconcentimiento;
-    form.dgFirmamedicina = !!datosGenerales.dgFirmamedicina;
-    form.dgFirmaenfermeria = !!datosGenerales.dgFirmaenfermeria;
-    form.dgFirmanutricion = !!datosGenerales.dgFirmanutricion;
-    form.dgFirmafisioterapia = !!datosGenerales.dgFirmafisioterapia;
+    form.dgNombreencuestador = datosGenerales.dgNombreencuestador
+    form.dgPasAcostado = parseFloat(datosGenerales.dgPasAcostado)
+    form.dgPadAcostado = parseFloat(datosGenerales.dgPadAcostado)
+    form.dgPasSentado = parseFloat(datosGenerales.dgPasSentado)
+    form.dgPadSentado = parseFloat(datosGenerales.dgPadSentado)
+    form.dgDiagnosticoha = datosGenerales.dgDiagnosticoha
+    form.dgPulsopormin = datosGenerales.dgPulsopormin
+    form.dgDiagnosticopulso = datosGenerales.dgDiagnosticopulso
+    form.dgFrecrespiratoria = datosGenerales.dgFrecrespiratoria
+    form.dgDiagnosticofr = datosGenerales.dgDiagnosticofr
+    form.dgSaturacion = datosGenerales.dgSaturacion
+    form.dgDiagnosticosaturacion = datosGenerales.dgDiagnosticosaturacion
+    form.dgTemperatura = parseFloat(datosGenerales.dgTemperatura)
+    form.dgDiagnosticotemperatura = datosGenerales.dgDiagnosticotemperatura
+    form.dgFirmaconcentimiento = !!datosGenerales.dgFirmaconcentimiento
+    form.dgFirmamedicina = !!datosGenerales.dgFirmamedicina
+    form.dgFirmaenfermeria = !!datosGenerales.dgFirmaenfermeria
+    form.dgFirmanutricion = !!datosGenerales.dgFirmanutricion
+    form.dgFirmafisioterapia = !!datosGenerales.dgFirmafisioterapia
 
     // Set the cedula for the handleSubmit function
-    cedulaId.value = cedula;
-    iddatosgenerales.value = id;
+    cedulaId.value = cedula
+    iddatosgenerales.value = id
 
-    submitMessage.value = 'Ficha completa cargada exitosamente para su edición.';
-    submitStatus.value = 'success';
+    submitMessage.value = 'Ficha completa cargada exitosamente para su edición.'
+    submitStatus.value = 'success'
   } catch (error) {
-    console.error('Error al cargar la ficha:', error);
-    submitMessage.value = 'Error al cargar la ficha. Verifique los datos o la conexión.';
-    submitStatus.value = 'error';
+    console.error('Error al cargar la ficha:', error)
+    submitMessage.value = 'Error al cargar la ficha. Verifique los datos o la conexión.'
+    submitStatus.value = 'error'
   } finally {
-    isLoadingData.value = false;
+    isLoadingData.value = false
   }
-};
+}
 
 const handleSearch = async (busqueda) => {
-  if (isEditing.value) return;
+  if (isEditing.value) return
 
-  localStorage.removeItem('idpersona');
-  idPersonaSeleccionada.value = null;
+  localStorage.removeItem('idpersona')
+  idPersonaSeleccionada.value = null
 
-  busquedaRealizada.value = false;
-  resultadosBusqueda.value = [];
+  busquedaRealizada.value = false
+  resultadosBusqueda.value = []
   if (!busqueda) {
-    submitMessage.value = 'Por favor, ingrese un valor para buscar.';
-    submitStatus.value = 'error';
-    return;
+    submitMessage.value = 'Por favor, ingrese un valor para buscar.'
+    submitStatus.value = 'error'
+    return
   }
   try {
     const res = await axios.get(
       `${import.meta.env.VITE_URL_BACKEND}/api/personas/cedula/${busqueda}`,
-    );
+    )
     if (Array.isArray(res.data) && res.data.length > 0) {
-      resultadosBusqueda.value = res.data;
+      resultadosBusqueda.value = res.data
     } else if (res.data && res.data.idpersona) {
-      resultadosBusqueda.value = [res.data];
+      resultadosBusqueda.value = [res.data]
     }
-    busquedaRealizada.value = true;
+    busquedaRealizada.value = true
   } catch (error) {
-    resultadosBusqueda.value = [];
-    busquedaRealizada.value = true;
+    resultadosBusqueda.value = []
+    busquedaRealizada.value = true
     submitMessage.value =
-      'No se encontraron resultados para la búsqueda o hubo un error en la conexión.';
-    submitStatus.value = 'error';
-    console.error('Error en la búsqueda:', error);
+      'No se encontraron resultados para la búsqueda o hubo un error en la conexión.'
+    submitStatus.value = 'error'
+    console.error('Error en la búsqueda:', error)
   }
-};
+}
 
 const seleccionarPersona = (persona) => {
-  form.pCedula = persona.perCedula;
-  form.idpersona = persona.idpersona;
-  localStorage.setItem('idpersona', persona.idpersona);
-  localStorage.setItem('last_cedula', persona.perCedula);
-  idPersonaSeleccionada.value = persona.idpersona;
-  submitMessage.value = `Paciente ${persona.perPrimernombre} ${persona.perPrimerapellido} seleccionado.`;
-  submitStatus.value = 'success';
-};
+  form.pCedula = persona.perCedula
+  form.idpersona = persona.idpersona
+  localStorage.setItem('idpersona', persona.idpersona)
+  localStorage.setItem('last_cedula', persona.perCedula)
+  idPersonaSeleccionada.value = persona.idpersona
+  submitMessage.value = `Paciente ${persona.perPrimernombre} ${persona.perPrimerapellido} seleccionado.`
+  submitStatus.value = 'success'
+}
 
 const validateForm = () => {
-  submitMessage.value = '';
-  submitStatus.value = '';
+  submitMessage.value = ''
+  submitStatus.value = ''
   if (
     !form.idFicha ||
     !form.pacFechaprimercontacto ||
@@ -488,55 +504,55 @@ const validateForm = () => {
     form.dgTemperatura === null ||
     !form.dgDiagnosticotemperatura
   ) {
-    submitMessage.value = 'Por favor, complete todos los campos obligatorios.';
-    submitStatus.value = 'error';
-    return false;
+    submitMessage.value = 'Por favor, complete todos los campos obligatorios.'
+    submitStatus.value = 'error'
+    return false
   }
-  const errors = [];
+  const errors = []
   if (!/^FCH\d{2,}$/.test(form.idFicha)) {
-    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).');
+    errors.push('El campo "Ficha N°" debe tener el formato FCHXX (ej. FCH01).')
   }
-  const today = new Date(currentDate.value);
-  const contactDate = new Date(form.pacFechaprimercontacto);
+  const today = new Date(currentDate.value)
+  const contactDate = new Date(form.pacFechaprimercontacto)
   if (contactDate > today) {
-    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.');
+    errors.push('La "Fecha de Contacto" no puede ser una fecha futura.')
   }
   if (!/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/.test(form.dgNombreencuestador.trim())) {
-    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.');
+    errors.push('El "Nombre del Encuestador" solo puede contener letras y espacios.')
   }
   if (form.dgPasAcostado < 70 || form.dgPasAcostado > 200)
-    errors.push('PAS Acostado fuera de rango (70-200).');
+    errors.push('PAS Acostado fuera de rango (70-200).')
   if (form.dgPadAcostado < 40 || form.dgPadAcostado > 120)
-    errors.push('PAD Acostado fuera de rango (40-120).');
+    errors.push('PAD Acostado fuera de rango (40-120).')
   if (form.dgPasSentado < 70 || form.dgPasSentado > 200)
-    errors.push('PAS Sentado fuera de rango (70-200).');
+    errors.push('PAS Sentado fuera de rango (70-200).')
   if (form.dgPadSentado < 40 || form.dgPadSentado > 120)
-    errors.push('PAD Sentado fuera de rango (40-120).');
+    errors.push('PAD Sentado fuera de rango (40-120).')
   if (form.dgPulsopormin < 40 || form.dgPulsopormin > 180)
-    errors.push('Pulso por Minuto fuera de rango (40-180).');
+    errors.push('Pulso por Minuto fuera de rango (40-180).')
   if (form.dgFrecrespiratoria < 10 || form.dgFrecrespiratoria > 30)
-    errors.push('Frecuencia Respiratoria fuera de rango (10-30).');
+    errors.push('Frecuencia Respiratoria fuera de rango (10-30).')
   if (form.dgSaturacion < 85 || form.dgSaturacion > 100)
-    errors.push('Saturación fuera de rango (85-100%).');
+    errors.push('Saturación fuera de rango (85-100%).')
   if (form.dgTemperatura < 34.0 || form.dgTemperatura > 42.0)
-    errors.push('Temperatura fuera de rango (34.0-42.0°C).');
+    errors.push('Temperatura fuera de rango (34.0-42.0°C).')
   if (errors.length > 0) {
-    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>');
-    submitStatus.value = 'error';
-    return false;
+    submitMessage.value = 'Errores de validación:<br>' + errors.join('<br>')
+    submitStatus.value = 'error'
+    return false
   }
-  return true;
-};
+  return true
+}
 
 const handleSubmit = async () => {
-  if (!validateForm()) return;
-  isSubmitting.value = true;
+  if (!validateForm()) return
+  isSubmitting.value = true
 
   if (!cedulaId.value && !form.idpersona) {
-    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.';
-    submitStatus.value = 'error';
-    isSubmitting.value = false;
-    return;
+    submitMessage.value = 'Debe seleccionar un paciente antes de guardar la ficha.'
+    submitStatus.value = 'error'
+    isSubmitting.value = false
+    return
   }
 
   if (isEditing.value) {
@@ -560,15 +576,18 @@ const handleSubmit = async () => {
       dgFirmaenfermeria: form.dgFirmaenfermeria,
       dgFirmanutricion: form.dgFirmanutricion,
       dgFirmafisioterapia: form.dgFirmafisioterapia,
-    };
+    }
     try {
-      await axios.put(`${import.meta.env.VITE_URL_BACKEND}/api/datos-generales/${iddatosgenerales.value}`, updatePayload);
-      submitMessage.value = 'Ficha general actualizada exitosamente.';
-      submitStatus.value = 'success';
+      await axios.put(
+        `${import.meta.env.VITE_URL_BACKEND}/api/datos-generales/${iddatosgenerales.value}`,
+        updatePayload,
+      )
+      submitMessage.value = 'Ficha general actualizada exitosamente.'
+      submitStatus.value = 'success'
     } catch (error) {
-      console.error('Error actualizando ficha:', error);
-      submitMessage.value = 'Error al actualizar la ficha. Verifica los datos o intenta nuevamente.';
-      submitStatus.value = 'error';
+      console.error('Error actualizando ficha:', error)
+      submitMessage.value = 'Error al actualizar la ficha. Verifica los datos o intenta nuevamente.'
+      submitStatus.value = 'error'
     }
   } else {
     const createPayload = {
@@ -592,44 +611,44 @@ const handleSubmit = async () => {
       dgFirmaenfermeria: form.dgFirmaenfermeria,
       dgFirmanutricion: form.dgFirmanutricion,
       dgFirmafisioterapia: form.dgFirmafisioterapia,
-    };
+    }
     try {
-      await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/datos-generales`, createPayload);
-      submitMessage.value = 'Ficha general guardada exitosamente.';
-      submitStatus.value = 'success';
+      await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/datos-generales`, createPayload)
+      submitMessage.value = 'Ficha general guardada exitosamente.'
+      submitStatus.value = 'success'
     } catch (error) {
-      console.error('Error guardando ficha:', error);
-      submitMessage.value = 'Error al guardar la ficha. Verifica los datos o intenta nuevamente.';
-      submitStatus.value = 'error';
+      console.error('Error guardando ficha:', error)
+      submitMessage.value = 'Error al guardar la ficha. Verifica los datos o intenta nuevamente.'
+      submitStatus.value = 'error'
     }
   }
 
-  isSubmitting.value = false;
-};
+  isSubmitting.value = false
+}
 
 onMounted(() => {
-  currentDate.value = new Date().toISOString().split('T')[0];
+  currentDate.value = new Date().toISOString().split('T')[0]
 
-  const idFromUrl = route.params.id;
-  const cedulaFromStorage = localStorage.getItem('last_cedula');
-  const idPersonaFromStorage = localStorage.getItem('idpersona');
+  const idFromUrl = route.params.id
+  const cedulaFromStorage = localStorage.getItem('last_cedula')
+  const idPersonaFromStorage = localStorage.getItem('idpersona')
 
   if (idFromUrl && cedulaFromStorage) {
-    isEditing.value = true;
-    form.idpersona = idPersonaFromStorage;
-    fetchDataForEditing(idFromUrl, cedulaFromStorage);
+    isEditing.value = true
+    form.idpersona = idPersonaFromStorage
+    fetchDataForEditing(idFromUrl, cedulaFromStorage)
   } else {
-    isEditing.value = false;
+    isEditing.value = false
     if (idPersonaFromStorage) {
-      idPersonaSeleccionada.value = idPersonaFromStorage;
-      submitMessage.value = 'Paciente seleccionado. Por favor, complete la ficha.';
-      submitStatus.value = 'info';
+      idPersonaSeleccionada.value = idPersonaFromStorage
+      submitMessage.value = 'Paciente seleccionado. Por favor, complete la ficha.'
+      submitStatus.value = 'info'
     } else {
-      submitMessage.value = 'Por favor, busca y selecciona un paciente para crear una nueva ficha.';
-      submitStatus.value = 'info';
+      submitMessage.value = 'Por favor, busca y selecciona un paciente para crear una nueva ficha.'
+      submitStatus.value = 'info'
     }
   }
-});
+})
 </script>
 
 <style scoped>
@@ -983,8 +1002,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1250px) {

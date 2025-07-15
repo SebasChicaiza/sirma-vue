@@ -5,6 +5,9 @@ import logo from '../assets/images/puce-logo.png'
 // Importar Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // Importar solo los íconos 'solid' que necesitas
 import {
@@ -17,7 +20,8 @@ import {
   faBell,
   faSignOutAlt,
   faRobot,
-  faSignInAlt, // Icono para iniciar sesión
+  faSignInAlt,
+  faUserGear, // Icono para iniciar sesión
 } from '@fortawesome/free-solid-svg-icons'
 
 // Añadir los íconos a la biblioteca de Font Awesome
@@ -34,7 +38,8 @@ library.add(
   faBell,
   faSignOutAlt,
   faRobot,
-  faSignInAlt, // Añadido aquí también
+  faSignInAlt,
+  faUserGear, // Añadido aquí también
 )
 
 const isMenuOpen = ref(false)
@@ -142,6 +147,12 @@ onUnmounted(() => {
           Chatbot
         </RouterLink>
       </li>
+      <li v-if="userStore.isAdmin">
+        <RouterLink to="/crearUsuarios" @click="closeMenu">
+          <FontAwesomeIcon :icon="['fas', 'user-gear']" class="w-4 h-4" />
+          Usuarios
+        </RouterLink>
+      </li>
       <li class="navbar-separator mobile-only"></li>
       <li class="navbar-user-info mobile-only">
         <router-link to="/perfil" @click="closeMenu">
@@ -164,7 +175,6 @@ onUnmounted(() => {
     </ul>
 
     <div class="navbar-right desktop-only">
-
       <router-link to="/perfil" class="navbar-user-avatar" aria-label="Ir a mi perfil">
         <font-awesome-icon icon="user-circle" />
       </router-link>
