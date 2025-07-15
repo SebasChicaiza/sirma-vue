@@ -174,7 +174,7 @@ const crearUsuario = async () => {
       userRol: userForm.value.userRol // Enviar el rol exactamente como está en el formulario
     }
 
-    await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/usuarios/registro`, userData)
+    await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/usuarios`, userData)
     await cargarUsuarios()
     closeModals()
     alert('Usuario creado exitosamente.')
