@@ -45,7 +45,7 @@ library.add(
 const isMenuOpen = ref(false)
 const notificationCount = ref(3) // Ejemplo: podrías obtener esto de Vuex o una API
 
-// Estado para saber si hay usuario logueado
+// Estado para saber si hay usuario logueadosazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzfddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddccccccccccccccccccccccccccccccccccccccccccccc                                          aaaaaaaAAA
 const usuarioLogueado = ref(false)
 
 const toggleMenu = () => {
