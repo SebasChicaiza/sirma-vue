@@ -25,6 +25,7 @@ import VerFichas from '@/views/VerFichas.vue'
 import PerfilView from '@/views/Usuario/PerfilView.vue'
 import ReportesView from '@/views/ReportesView.vue'
 import { useUserStore } from '@/stores/user'
+import UsuariosListView from '@/views/UsuariosListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,6 +66,7 @@ const router = createRouter({
     { path: '/ficha/buscar', component: VerFichas, meta: { requiresAuth: true } },
     { path: '/perfil', component: PerfilView, meta: { requiresAuth: true } },
     { path: '/reportes', component: ReportesView, meta: { requiresAuth: true } },
+    { path: '/crearUsuarios', component: UsuariosListView, meta: { requiresAuth: true, requiresAdmin: true } },
   ],
 })
 
