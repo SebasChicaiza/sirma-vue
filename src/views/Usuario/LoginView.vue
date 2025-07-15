@@ -121,7 +121,7 @@ const handleSubmit = async () => {
     console.log('Payload enviado al servidor:', payload)
 
     const response = await axios.post(
-      `${import.meta.env.VITE_URL_BACKEND}/usuarios/login`,
+      `${import.meta.env.VITE_URL_BACKEND}/api/usuarios/login`,
       payload,
       { validateStatus: () => true },
     )
