@@ -8,55 +8,57 @@
         placeholder="Buscar por cédula, nombre o apellido"
         class="small-input titulo-search"
       />
-      <button @click="buscarFichas" class="submit-button" style="margin-left: 10px">Buscar</button>
+      <button @click="buscarFichas" class="submit-button">Buscar</button>
     </div>
 
     <div v-if="fichas.length > 0" class="results-section">
-      <table>
-        <thead>
-          <tr>
-            <th>ID Ficha</th>
-            <th>Cédula</th>
-            <th>Nombres Completos</th>
-            <th>Fecha Primer Contacto</th>
-            <th>Estado General</th>
-            <th>Observaciones</th>
-            <th>Seleccionar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="ficha in paginatedFichas" :key="ficha.idFicha">
-            <td>{{ ficha.idFicha }}</td>
-            <td>{{ ficha.PER_CEDULA }}</td>
-            <td>
-              {{
-                [
-                  ficha.PER_PRIMERNOMBRE,
-                  ficha.PER_SEGUNDONOMBRE,
-                  ficha.PER_PRIMERAPELLIDO,
-                  ficha.PER_SEGUNDOAPELLIDO,
-                ]
-                  .filter(Boolean)
-                  .join(' ')
-              }}
-            </td>
-            <td>
-              {{ ficha.PAC_FECHAPRIMERCONTACTO ? ficha.PAC_FECHAPRIMERCONTACTO.split('T')[0] : '' }}
-            </td>
-            <td>{{ ficha.PAC_ESTADOGENERAL }}</td>
-            <td>{{ ficha.PAC_OBSERVACIONES }}</td>
-            <td>
-              <button
-                @click="seleccionarFicha(ficha)"
-                :class="['add-remove-button', { selected: selectedFichaId === ficha.idFicha }]"
-              >
-                {{ selectedFichaId === ficha.idFicha ? 'Seleccionado' : 'Seleccionar' }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Controles de paginación -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Ficha</th>
+              <th>Cédula</th>
+              <th>Nombres Completos</th>
+              <th>Fecha Primer Contacto</th>
+              <th>Estado General</th>
+              <th>Observaciones</th>
+              <th>Seleccionar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ficha in paginatedFichas" :key="ficha.idFicha">
+              <td data-label="ID Ficha">{{ ficha.idFicha }}</td>
+              <td data-label="Cédula">{{ ficha.PER_CEDULA }}</td>
+              <td data-label="Nombres Completos">
+                {{
+                  [
+                    ficha.PER_PRIMERNOMBRE,
+                    ficha.PER_SEGUNDONOMBRE,
+                    ficha.PER_PRIMERAPELLIDO,
+                    ficha.PER_SEGUNDOAPELLIDO,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')
+                }}
+              </td>
+              <td data-label="Fecha Primer Contacto">
+                {{ ficha.PAC_FECHAPRIMERCONTACTO ? ficha.PAC_FECHAPRIMERCONTACTO.split('T')[0] : '' }}
+              </td>
+              <td data-label="Estado General">{{ ficha.PAC_ESTADOGENERAL }}</td>
+              <td data-label="Observaciones">{{ ficha.PAC_OBSERVACIONES }}</td>
+              <td data-label="Seleccionar">
+                <button
+                  @click="seleccionarFicha(ficha)"
+                  :class="['add-remove-button', { selected: selectedFichaId === ficha.idFicha }]"
+                >
+                  {{ selectedFichaId === ficha.idFicha ? 'Seleccionado' : 'Seleccionar' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination Controls -->
       <div class="pagination" v-if="totalPages > 1">
         <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Anterior</button>
         <span>Página {{ currentPage }} de {{ totalPages }}</span>
@@ -81,7 +83,6 @@
         type="text"
         placeholder="Ej: FCH001"
         class="small-input"
-        style="margin-top: 10px; max-width: 220px"
       />
     </div>
   </div>
@@ -150,6 +151,7 @@ const goToPage = (page) => {
 </script>
 
 <style scoped>
+/* Base styles (for larger screens first, then override with media queries) */
 .titulo-search {
   width: 100%;
   padding: 2rem;
@@ -167,6 +169,7 @@ const goToPage = (page) => {
     background-color 0.3s ease,
     transform 0.2s ease,
     box-shadow 0.3s ease;
+  margin-left: 10px; /* Keep original margin for larger screens */
 }
 .submit-button:hover {
   background-color: var(--color-primary-dark-hover, #245a4b);
@@ -192,7 +195,7 @@ const goToPage = (page) => {
   background: var(--color-input-background-default, #fff);
   color: var(--color-text-primary);
   transition: border-color 0.2s;
-  min-width: 200px;
+  min-width: 200px; /* Adjust or remove for mobile */
 }
 .search-section input.small-input:focus {
   border-color: var(--color-accent-green);
@@ -201,12 +204,13 @@ const goToPage = (page) => {
 }
 .results-section {
   margin-bottom: 35px;
-  overflow-x: auto;
   background: var(--color-input-background-default, #fff);
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(var(--color-primary-rgb, 52, 120, 99), 0.07);
   padding: 18px 0 0 0;
 }
+
+/* Base table styles */
 .results-section table {
   width: 100%;
   border-collapse: collapse;
@@ -277,6 +281,8 @@ const goToPage = (page) => {
 }
 .manual-id-section input {
   margin-top: 8px;
+  width: 100%; /* Make input full width on mobile */
+  max-width: none; /* Remove max-width constraint for mobile */
 }
 .pagination {
   display: flex;
@@ -284,6 +290,7 @@ const goToPage = (page) => {
   align-items: center;
   gap: 16px;
   margin: 18px 0 10px 0;
+  flex-wrap: wrap; /* Allow pagination buttons to wrap */
 }
 .pagination button {
   background: var(--color-primary-dark, #2d5c4d);
@@ -300,5 +307,144 @@ const goToPage = (page) => {
   background: #ccc;
   color: #888;
   cursor: not-allowed;
+}
+
+/* --- Mobile Adaptations (Media Queries) --- */
+@media (max-width: 768px) {
+  .search-section {
+    flex-direction: column; /* Stack items vertically */
+    align-items: stretch; /* Stretch items to full width */
+    padding: 15px; /* Adjust padding for smaller screens */
+    gap: 15px; /* Increase gap between stacked items */
+  }
+
+  .search-section input.small-input {
+    min-width: unset; /* Remove min-width constraint */
+    width: 100%; /* Occupy full width */
+    padding: 12px 16px; /* Adjust padding */
+    font-size: 0.95rem; /* Slightly smaller font size */
+  }
+
+  .submit-button {
+    width: 100%; /* Make button full width */
+    margin-left: 0; /* Remove left margin when stacked */
+    padding: 12px 20px; /* Adjust padding */
+  }
+
+  .results-section {
+    padding: 0; /* Remove padding from results section itself, handled by table-container */
+  }
+
+  /* Table specific adjustments for smaller screens (Cards Layout) */
+  .table-container {
+    overflow-x: unset; /* Disable horizontal scrolling */
+  }
+
+  .results-section table {
+    border: none; /* Remove table border */
+    min-width: unset; /* Remove min-width */
+  }
+
+  .results-section thead {
+    display: none; /* Hide table headers on small screens */
+  }
+
+  .results-section tr {
+    display: block; /* Make each row a block element */
+    margin-bottom: 15px; /* Add spacing between "cards" */
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+
+  .results-section td {
+    display: block; /* Make each cell a block element */
+    text-align: right; /* Align cell content to the right */
+    border-bottom: 1px dashed var(--color-border, #e0e0e0); /* Add a dashed border */
+    padding: 10px 0; /* Adjust padding */
+    position: relative; /* For data-label positioning */
+  }
+
+  .results-section td:last-child {
+    border-bottom: none; /* No border for the last item in the card */
+    text-align: center; /* Center the select button */
+    padding-top: 15px; /* Add padding above the button */
+  }
+
+  /* Use data-label to show the header text before the cell content */
+  .results-section td::before {
+    content: attr(data-label);
+    float: left; /* Float the label to the left */
+    font-weight: bold; /* Make the label bold */
+    text-transform: uppercase;
+    color: var(--color-primary-dark, #2d5c4d);
+    margin-right: 10px; /* Space between label and content */
+    font-size: 0.85rem;
+  }
+
+  .add-remove-button {
+    padding: 8px 16px; /* Adjust button size for better tapping */
+    font-size: 0.9rem;
+    width: 100%; /* Make button full width in the card */
+  }
+
+  .manual-id-section {
+    padding: 15px;
+    font-size: 0.95rem;
+    max-width: 100%; /* Allow manual input section to take full width */
+  }
+
+  .manual-id-section input {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .pagination {
+    flex-direction: column; /* Stack pagination controls */
+    gap: 10px; /* Reduce gap when stacked */
+  }
+
+  .pagination button {
+    width: 100%; /* Make pagination buttons full width */
+    padding: 10px 16px;
+  }
+}
+
+/* Even smaller screens (e.g., phones) */
+@media (max-width: 480px) {
+  .search-section,
+  .manual-id-section {
+    padding: 10px; /* Even less padding */
+  }
+
+  .search-section input.small-input,
+  .submit-button {
+    font-size: 0.9rem; /* Slightly smaller font for input and button */
+  }
+
+  .manual-id-section label,
+  .manual-id-section input {
+    font-size: 0.85rem; /* Smaller font for manual input section */
+  }
+
+  .results-section tr {
+    padding: 10px; /* Reduce card padding */
+    margin-bottom: 10px;
+  }
+
+  .results-section td {
+    padding: 8px 0; /* Even smaller padding in table cells */
+    font-size: 0.85rem; /* Even smaller font size for table content */
+  }
+
+  .results-section td::before {
+    font-size: 0.75rem;
+  }
+
+  .add-remove-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 }
 </style>

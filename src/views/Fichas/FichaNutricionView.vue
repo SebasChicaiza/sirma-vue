@@ -14,22 +14,12 @@
       <div class="form-metadata">
         <div class="form-group inline-group">
           <label for="fechaAplicacion">Fecha de Aplicación:</label>
-          <input
-            id="fechaAplicacion"
-            v-model="form.fechaAplicacion"
-            type="date"
-            class="small-input"
-          />
+          <input id="fechaAplicacion" v-model="form.fechaAplicacion" type="date" class="small-input" />
         </div>
         <div class="form-group inline-group">
           <label for="lugarAplicacion">Lugar de Aplicación:</label>
-          <input
-            id="lugarAplicacion"
-            v-model.trim="form.lugarAplicacion"
-            type="text"
-            placeholder="Ej. Consultorio Cima"
-            class="small-input"
-          />
+          <input id="lugarAplicacion" v-model.trim="form.lugarAplicacion" type="text" placeholder="Ej. Consultorio Cima"
+            class="small-input" />
         </div>
       </div>
 
@@ -126,13 +116,7 @@
                   <input type="text" v-model.trim="item.respuesta" class="small-text-input" />
                 </td>
                 <td class="total-cell">
-                  <input
-                    type="number"
-                    v-model.number="item.score"
-                    class="score-input"
-                    min="0"
-                    max="1"
-                  />
+                  <input type="number" v-model.number="item.score" class="score-input" min="0" max="1" />
                 </td>
               </tr>
             </tbody>
@@ -156,33 +140,19 @@
           <div class="form-group checkbox-group full-width">
             <label class="section-subtitle">Riesgos:</label>
             <div class="checkbox-grid">
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="Desnutricion" />
-                Desnutrición</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="Fragilidad" />
-                Fragilidad</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="Depresion" />
-                Depresión</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="AislamientoSocial" />
-                Aislamiento Social</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="Ulceras" /> Úlceras por
-                Presión</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="Caidas" /> Caídas</label
-              >
-              <label
-                ><input type="checkbox" v-model="form.otrosRiesgos" value="DolorCronico" /> Dolor
-                Crónico</label
-              >
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="Desnutricion" />
+                Desnutrición</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="Fragilidad" />
+                Fragilidad</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="Depresion" />
+                Depresión</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="AislamientoSocial" />
+                Aislamiento Social</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="Ulceras" /> Úlceras por
+                Presión</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="Caidas" /> Caídas</label>
+              <label><input type="checkbox" v-model="form.otrosRiesgos" value="DolorCronico" /> Dolor
+                Crónico</label>
             </div>
           </div>
         </div>
@@ -193,44 +163,20 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="peso">Peso (kg):</label>
-            <input
-              id="peso"
-              v-model.number="form.peso"
-              type="number"
-              step="0.1"
-              placeholder="Ej: 70.5"
-            />
+            <input id="peso" v-model.number="form.peso" type="number" step="0.1" placeholder="Ej: 70.5" />
           </div>
           <div class="form-group">
             <label for="talla">Talla (cm):</label>
-            <input
-              id="talla"
-              v-model.number="form.talla"
-              type="number"
-              step="0.1"
-              placeholder="Ej: 165.0"
-            />
+            <input id="talla" v-model.number="form.talla" type="number" step="0.1" placeholder="Ej: 165.0" />
           </div>
           <div class="form-group">
             <label for="imc">IMC:</label>
-            <input
-              id="imc"
-              v-model.number="form.imc"
-              type="number"
-              step="0.1"
-              placeholder="Calculado"
-              disabled
-            />
+            <input id="imc" v-model.number="form.imc" type="number" step="0.1" placeholder="Calculado" disabled />
           </div>
           <div class="form-group">
             <label for="circunferenciaBraquial">Circunferencia Braquial (cm):</label>
-            <input
-              id="circunferenciaBraquial"
-              v-model.number="form.circunferenciaBraquial"
-              type="number"
-              step="0.1"
-              placeholder="Ej: 25.0"
-            />
+            <input id="circunferenciaBraquial" v-model.number="form.circunferenciaBraquial" type="number" step="0.1"
+              placeholder="Ej: 25.0" />
           </div>
         </div>
         <p class="score-interpretation">
@@ -285,12 +231,8 @@
         </div>
         <div class="form-group full-width">
           <label for="observacionesNutricionales">Observaciones Nutricionales:</label>
-          <textarea
-            id="observacionesNutricionales"
-            v-model.trim="form.observacionesNutricionales"
-            rows="3"
-            placeholder="Detalle hábitos, preferencias, etc."
-          ></textarea>
+          <textarea id="observacionesNutricionales" v-model.trim="form.observacionesNutricionales" rows="3"
+            placeholder="Detalle hábitos, preferencias, etc."></textarea>
         </div>
       </section>
 
@@ -303,68 +245,48 @@
 
         <div class="mna-grid">
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >A. ¿Ha perdido el apetito? ¿Ha comido menos por falta de apetito, problemas
-              digestivos, dificultades de masticación/deglución en los últimos 3 meses?</label
-            >
+            <label class="mna-question-label">A. ¿Ha perdido el apetito? ¿Ha comido menos por falta de apetito,
+              problemas
+              digestivos, dificultades de masticación/deglución en los últimos 3 meses?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.a" /> 0. Ha comido mucho
-                menos</label
-              >
-              <label
-                ><input type="radio" value="0.5" v-model.number="form.mna.a" /> 0.5 Ha comido
-                menos</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.a" /> 1. Ha comido
-                igual</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.a" /> 0. Ha comido mucho
+                menos</label>
+              <label><input type="radio" value="0.5" v-model.number="form.mna.a" /> 0.5 Ha comido
+                menos</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.a" /> 1. Ha comido
+                igual</label>
             </div>
           </div>
 
           <div class="mna-question-group">
             <label class="mna-question-label">B. Pérdida de peso en los últimos 3 meses?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.b" /> 0. Pérdida >
-                3kg</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.b" /> 0. Pérdida >
+                3kg</label>
               <label><input type="radio" value="1" v-model.number="form.mna.b" /> 1. No sabe</label>
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.b" /> 2. Pérdida entre 1 y
-                3kg</label
-              >
-              <label
-                ><input type="radio" value="3" v-model.number="form.mna.b" /> 3. No ha habido
-                pérdida de peso</label
-              >
+              <label><input type="radio" value="2" v-model.number="form.mna.b" /> 2. Pérdida entre 1 y
+                3kg</label>
+              <label><input type="radio" value="3" v-model.number="form.mna.b" /> 3. No ha habido
+                pérdida de peso</label>
             </div>
           </div>
 
           <div class="mna-question-group">
             <label class="mna-question-label">C. Movilidad?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.c" /> 0. De la cama al
-                sillón</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.c" /> 1. De forma autónoma
-                dentro del domicilio</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.c" /> 2. Sale del
-                domicilio</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.c" /> 0. De la cama al
+                sillón</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.c" /> 1. De forma autónoma
+                dentro del domicilio</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.c" /> 2. Sale del
+                domicilio</label>
             </div>
           </div>
 
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >D. ¿Ha presentado enfermedad aguda o situación de estrés psicológico en los últimos 3
-              meses?</label
-            >
+            <label class="mna-question-label">D. ¿Ha presentado enfermedad aguda o situación de estrés psicológico en
+              los últimos 3
+              meses?</label>
             <div class="radio-group">
               <label><input type="radio" value="0" v-model.number="form.mna.d" /> 0. Sí</label>
               <label><input type="radio" value="2" v-model.number="form.mna.d" /> 2. No</label>
@@ -374,40 +296,24 @@
           <div class="mna-question-group">
             <label class="mna-question-label">E. Problemas neuropsicológicos?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.e" /> 0. Demencia o
-                depresión grave</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.e" /> 1. Demencia
-                leve</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.e" /> 2. Sin problemas
-                psicológicos</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.e" /> 0. Demencia o
+                depresión grave</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.e" /> 1. Demencia
+                leve</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.e" /> 2. Sin problemas
+                psicológicos</label>
             </div>
           </div>
 
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >F. Índice de masa corporal (IMC) = peso/(talla²)</label
-            >
+            <label class="mna-question-label">F. Índice de masa corporal (IMC) = peso/(talla²)</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.f" /> 0. IMC &lt; 19</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.f" /> 1. IMC 19 - &lt;
-                21</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.f" /> 2. IMC 21 - &lt;
-                23</label
-              >
-              <label
-                ><input type="radio" value="3" v-model.number="form.mna.f" /> 3. IMC ≥ 23</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.f" /> 0. IMC &lt; 19</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.f" /> 1. IMC 19 - &lt;
+                21</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.f" /> 2. IMC 21 - &lt;
+                23</label>
+              <label><input type="radio" value="3" v-model.number="form.mna.f" /> 3. IMC ≥ 23</label>
             </div>
           </div>
         </div>
@@ -415,13 +321,7 @@
         <h4 class="section-subtitle">Evaluación del cribaje (MNA - Parte 1: Max. 14 puntos)</h4>
         <div class="form-group inline-group">
           <label for="mnaCribajeTotal">Total Cribaje:</label>
-          <input
-            id="mnaCribajeTotal"
-            v-model.number="totalMnaCribaje"
-            type="number"
-            disabled
-            class="small-input"
-          />
+          <input id="mnaCribajeTotal" v-model.number="totalMnaCribaje" type="number" disabled class="small-input" />
         </div>
         <p class="score-interpretation">
           Puntuación: 12-14 puntos (normal), 8-11 puntos (riesgo de desnutrición), 0-7 puntos
@@ -433,9 +333,7 @@
             Para la evaluación más detallada, continúe con las preguntas G-R.
           </p>
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >G. ¿El paciente vive independiente en su domicilio?</label
-            >
+            <label class="mna-question-label">G. ¿El paciente vive independiente en su domicilio?</label>
             <div class="radio-group">
               <label><input type="radio" value="0" v-model.number="form.mna.g" /> 0. No</label>
               <label><input type="radio" value="1" v-model.number="form.mna.g" /> 1. Sí</label>
@@ -458,110 +356,72 @@
           <div class="mna-question-group">
             <label class="mna-question-label">J. ¿Cuántas comidas completas toma al día?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.j" /> 0. 1 comida</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.j" /> 1. 2 comidas</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.j" /> 2. 3 comidas</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.j" /> 0. 1 comida</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.j" /> 1. 2 comidas</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.j" /> 2. 3 comidas</label>
             </div>
           </div>
           <div class="mna-question-group">
             <label class="mna-question-label">K. ¿Consume el paciente?</label>
             <div class="radio-group radio-subgroup">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.k1" /> Lácteos: Si /
-                No</label
-              >
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.k2" /> Legumbres/Huevo: Si /
-                No</label
-              >
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.k3" /> Carne/Pescado/Aves:
-                Si / No</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.k1" /> Lácteos: Si /
+                No</label>
+              <label><input type="radio" value="0" v-model.number="form.mna.k2" /> Legumbres/Huevo: Si /
+                No</label>
+              <label><input type="radio" value="0" v-model.number="form.mna.k3" /> Carne/Pescado/Aves:
+                Si / No</label>
             </div>
           </div>
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >L. Consume frutas o verduras al menos 2 veces al día?</label
-            >
+            <label class="mna-question-label">L. Consume frutas o verduras al menos 2 veces al día?</label>
             <div class="radio-group">
               <label><input type="radio" value="0" v-model.number="form.mna.l" /> 0. No</label>
               <label><input type="radio" value="1" v-model.number="form.mna.l" /> 1. Sí</label>
             </div>
           </div>
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >M. ¿Cuántos vasos de agua u otros líquidos toma al día? (Agua, zumo, café, té, leche,
-              vino, cerveza)</label
-            >
+            <label class="mna-question-label">M. ¿Cuántos vasos de agua u otros líquidos toma al día? (Agua, zumo, café,
+              té, leche,
+              vino, cerveza)</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.m" /> 0. Menos de 3
-                vasos</label
-              >
-              <label
-                ><input type="radio" value="0.5" v-model.number="form.mna.m" /> 0.5 3 a 5
-                vasos</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.m" /> 1. Más de 5
-                vasos</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.m" /> 0. Menos de 3
+                vasos</label>
+              <label><input type="radio" value="0.5" v-model.number="form.mna.m" /> 0.5 3 a 5
+                vasos</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.m" /> 1. Más de 5
+                vasos</label>
             </div>
           </div>
           <div class="mna-question-group">
             <label class="mna-question-label">N. ¿Forma de alimentarse?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.n" /> 0. Necesita
-                ayuda</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.n" /> 1. Se alimenta con
-                dificultad</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.n" /> 2. Se alimenta solo
-                sin dificultad</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.n" /> 0. Necesita
+                ayuda</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.n" /> 1. Se alimenta con
+                dificultad</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.n" /> 2. Se alimenta solo
+                sin dificultad</label>
             </div>
           </div>
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >O. ¿Se considera el paciente que está bien nutrido?</label
-            >
+            <label class="mna-question-label">O. ¿Se considera el paciente que está bien nutrido?</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" value="0" v-model.number="form.mna.o" /> 0. Desnutrición
-                grave</label
-              >
-              <label
-                ><input type="radio" value="1" v-model.number="form.mna.o" /> 1. No lo sabe o
-                malnutrición moderada</label
-              >
-              <label
-                ><input type="radio" value="2" v-model.number="form.mna.o" /> 2. Sin problemas de
-                nutrición</label
-              >
+              <label><input type="radio" value="0" v-model.number="form.mna.o" /> 0. Desnutrición
+                grave</label>
+              <label><input type="radio" value="1" v-model.number="form.mna.o" /> 1. No lo sabe o
+                malnutrición moderada</label>
+              <label><input type="radio" value="2" v-model.number="form.mna.o" /> 2. Sin problemas de
+                nutrición</label>
             </div>
           </div>
           <div class="mna-question-group">
-            <label class="mna-question-label"
-              >P. En comparación con las personas de su edad, cómo encuentra el paciente su estado
-              de salud?</label
-            >
+            <label class="mna-question-label">P. En comparación con las personas de su edad, cómo encuentra el paciente
+              su estado
+              de salud?</label>
             <div class="radio-group">
               <label><input type="radio" value="0" v-model.number="form.mna.p" /> 0. Peor</label>
-              <label
-                ><input type="radio" value="0.5" v-model.number="form.mna.p" /> 0.5 No lo
-                sabe</label
-              >
+              <label><input type="radio" value="0.5" v-model.number="form.mna.p" /> 0.5 No lo
+                sabe</label>
               <label><input type="radio" value="1" v-model.number="form.mna.p" /> 1. Igual</label>
               <label><input type="radio" value="2" v-model.number="form.mna.p" /> 2. Mejor</label>
             </div>
@@ -571,59 +431,33 @@
         <h4 class="section-subtitle">Evaluación del Estado Nutricional (MNA - Puntuación Final)</h4>
         <div class="form-group inline-group">
           <label for="mnaFinalTotal">Total Final MNA:</label>
-          <input
-            id="mnaFinalTotal"
-            v-model.number="totalMnaFinal"
-            type="number"
-            disabled
-            class="small-input"
-          />
+          <input id="mnaFinalTotal" v-model.number="totalMnaFinal" type="number" disabled class="small-input" />
         </div>
         <div class="radio-group horizontal-group">
-          <label
-            ><input type="radio" value="normal" v-model="form.estadoNutricional" /> De 24 a 30
-            puntos: Estado Nutricional Normal</label
-          >
-          <label
-            ><input type="radio" value="riesgo" v-model="form.estadoNutricional" /> De 17 a 23.5
-            puntos: Riesgo de Malnutrición</label
-          >
-          <label
-            ><input type="radio" value="malnutricion" v-model="form.estadoNutricional" /> Menos de
-            17 puntos: Malnutrición</label
-          >
+          <label><input type="radio" :value="2" v-model.number="form.estadoNutricional" />De 24 a 30
+            puntos: Estado Nutricional Normal</label>
+          <label><input type="radio" :value="1" v-model="form.estadoNutricional" /> De 17 a 23.5
+            puntos: Riesgo de Malnutrición</label>
+          <label><input type="radio" :value="0" v-model="form.estadoNutricional" /> Menos de
+            17 puntos: Malnutrición</label>
         </div>
         <div class="form-group inline-group mt-3">
           <label for="evaluacionGlobal">Evaluación Global (máx. 30 puntos):</label>
-          <input
-            id="evaluacionGlobal"
-            type="number"
-            v-model.number="totalMnaFinal"
-            disabled
-            class="small-input"
-          />
+          <input id="evaluacionGlobal" type="number" v-model.number="totalMnaFinal" disabled class="small-input" />
         </div>
         <div class="form-group inline-group">
           <label for="evaluadorMNA">Evaluado por:</label>
-          <input
-            id="evaluadorMNA"
-            v-model.trim="form.evaluadorMNA"
-            type="text"
-            class="small-input"
-          />
+          <input id="evaluadorMNA" v-model.trim="form.evaluadorMNA" type="text" class="small-input" />
         </div>
         <p class="form-note">
           Guía de Uso/Referencia:
-          <a
-            href="https://www.mna-elderly.com/files/defaults/files/2003-10-MNA-guia-spanish.pdf"
-            target="_blank"
-            >mna-elderly.com</a
-          >
+          <a href="https://www.mna-elderly.com/files/defaults/files/2003-10-MNA-guia-spanish.pdf"
+            target="_blank">mna-elderly.com</a>
         </p>
       </section>
 
       <button type="submit" class="submit-button" :disabled="isSubmitting" @click="handleSubmit">
-        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha de Enfermería' }}
+        {{ isSubmitting ? 'Guardando Ficha...' : 'Guardar Ficha' }}
       </button>
 
       <p v-if="submitMessage" :class="['submit-info', submitStatus]">
@@ -632,6 +466,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script setup>
 import { reactive, ref, computed, watch } from 'vue'
@@ -642,69 +478,67 @@ import { onMounted } from 'vue'
 
 const selectedFichaId = ref(null)
 const route = useRoute()
+const NutriID = route.params.id;
+console.log('User ID:', NutriID)
 
-/* ------------------------------------------------------------- */
-/*      FUNCIÓN INVERSA: payload de la API  ➜  formulario Vue    */
-/* ------------------------------------------------------------- */
-const fillFormFromPayload = (data) => {
-  if (!data) return
-
-  /* ==== 1.  Atajos a cada bloque  ==== */
-  const { cribaje = {}, evaluacion = {}, antecedentesNutri = {}, datosAntropometricos = {} } = data
-
-  /* ==== 2.  Helpers de conversión ==== */
-  const bool01ToSiNo = (v) => (v === 1 ? 'si' : v === 0 ? 'no' : '')
-  const safeNum = (v) => v ?? null
-
-  /* ==== 3.  Datos “de cabecera” ==== */
-  selectedFichaId.value = data.idFicha
-  form.evaluadorMNA = data.nombreEncuestador ?? ''
-  form.estadoNutricional = safeNum(data.estadoNutricional) // tu radio espera 0-mal,1-riesgo,2-normal
-
-  /* ==== 4.  Bloque de cribaje (A-F) ==== */
-  form.mna.a = safeNum(cribaje.perdidaApetito)
-  form.mna.b = safeNum(cribaje.perdidaPeso)
-  form.mna.c = safeNum(cribaje.movilidad)
-  form.mna.d = safeNum(cribaje.enfermedadAguda)
-  form.mna.e = safeNum(cribaje.neuropsico)
-  form.mna.f = safeNum(cribaje.imc) // IMC inicial
-
-  /* ==== 5.  Bloque de evaluación (G-P) ==== */
-  form.mna.g = safeNum(evaluacion.viveDomicilio)
-  form.mna.h = safeNum(evaluacion.masTresMedicinas)
-  form.mna.i = safeNum(evaluacion.ulceraLesionCutanea)
-  form.mna.j = safeNum(evaluacion.comidaCompleta)
-  form.mna.k1 = safeNum(evaluacion.consumePaciente) // total proteínas; ajusta si haces split
-  form.mna.l = safeNum(evaluacion.frutaVerdura)
-  form.mna.m = safeNum(evaluacion.vasosAgua)
-  form.mna.n = safeNum(evaluacion.formaAlimento)
-  form.mna.o = safeNum(evaluacion.bienNutrido)
-  form.mna.p = safeNum(evaluacion.estadoSalud)
-
-  /* ==== 6.  Datos antropométricos ==== */
-  form.peso = safeNum(datosAntropometricos.peso)
-  form.talla = datosAntropometricos.talla ? datosAntropometricos.talla * 100 : null // a cm
-  form.imc = safeNum(cribaje.imc) // o datosAntropometricos.imcDA
-  form.circunferenciaBraquial = safeNum(evaluacion.circunbraquial)
-
-  /* ==== 7.  Antecedentes Nutricionales (radios/booleans) ==== */
-  form.dietaBalanceada = bool01ToSiNo(antecedentesNutri.dietaBalanceada)
-  form.piezasDentales = bool01ToSiNo(antecedentesNutri.dentalesCompletas)
-  form.dificultadMasticar = bool01ToSiNo(antecedentesNutri.dificultadMasticar)
-  form.estrenimiento = bool01ToSiNo(antecedentesNutri.estrenimientoFrecu)
-  form.alergiaAlimentos = bool01ToSiNo(antecedentesNutri.alergiaAlimentaria)
-
-  /* ==== 8.  Textos libres / comidas ==== */
-  form.observacionesNutricionales = antecedentesNutri.preferencias ?? ''
-  form.desayuno = antecedentesNutri.desayuno ?? ''
-  form.almuerzo = antecedentesNutri.almuerzo ?? ''
-  form.cena = antecedentesNutri.cena ?? ''
-  form.snacks = antecedentesNutri.snacks ?? ''
-  form.quienCocina = antecedentesNutri.quienCocina ?? ''
-
-  /* ==== 9.  Forzar recálculo de computeds (peso/talla → imc) ==== */
-  // Si quieres recalcular IMC de forma reactiva basta con asignar peso/talla
+function resetForm() {
+  Object.assign(form, JSON.parse(JSON.stringify(emptyForm)));
 }
+
+
+const fillFormFromPayload = (data) => {
+  resetForm();
+
+  if (!data) return;
+
+  const { cribaje = {}, evaluacion = {}, antecedentesNutri = {}, datosAntropometricos = {} } = data;
+
+  const bool01ToSiNo = (v) => (v === 1 ? 'si' : v === 0 ? 'no' : '');
+  const safeNum = (v) => v ?? null;
+
+  selectedFichaId.value = data.idFicha;
+  form.evaluadorMNA = data.nombreEncuestador ?? '';
+  form.estadoNutricional = safeNum(data.estadoNutricional);
+
+  form.mna.a = safeNum(cribaje.perdidaApetito);
+  form.mna.b = safeNum(cribaje.perdidaPeso);
+  form.mna.c = safeNum(cribaje.movilidad);
+  form.mna.d = safeNum(cribaje.enfermedadAguda);
+  form.mna.e = safeNum(cribaje.neuropsico);
+  form.mna.f = safeNum(cribaje.imc);
+
+  form.mna.g = safeNum(evaluacion.viveDomicilio);
+  form.mna.h = safeNum(evaluacion.masTresMedicinas);
+  form.mna.i = safeNum(evaluacion.ulceraLesionCutanea);
+  form.mna.j = safeNum(evaluacion.comidaCompleta);
+  form.mna.k1 = safeNum(evaluacion.consumePaciente);
+  form.mna.l = safeNum(evaluacion.frutaVerdura);
+  form.mna.m = safeNum(evaluacion.vasosAgua);
+  form.mna.n = safeNum(evaluacion.formaAlimento);
+  form.mna.o = safeNum(evaluacion.bienNutrido);
+  form.mna.p = safeNum(evaluacion.estadoSalud);
+
+  form.peso = safeNum(datosAntropometricos.peso);
+  form.talla = datosAntropometricos.talla
+    ? datosAntropometricos.talla * 100
+    : null;
+  form.imc = safeNum(cribaje.imc);
+  form.circunferenciaBraquial = safeNum(evaluacion.circunbraquial);
+
+  form.dietaBalanceada = bool01ToSiNo(antecedentesNutri.dietaBalanceada);
+  form.piezasDentales = bool01ToSiNo(antecedentesNutri.dentalesCompletas);
+  form.dificultadMasticar = bool01ToSiNo(antecedentesNutri.dificultadMasticar);
+  form.estrenimiento = bool01ToSiNo(antecedentesNutri.estrenimientoFrecu);
+  form.alergiaAlimentos = bool01ToSiNo(antecedentesNutri.alergiaAlimentaria);
+
+  form.observacionesNutricionales = antecedentesNutri.preferencias ?? '';
+  form.desayuno = antecedentesNutri.desayuno ?? '';
+  form.almuerzo = antecedentesNutri.almuerzo ?? '';
+  form.cena = antecedentesNutri.cena ?? '';
+  form.snacks = antecedentesNutri.snacks ?? '';
+  form.quienCocina = antecedentesNutri.quienCocina ?? '';
+};
+
 
 const fetchFichaIfNeeded = async (id) => {
   if (!id) return
@@ -712,6 +546,7 @@ const fetchFichaIfNeeded = async (id) => {
     const { data } = await axios.get(
       `${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto/header/${id}`,
     )
+    console.log('Datos de la ficha:', JSON.stringify(data, null, 2))
     fillFormFromPayload(data)
   } catch (err) {
     console.error(`No se pudo cargar la ficha ${id}:`, err)
@@ -719,6 +554,80 @@ const fetchFichaIfNeeded = async (id) => {
 }
 
 onMounted(() => fetchFichaIfNeeded(route.params.id))
+
+const emptyForm = {
+  fechaAplicacion: '',
+  lugarAplicacion: '',
+
+  timularRapido: [
+    { label: 'Uso del Teléfono', si: false, no: false },
+    { label: 'Ir de compras', si: false, no: false },
+    { label: 'Preparar la comida', si: false, no: false },
+    { label: 'Manejar dinero', si: false, no: false },
+    { label: 'Medicación', si: false, no: false },
+  ],
+
+  actividadInstrumental: [
+    { label: 'Bañarse', si: false, no: false },
+    { label: 'Vestirse', si: false, no: false },
+    { label: 'Aseo Personal', si: false, no: false },
+    { label: 'Continencia', si: false, no: false },
+    { label: 'Traslado', si: false, no: false },
+    { label: 'Deambulación', si: false, no: false },
+    { label: 'Alimentación', si: false, no: false },
+  ],
+
+  estadoCognitivo: [
+    { label: '¿Qué día es hoy?', respuesta: '', score: null },
+    { label: '¿Qué fecha es hoy?', respuesta: '', score: null },
+    { label: '¿Qué mes es?', respuesta: '', score: null },
+    { label: '¿Qué año es?', respuesta: '', score: null },
+    { label: '¿Qué día de la semana?', respuesta: '', score: null },
+    { label: '¿Dónde estamos?', respuesta: '', score: null },
+    { label: '¿Qué lugar es este?', respuesta: '', score: null },
+    { label: '¿Cuál es su número de teléfono?', respuesta: '', score: null },
+    { label: '¿Cuál es su dirección?', respuesta: '', score: null },
+    { label: '¿Cuál es su profesión?', respuesta: '', score: null },
+  ],
+
+  otrosRiesgos: [],
+
+  peso: null,
+  talla: null,
+  imc: null,
+  circunferenciaBraquial: null,
+
+  dietaBalanceada: '',
+  piezasDentales: '',
+  dificultadMasticar: '',
+  estrenimiento: '',
+  alergiaAlimentos: '',
+  observacionesNutricionales: '',
+
+  mna: {
+    a: null,
+    b: null,
+    c: null,
+    d: null,
+    e: null,
+    f: null,
+    g: null,
+    h: null,
+    i: null,
+    j: null,
+    k1: null,
+    k2: null,
+    k3: null,
+    l: null,
+    m: null,
+    n: null,
+    o: null,
+    p: null,
+  },
+
+  estadoNutricional: '',
+  evaluadorMNA: '',
+};
 
 const form = reactive({
   fechaAplicacion: '',
@@ -854,44 +763,52 @@ watch([() => form.peso, () => form.talla], ([newPeso, newTalla]) => {
     form.imc = null
   }
 })
-const mapFormToPayload = () => {
-  // Mini helpers para convertir radios “si / no” a boolean y radios numéricas a Number
-  const yesNoToBool = (v) => v === 'si'
-  const num = (v) => (v !== null && v !== '' ? Number(v) : null)
 
-  return {
-    idFicha: selectedFichaId.value, // ← el ID que elegiste en FichaSelector
+const cleanPayload = (payload) => {
+  return Object.fromEntries(
+    Object.entries(payload).filter(([_, v]) => v !== undefined)
+  );
+};
+
+const mapFormToPayload = () => {
+  const yesNoToBool = (v) => v === 'si';
+  const num = (v) => {
+    if (v === null || v === undefined || v === '') return 0;
+    const n = Number(v);
+    return isNaN(n) ? 0 : n;
+  };
+
+  const payload = {
+    idFicha: selectedFichaId.value,
     nombreEncuestador: form.evaluadorMNA,
-    evalGlobal: totalMnaFinal.value,
-    estadoNutricional: num(form.estadoNutricional), // Ej.: 0 = malnutrición, 1 = riesgo, 2 = normal
-    /* --- Parte de cribaje (A-F) --- */
+    evalGlobal: num(totalMnaFinal.value),
+    estadoNutricional: num(form.estadoNutricional),
     perdidaApetito: num(form.mna.a),
     perdidaPeso: num(form.mna.b),
     movilidad: num(form.mna.c),
     enfermedadAguda: num(form.mna.d),
     neuropsico: num(form.mna.e),
-    imc: num(form.imc), // calculado en el watcher
-    totales: totalMnaCribaje.value,
-    /* --- Preguntas G-P (solo se envían si existen) --- */
+    imc: num(form.imc),
+    totales: num(totalMnaCribaje.value),
     viveDomicilio: num(form.mna.g),
     masTresMedicinas: num(form.mna.h),
     ulceraLesionCutanea: num(form.mna.i),
     comidaCompleta: num(form.mna.j),
-    consumePaciente: (+form.mna.k1 || 0) + (+form.mna.k2 || 0) + (+form.mna.k3 || 0),
+    consumePaciente:
+      (+form.mna.k1 || 0) + (+form.mna.k2 || 0) + (+form.mna.k3 || 0),
     frutaVerdura: num(form.mna.l),
     vasosAgua: num(form.mna.m),
     formaAlimento: num(form.mna.n),
     bienNutrido: num(form.mna.o),
     estadoSalud: num(form.mna.p),
-    /* --- Datos antropométricos y MNA final --- */
     circunBraquial: num(form.circunferenciaBraquial),
-    circunPantorrilla: null, // añade campo si lo capturas en la UI
-    evaTotal: totalMnaFinal.value,
+    circunPantorrilla: 0,
+    evaTotal: num(totalMnaFinal.value),
     dietaBalanceada: yesNoToBool(form.dietaBalanceada),
     dentalesCompletas: yesNoToBool(form.piezasDentales),
     dificultadMasticar: yesNoToBool(form.dificultadMasticar),
     estrenimientoFrecu: yesNoToBool(form.estrenimiento),
-    diarreaFrecu: false, // no se captura en esta view → ajusta si lo añades
+    diarreaFrecu: false,
     alergiaAlimentaria: yesNoToBool(form.alergiaAlimentos),
     desayuno: form.desayuno || '',
     almuerzo: form.almuerzo || '',
@@ -899,21 +816,24 @@ const mapFormToPayload = () => {
     snacks: form.snacks || '',
     preferencias: form.observacionesNutricionales,
     quienCocina: form.quienCocina || '',
-    /* --- Datos de composición corporal (“DA”) --- */
     imcDA: num(form.imc),
-    cintura: num(form.cintura),
-    cadera: num(form.cadera),
-    pantorrilla: num(form.pantorrilla),
-    brazo: num(form.brazo),
-    talla: num(form.talla ? form.talla / 100 : null), // lo pide en metros
+    cintura: 0,
+    cadera: 0,
+    pantorrilla: 0,
+    brazo: 0,
+    talla: num(form.talla ? form.talla / 100 : undefined),
     peso: num(form.peso),
-  }
-}
+  };
+
+  return cleanPayload(payload);
+};
+
 
 // Lógica de envío del formulario
 const isSubmitting = ref(false)
 const submitMessage = ref('')
 const submitStatus = ref('') // 'success' o 'error'
+
 
 const handleSubmit = async () => {
   submitMessage.value = ''
@@ -924,10 +844,23 @@ const handleSubmit = async () => {
     // 1️⃣ Construye el payload
     const payload = mapFormToPayload()
 
-    // 2️⃣ Lanza la petición PUT
-    await axios.put(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto`, payload, {
+    console.log('Payload:', JSON.stringify(mapFormToPayload(), null, 2))
+
+    if (NutriID == null || NutriID == undefined) {
+      console.error('NutriID no está definido, se crea nueva ficha')
+
+      await axios.post(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto`, payload, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+    else{
+    console.log('NutriID definido, se actualiza ficha existente:', NutriID)
+    await axios.put(`${import.meta.env.VITE_URL_BACKEND}/nutricioncompleto/${NutriID}`, payload, {
       headers: { 'Content-Type': 'application/json' },
     })
+    }
+
+
 
     submitMessage.value = 'Ficha de nutrición guardada correctamente'
     submitStatus.value = 'success'
@@ -940,6 +873,8 @@ const handleSubmit = async () => {
   }
 }
 </script>
+
+
 
 <style scoped>
 /*
@@ -962,7 +897,8 @@ const handleSubmit = async () => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   padding: 40px 50px;
   width: 100%;
-  max-width: 950px; /* Un poco más ancho para tablas complejas */
+  max-width: 950px;
+  /* Un poco más ancho para tablas complejas */
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -991,6 +927,7 @@ const handleSubmit = async () => {
   color: var(--color-primary);
   margin-bottom: 5px;
 }
+
 .faculty-name {
   font-size: 0.9rem;
   color: var(--color-text-secondary);
@@ -1157,7 +1094,8 @@ const handleSubmit = async () => {
   cursor: pointer;
   font-weight: 500;
   color: var(--color-text-primary);
-  flex-basis: auto; /* Allow items to determine their width */
+  flex-basis: auto;
+  /* Allow items to determine their width */
 }
 
 .checkbox-group input[type='checkbox'],
@@ -1177,7 +1115,8 @@ const handleSubmit = async () => {
 /* Tablas para escalas */
 .form-table-container {
   width: 100%;
-  overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+  overflow-x: auto;
+  /* Permite scroll horizontal en pantallas pequeñas */
   margin-bottom: 25px;
 }
 
@@ -1206,7 +1145,8 @@ const handleSubmit = async () => {
 }
 
 .form-table tbody tr:nth-child(even) {
-  background-color: #f0f8f8; /* Un color más claro para filas pares */
+  background-color: #f0f8f8;
+  /* Un color más claro para filas pares */
 }
 
 .form-table tbody tr:hover {
@@ -1215,11 +1155,13 @@ const handleSubmit = async () => {
 
 .checkbox-cell {
   text-align: center;
-  width: 60px; /* Ancho fijo para columnas de checkbox */
+  width: 60px;
+  /* Ancho fijo para columnas de checkbox */
 }
 
 .checkbox-cell input[type='checkbox'] {
-  margin: 0; /* Centrar el checkbox */
+  margin: 0;
+  /* Centrar el checkbox */
 }
 
 .total-cell {
@@ -1248,7 +1190,8 @@ const handleSubmit = async () => {
 /* MNA specific styles */
 .mna-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Una columna por defecto */
+  grid-template-columns: 1fr;
+  /* Una columna por defecto */
   gap: 25px;
   margin-top: 20px;
 }
@@ -1275,13 +1218,16 @@ const handleSubmit = async () => {
 }
 
 .mna-question-group .radio-group {
-  flex-direction: column; /* Apilar radios verticalmente */
+  flex-direction: column;
+  /* Apilar radios verticalmente */
   gap: 8px;
 }
 
 .radio-subgroup {
-  margin-left: 20px; /* Indentar opciones anidadas */
-  flex-direction: row; /* Volver a horizontal para sub-opciones */
+  margin-left: 20px;
+  /* Indentar opciones anidadas */
+  flex-direction: row;
+  /* Volver a horizontal para sub-opciones */
   flex-wrap: wrap;
   gap: 10px 20px;
 }
@@ -1296,7 +1242,8 @@ const handleSubmit = async () => {
 }
 
 .score-input {
-  width: 60px; /* Pequeño para la puntuación */
+  width: 60px;
+  /* Pequeño para la puntuación */
   text-align: center;
   padding: 8px;
   border: 1px solid var(--color-input-border-default);
@@ -1312,7 +1259,8 @@ const handleSubmit = async () => {
 }
 
 .mt-3 {
-  margin-top: 15px; /* Pequeño margen superior */
+  margin-top: 15px;
+  /* Pequeño margen superior */
 }
 
 .form-note {
@@ -1321,11 +1269,13 @@ const handleSubmit = async () => {
   margin-top: 15px;
   text-align: center;
 }
+
 .form-note a {
   color: var(--color-accent-green);
   text-decoration: none;
   font-weight: 600;
 }
+
 .form-note a:hover {
   text-decoration: underline;
 }
@@ -1437,6 +1387,7 @@ const handleSubmit = async () => {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .horizontal-group {
     flex-direction: column;
   }
@@ -1446,10 +1397,13 @@ const handleSubmit = async () => {
     padding: 8px 10px;
     font-size: 0.85rem;
   }
+
   .checkbox-cell,
   .total-cell {
-    width: auto; /* Dejar que el contenido defina el ancho */
+    width: auto;
+    /* Dejar que el contenido defina el ancho */
   }
+
   .mna-grid {
     gap: 20px;
   }
@@ -1464,31 +1418,40 @@ const handleSubmit = async () => {
     font-size: 1.8rem;
     margin-bottom: 25px;
   }
+
   .university-name {
     font-size: 1.2rem;
   }
+
   .faculty-name {
     font-size: 0.8rem;
   }
+
   .section-title {
     font-size: 1.3rem;
     margin-bottom: 20px;
   }
+
   .form-group input,
   .form-group select,
   .form-group textarea {
     padding: 10px 12px;
     font-size: 0.9rem;
   }
+
   .form-group label {
     font-size: 0.85rem;
   }
+
   .mna-question-label {
     font-size: 0.95rem;
   }
+
   .radio-subgroup {
-    margin-left: 10px; /* Reducir indentación */
+    margin-left: 10px;
+    /* Reducir indentación */
   }
+
   .form-note {
     font-size: 0.8rem;
   }
