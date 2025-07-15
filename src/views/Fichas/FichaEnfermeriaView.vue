@@ -13,7 +13,7 @@
 
       <h2 class="form-title">FICHA MÉDICA DE ENFERMERÍA</h2>
 
-      <FichaSelector v-model:idficha="selectedFichaId" />
+      <FichaSelector v-model:idficha="selectedFichaFromSelector" />
 
       <div class="form-group full-width mt-4 form-group-highlight">
         <label for="enfNombreencuestador"
@@ -399,11 +399,16 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import axios from 'axios' // Import axios
 import FichaSelector from '@/components/FichaSelector.vue'
 
-const selectedFichaId = ref(null)
+// This ref will hold the ID that comes from the URL path, if any.
+const currentFichaId = ref(null)
+
+// This ref will be bound to the FichaSelector component and will hold the ID
+// that the user selects or enters in the selector.
+const selectedFichaFromSelector = ref(null)
 
 const fichaData = reactive({
   enfNombreencuestador: '',
@@ -959,18 +964,140 @@ const isSubmitting = ref(false)
 const submitMessage = ref('')
 const submitStatus = ref('') // 'success' o 'error'
 
+// Function to map API data to form scales
+const mapApiDataToScales = (data) => {
+  // Map actbasica
+  scales.actividades_basicas.lavarse.value = data.actbasica.abBanasolo === 'Si' ? 10 : 0;
+  scales.actividades_basicas.vestirse.value = data.actbasica.abVistedesvistesolo === 'Si' ? 10 : 0;
+  scales.actividades_basicas.arreglarse.value = data.actbasica.abCuidaapariencia === 'Si' ? 10 : 0;
+  scales.actividades_basicas.usar_inodoro.value = data.actbasica.abUsainodoro === 'Si' ? 10 : 0;
+  // For abControlesfinteres, we need to infer based on the original Barthel logic if possible,
+  // or just set a default if the API doesn't provide granular control.
+  // For now, let's assume if it's 'Si', both are 10, otherwise 0.
+  if (data.actbasica.abControlesfinteres === 'Si') {
+    scales.actividades_basicas.deposiciones.value = 10;
+    scales.actividades_basicas.micciones.value = 10;
+  } else {
+    scales.actividades_basicas.deposiciones.value = 0;
+    scales.actividades_basicas.micciones.value = 0;
+  }
+  scales.actividades_basicas.trasladarse.value = data.actbasica.abTrasacuestalevanta === 'Si' ? 15 : 0;
+  scales.actividades_basicas.deambular.value = data.actbasica.abCamina === 'Si' ? 15 : 0;
+  scales.actividades_basicas.comer.value = data.actbasica.abAlimenta === 'Si' ? 10 : 0;
+  // Note: 'escaleras' is not directly mapped from the provided API JSON for actbasica.
+
+  // Map actinstrumental
+  scales.actividad_instrumental.aiCuidaCasa.value = data.actinstrumental.aiCuidacasa;
+  scales.actividad_instrumental.uso_telefono.value = data.actinstrumental.aiUsatelefono;
+  scales.actividad_instrumental.manejo_transporte.value = data.actinstrumental.aiMediotransporte;
+  scales.actividad_instrumental.preparar_comida.value = data.actinstrumental.aiPreparacomida;
+  scales.actividad_instrumental.manejo_ropa.value = data.actinstrumental.aiLavaropa;
+  scales.actividad_instrumental.hacer_compras.value = data.actinstrumental.aiVacompras;
+  scales.actividad_instrumental.manejo_dinero.value = data.actinstrumental.aiManejadinero;
+  scales.actividad_instrumental.manejo_medicamentos.value = data.actinstrumental.aiManejamedicina;
+
+  // Map cognitivo
+  scales.estado_cognitivo.orientacion_tiempo.value = data.cognitivo.cogSabefecha;
+  scales.estado_cognitivo.fijacion.value = data.cognitivo.cogAprendetres;
+  scales.estado_cognitivo.atencion_calculo.value = data.cognitivo.cogRepitealreves; // This mapping seems inverted based on typical Mini-Mental, but following provided JSON.
+  scales.estado_cognitivo.lenguaje_orden.value = data.cognitivo.cogTomadoblacoloca;
+  scales.estado_cognitivo.memoria.value = data.cognitivo.cogRepitepalabras;
+  scales.estado_cognitivo.dibujo.value = data.cognitivo.cogCopiacirculos;
+  // Note: Other cognitive fields are not directly mapped from the provided API JSON for cognitivo.
+
+  // Map depresion
+  scales.depresion.satisfecho_vida.value = data.depresion.depSatisfechovida;
+  scales.depresion.actividades_interes.value = data.depresion.depDejaactinteres;
+  scales.depresion.vida_vacia.value = data.depresion.depVidavacia;
+  scales.depresion.aburrido.value = data.depresion.depAburrefrecuencia;
+  scales.depresion.animado.value = data.depresion.depBuenanimo;
+  scales.depresion.preocupado.value = data.depresion.depAlgomalosuceder;
+  scales.depresion.feliz_mayor_parte.value = data.depresion.depFelizmayortiempo;
+  scales.depresion.abandonado.value = data.depresion.depDesamparado;
+  scales.depresion.prefiere_casa.value = data.depresion.depActividadnueva;
+  scales.depresion.problemas_memoria.value = data.depresion.depProblemamemoria;
+  scales.depresion.estar_vivo.value = data.depresion.depMaravillosovivir;
+  scales.depresion.util_valioso.value = data.depresion.depSienteinutil;
+  scales.depresion.lleno_energia.value = data.depresion.depLlenoenergia;
+  scales.depresion.sin_esperanza.value = data.depresion.depSinesperanza;
+  scales.depresion.mejor_gente.value = data.depresion.depOtrosmejorqueuno;
+
+  // Map otrosriesgos
+  scales.otros_riesgos.grupo_edad.value = data.otrosriesgos.orGrupoedad;
+  scales.otros_riesgos.vive_con.value = data.otrosriesgos.orVivecon;
+  scales.otros_riesgos.movilidad.value = data.otrosriesgos.orMovilidad;
+  scales.otros_riesgos.enfermedad_aguda.value = data.otrosriesgos.orEnfermedadaguda;
+  scales.otros_riesgos.neuropsico.value = data.otrosriesgos.orNeuropsico;
+
+  // Map recursosocial
+  scales.recurso_social.situacion_familiar.value = data.recursosocial.rsVivecon;
+  scales.recurso_social.relaciones_contactos_sociales.value = data.recursosocial.rsContactosocial;
+  scales.recurso_social.apoyo_red_social.value = data.recursosocial.rsApoyored;
+
+  // Map tamizaje
+  scales.tamizaje.dif_visual.value = data.tamizaje.tamDifvisual;
+  scales.tamizaje.dif_auditiva.value = data.tamizaje.tamDifauditiva;
+  scales.tamizaje.levanta_anda.value = data.tamizaje.tamLevanteanda;
+  scales.tamizaje.perdida_orina.value = data.tamizaje.tamPerdidaorina;
+  scales.tamizaje.perdida_peso.value = data.tamizaje.tamPerdidapeso;
+  scales.tamizaje.perdida_memoria.value = data.tamizaje.tamPerdidamemoria;
+  scales.tamizaje.triste_deprimido.value = data.tamizaje.tamTristedeprimido;
+  scales.tamizaje.banarse_solo.value = data.tamizaje.tamBanarsolo;
+  scales.tamizaje.compras_solo.value = data.tamizaje.tamComprasolo;
+  scales.tamizaje.vive_solo_tamizaje.value = data.tamizaje.tamVivesolo;
+};
+
+// Fetch data on component mount if ID is present in URL
+onMounted(async () => {
+  // Get ID from URL path segment
+  const pathSegments = window.location.pathname.split('/');
+  // Assuming the ID is the last segment, e.g., /fichas/enfermeria/240
+  const idFromUrl = pathSegments[pathSegments.length - 1];
+
+  console.log('ID from URL Path:', idFromUrl);
+
+  // Validate if the extracted ID is a number
+  if (idFromUrl && !isNaN(Number(idFromUrl))) {
+    currentFichaId.value = idFromUrl; // Store URL ID in currentFichaId
+    selectedFichaFromSelector.value = idFromUrl; // Also set for FichaSelector
+    try {
+      // Assuming the API endpoint for fetching a single ficha is /api/enfermeria/{id}
+      const response = await axios.get(`${import.meta.env.VITE_URL_BACKEND}/api/enfermeria/${idFromUrl}`);
+      const fetchedData = response.data;
+
+      // Populate fichaData
+      fichaData.enfNombreencuestador = fetchedData.enfNombreencuestador || '';
+      fichaData.enfObservaciones = fetchedData.enfObservaciones || '';
+
+      // Populate scales
+      mapApiDataToScales(fetchedData);
+
+      submitMessage.value = 'Ficha cargada exitosamente.';
+      submitStatus.value = 'success';
+    } catch (error) {
+      submitMessage.value = 'Error al cargar la ficha. Inténtalo de nuevo.';
+      submitStatus.value = 'error';
+      console.error('Error fetching ficha:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        submitMessage.value += ` Detalles: ${error.response.data.message}`;
+      } else if (error.message) {
+        submitMessage.value += ` Detalles: ${error.message}`;
+      }
+    }
+  } else {
+    console.log('No valid ID found in URL path. Starting a new ficha.');
+    // No ID in URL, so assume new ficha creation - form remains empty
+    // selectedFichaFromSelector will remain null or be set by FichaSelector later
+  }
+});
+
+
 const handleSubmit = async () => {
   submitMessage.value = ''
   submitStatus.value = ''
   isSubmitting.value = true
 
   // Basic validation for required fields
-  if (!selectedFichaId.value) {
-    submitMessage.value = 'Debe seleccionar una ficha médica existente.'
-    submitStatus.value = 'error'
-    isSubmitting.value = false
-    return
-  }
   if (!fichaData.enfNombreencuestador.trim()) {
     submitMessage.value = 'El nombre del encuestador es requerido.'
     submitStatus.value = 'error'
@@ -978,13 +1105,20 @@ const handleSubmit = async () => {
     return
   }
 
-  // Map Barthel scores to "Sí"/"No" for specific API fields
+  // Add validation for idficha when creating a new record
+  if (!currentFichaId.value && (!selectedFichaFromSelector.value || selectedFichaFromSelector.value.trim() === '')) {
+    submitMessage.value = 'El ID de la ficha es requerido para crear una nueva ficha.'
+    submitStatus.value = 'error'
+    isSubmitting.value = false
+    return
+  }
+
+  // Map Barthel scores to "Si"/"No" for specific API fields
   const mapBarthelToYesNo = (value, independentScore) => {
-    return value === independentScore ? 'Sí' : 'No'
+    return value === independentScore ? 'Si' : 'No'
   }
 
   const payload = {
-    idficha: selectedFichaId.value,
     enfNombreencuestador: fichaData.enfNombreencuestador.trim(),
     enfObservaciones: fichaData.enfObservaciones.trim() || null,
     actbasica: {
@@ -994,32 +1128,32 @@ const handleSubmit = async () => {
       abUsainodoro: mapBarthelToYesNo(scales.actividades_basicas.usar_inodoro.value, 10),
       abControlesfinteres:
         scales.actividades_basicas.deposiciones.value === 10 &&
-        scales.actividades_basicas.micciones.value === 10
-          ? 'Sí'
+          scales.actividades_basicas.micciones.value === 10
+          ? 'Si'
           : 'No',
       abTrasacuestalevanta: mapBarthelToYesNo(scales.actividades_basicas.trasladarse.value, 15),
       abCamina: mapBarthelToYesNo(scales.actividades_basicas.deambular.value, 15),
       abAlimenta: mapBarthelToYesNo(scales.actividades_basicas.comer.value, 10),
-      abTotal: scales.total_actividades_basicas.value,
+      abTotal: scales.total_actividades_basicas.value || null,
     },
     actinstrumental: {
-      aiCuidaCasa: Number(scales.actividad_instrumental.aiCuidaCasa.value),
-      aiUsaTelefono: Number(scales.actividad_instrumental.uso_telefono.value),
-      aiMediosTransporte: Number(scales.actividad_instrumental.manejo_transporte.value),
-      aiPreparaComida: Number(scales.actividad_instrumental.preparar_comida.value),
-      aiLavaRopa: Number(scales.actividad_instrumental.manejo_ropa.value),
-      aiVaCompras: Number(scales.actividad_instrumental.hacer_compras.value),
-      aiManejaDinero: Number(scales.actividad_instrumental.manejo_dinero.value),
-      aiManejaMedicina: Number(scales.actividad_instrumental.manejo_medicamentos.value),
-      aiTotales: scales.total_actividad_instrumental.value,
+      aiCuidacasa: Number(scales.actividad_instrumental.aiCuidaCasa.value) || null,
+      aiUsatelefono: Number(scales.actividad_instrumental.uso_telefono.value) || null,
+      aiMediotransporte: Number(scales.actividad_instrumental.manejo_transporte.value) || null,
+      aiPreparacomida: Number(scales.actividad_instrumental.preparar_comida.value),
+      aiLavaropa: Number(scales.actividad_instrumental.manejo_ropa.value),
+      aiVacompras: Number(scales.actividad_instrumental.hacer_compras.value),
+      aiManejadinero: Number(scales.actividad_instrumental.manejo_dinero.value) || null,
+      aiManejamedicina: Number(scales.actividad_instrumental.manejo_medicamentos.value) || null,
+      aiTotal: scales.total_actividad_instrumental.value,
     },
     cognitivo: {
-      cogSabeFecha: Number(scales.estado_cognitivo.orientacion_tiempo.value),
-      cogAprendeDeTres: Number(scales.estado_cognitivo.fijacion.value),
-      cogRepiteAlreves: Number(scales.estado_cognitivo.atencion_calculo.value),
-      cogTomaDoblaColoca: Number(scales.estado_cognitivo.lenguaje_orden.value),
-      cogRepitePalabras: Number(scales.estado_cognitivo.memoria.value),
-      cogCopiaCirculos: Number(scales.estado_cognitivo.dibujo.value),
+      cogSabefecha: Number(scales.estado_cognitivo.orientacion_tiempo.value),
+      cogAprendetres: Number(scales.estado_cognitivo.fijacion.value),
+      cogRepitealreves: Number(scales.estado_cognitivo.atencion_calculo.value),
+      cogTomadoblacoloca: Number(scales.estado_cognitivo.lenguaje_orden.value),
+      cogRepitepalabras: Number(scales.estado_cognitivo.memoria.value),
+      cogCopiacirculos: Number(scales.estado_cognitivo.dibujo.value),
       cogTotal: scales.total_estado_cognitivo.value,
     },
     depresion: {
@@ -1031,27 +1165,27 @@ const handleSubmit = async () => {
       depAlgomalosuceder: Number(scales.depresion.preocupado.value),
       depFelizmayortiempo: Number(scales.depresion.feliz_mayor_parte.value),
       depDesamparado: Number(scales.depresion.abandonado.value),
-      depActividadnueva: Number(scales.depresion.prefiere_casa.value),
-      depProblemamemoria: Number(scales.depresion.problemas_memoria.value),
-      depMaravillosovivir: Number(scales.depresion.estar_vivo.value),
-      depSienteinutil: Number(scales.depresion.util_valioso.value),
-      depLlenoenergia: Number(scales.depresion.lleno_energia.value),
-      depSinesperanza: Number(scales.depresion.sin_esperanza.value),
-      depOtrosmejorqueuno: Number(scales.depresion.mejor_gente.value),
-      depTotal: scales.total_depresion.value,
+      depActividadnueva: Number(scales.depresion.prefiere_casa.value) || null,
+      depProblemamemoria: Number(scales.depresion.problemas_memoria.value) || null,
+      depMaravillosovivir: Number(scales.depresion.estar_vivo.value) || null,
+      depSienteinutil: Number(scales.depresion.util_valioso.value) || null,
+      depLlenoenergia: Number(scales.depresion.lleno_energia.value) || null,
+      depSinesperanza: Number(scales.depresion.sin_esperanza.value) || null,
+      depOtrosmejorqueuno: Number(scales.depresion.mejor_gente.value) || null,
+      depTotal: scales.total_depresion.value || null,
     },
     otrosriesgos: {
-      orGrupoEdad: Number(scales.otros_riesgos.grupo_edad.value),
-      orViveCon: Number(scales.otros_riesgos.vive_con.value),
+      orGrupoedad: Number(scales.otros_riesgos.grupo_edad.value),
+      orVivecon: Number(scales.otros_riesgos.vive_con.value),
       orMovilidad: Number(scales.otros_riesgos.movilidad.value),
-      orEnfermedadAguda: Number(scales.otros_riesgos.enfermedad_aguda.value),
+      orEnfermedadaguda: Number(scales.otros_riesgos.enfermedad_aguda.value),
       orNeuropsico: Number(scales.otros_riesgos.neuropsico.value),
       orTotal: scales.total_otros_riesgos.value,
     },
     recursosocial: {
-      rsViveCon: Number(scales.recurso_social.situacion_familiar.value), // Mapping situacion_familiar to rsViveCon
-      rsContactoSocial: Number(scales.recurso_social.relaciones_contactos_sociales.value),
-      rsApoyoRedes: Number(scales.recurso_social.apoyo_red_social.value),
+      rsVivecon: Number(scales.recurso_social.situacion_familiar.value), // Mapping situacion_familiar to rsViveCon
+      rsContactosocial: Number(scales.recurso_social.relaciones_contactos_sociales.value),
+      rsApoyored: Number(scales.recurso_social.apoyo_red_social.value),
       rsTotal: scales.total_recurso_social.value, // This computed total should work
     },
     tamizaje: {
@@ -1065,21 +1199,37 @@ const handleSubmit = async () => {
       tamBanarsolo: Number(scales.tamizaje.banarse_solo.value),
       tamComprasolo: Number(scales.tamizaje.compras_solo.value),
       tamVivesolo: Number(scales.tamizaje.vive_solo_tamizaje.value),
-      tamTotal: scales.total_tamizaje.value,
+      tamTotal: scales.total_tamizaje.value || null,
     },
   }
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/enfermeria`, payload)
+    let response;
+    if (currentFichaId.value) { // Use currentFichaId to determine if it's an update
+      // If currentFichaId exists, it's an update (PATCH)
+      response = await axios.patch(`${import.meta.env.VITE_URL_BACKEND}/api/enfermeria/${currentFichaId.value}`, payload);
+      submitMessage.value = 'Ficha médica actualizada exitosamente.';
+    } else {
+      // Otherwise, it's a new creation (POST)
+      const postPayload = {
+        idficha: selectedFichaFromSelector.value, // Use the ID from the FichaSelector for POST
+        ...payload
+      };
+      response = await axios.post(`${import.meta.env.VITE_URL_BACKEND}/api/enfermeria`, postPayload);
+      submitMessage.value = 'Ficha médica guardada exitosamente.';
+      // If a new ficha is created, set its ID for future updates and to reflect in URL if desired
+      currentFichaId.value = response.data.id; // Assuming the API returns the new ID
+      selectedFichaFromSelector.value = response.data.id; // Update FichaSelector with the new ID
+    }
 
-    console.log('Ficha Médica guardada exitosamente:', response.data)
-    submitMessage.value = 'Ficha médica guardada exitosamente.'
+    console.log('Operación de Ficha Médica exitosa:', response.data)
     submitStatus.value = 'success'
-    // Optionally reset form here
+    // Optionally reset form here if it's a new creation and you want to clear it
+    // if (!selectedFichaId.value) { /* reset form fields */ }
   } catch (error) {
-    submitMessage.value = 'Error al guardar la ficha. Inténtalo de nuevo.'
+    submitMessage.value = 'Error al guardar/actualizar la ficha. Inténtalo de nuevo.'
     submitStatus.value = 'error'
-    console.error('Error guardando ficha:', error)
+    console.error('Error guardando/actualizando ficha:', error)
     if (error.response && error.response.data && error.response.data.message) {
       submitMessage.value += ` Detalles: ${error.response.data.message}`
     } else if (error.message) {
@@ -1090,6 +1240,13 @@ const handleSubmit = async () => {
   }
 }
 </script>
+
+
+
+
+
+
+
 
 <style scoped>
 /* Las variables CSS (ej. --color-primary-dark) DEBEN ser definidas globalmente
