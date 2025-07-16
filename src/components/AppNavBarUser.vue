@@ -131,11 +131,7 @@ onUnmounted(() => {
         </router-link>
       </li>
 
-      <li>
-        <router-link to="/reportes-view" @click="closeMenu">
-          <font-awesome-icon icon="chart-bar" /> Reportes
-        </router-link>
-      </li>
+
       <li class="navbar-separator mobile-only"></li>
 
       <li class="mobile-only">
