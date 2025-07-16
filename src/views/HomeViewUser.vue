@@ -11,9 +11,6 @@
           Este sistema busca optimizar la gestión de fichas médicas, permitiendo un seguimiento efectivo del estado de salud de los pacientes en zonas rurales, incluye un agente de Inteligencia Artificial.
         </p>
         <div class="hero-buttons">
-          <button class="btn-primary" @click="goToReportes">
-            <i class="fas fa-th-list"></i> ESTADÍSTICAS
-          </button>
           <button class="btn-secondary" @click="scrollToDepartments">
             <i class="fas fa-user-md" style="color: var(--color-primary-dark);"></i> NUESTRAS ÁREAS
           </button>
