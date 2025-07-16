@@ -41,11 +41,7 @@
           {{ submitMessage }}
         </p>
 
-        <div class="form-links">
-          <router-link to="/recuperar-clave" class="forgot-password-link">
-            ¿Olvidaste tu contraseña?
-          </router-link>
-        </div>
+
       </form>
     </div>
   </div>
