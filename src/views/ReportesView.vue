@@ -18,7 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, ArcElement)
 library.add(faStar, faChartBar, faSpinner)
 
-const baseURL = 'https://backend-sirma-nest.onrender.com'
+const baseURL = 'https://apisirma.edutecsalpuce.com'
 const isLoading = ref(true)
 
 const chartDataIA = ref(null)
