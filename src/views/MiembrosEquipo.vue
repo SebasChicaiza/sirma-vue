@@ -29,7 +29,7 @@
             Ingeniería en Sistemas de Información de la Pontificia Universidad Católica del Ecuador (PUCE).
           </p>
           <p class="text-lg leading-relaxed">
-            Nuestra iniciativa se enmarca en la asignatura "Emprendimiento Tecnológico con Emprendimientos Sociales",
+            Nuestra iniciativa se enmarca en la asignatura "Emprendimiento Tecnológico",
             bajo la guía del Profesor Francisco Rodríguez Clavijo. Se realizó bajo la modalidad de Aprendizaje Servicio,
             buscando aplicar conocimientos tecnológicos para generar un impacto social positivo y directo.
           </p>
@@ -140,6 +140,105 @@
             </div>
             <p class="text-gray-600 text-sm">Pontificia Universidad Católica del Ecuador</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Other Projects Section -->
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-8 animate-slide-in-left">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+          <i class="fas fa-rocket text-blue-600 mr-3"></i>
+          Otros Proyectos
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <a href="https://asistenteLegal.visitchugchilan.com" target="_blank" class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-l-4 border-blue-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-100">
+            <div class="flex items-center">
+              <i class="fas fa-balance-scale text-blue-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Asistente Legal</h3>
+                <p class="text-xs text-gray-600">visitchugchilan.com</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://chugchimapp.visitchugchilan.com" target="_blank" class="bg-gradient-to-r from-green-50 to-teal-50 p-4 rounded-lg border-l-4 border-green-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-200">
+            <div class="flex items-center">
+              <i class="fas fa-mobile-alt text-green-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">ChugchiMapp</h3>
+                <p class="text-xs text-gray-600">visitchugchilan.com</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://medicinas.geosaludchugchilan.me" target="_blank" class="bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-lg border-l-4 border-red-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-300">
+            <div class="flex items-center">
+              <i class="fas fa-pills text-red-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Medicinas</h3>
+                <p class="text-xs text-gray-600">geosaludchugchilan.me</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://tiendaschugchilan.xyz" target="_blank" class="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border-l-4 border-yellow-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-500">
+            <div class="flex items-center">
+              <i class="fas fa-store text-yellow-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Tiendas Chugchilán</h3>
+                <p class="text-xs text-gray-600">tiendaschugchilan.xyz</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://warmiguia.geosaludchugchilan.me" target="_blank" class="bg-gradient-to-r from-pink-50 to-rose-50 p-4 rounded-lg border-l-4 border-pink-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-600">
+            <div class="flex items-center">
+              <i class="fas fa-female text-pink-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Warmi Guía</h3>
+                <p class="text-xs text-gray-600">geosaludchugchilan.me</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://vitaandina.geosaludchugchilan.me" target="_blank" class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-lg border-l-4 border-emerald-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-700">
+            <div class="flex items-center">
+              <i class="fas fa-mountain text-emerald-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Vital Andina</h3>
+                <p class="text-xs text-gray-600">geosaludchugchilan.me</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://yachaykunalink.edutecsalpuce.com" target="_blank" class="bg-gradient-to-r from-cyan-50 to-blue-50 p-4 rounded-lg border-l-4 border-cyan-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-800">
+            <div class="flex items-center">
+              <i class="fas fa-link text-cyan-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Yachaykuna Link</h3>
+                <p class="text-xs text-gray-600">edutecsalpuce.com</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://nustakawsay.geosaludchugchilan.me" target="_blank" class="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border-l-4 border-indigo-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-900">
+            <div class="flex items-center">
+              <i class="fas fa-female text-indigo-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Ñusta Kawsay</h3>
+                <p class="text-xs text-gray-600">geosaludchugchilan.me</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://apinuevomundo.visitchugchilan.com/cultura" target="_blank" class="bg-gradient-to-r from-amber-50 to-yellow-50 p-4 rounded-lg border-l-4 border-amber-600 hover:shadow-md transition-all duration-300 animate-fade-in-up animation-delay-1000">
+            <div class="flex items-center">
+              <i class="fas fa-globe-americas text-amber-600 mr-3"></i>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-800">Nuevo Mundo</h3>
+                <p class="text-xs text-gray-600">visitchugchilan.com</p>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
 
@@ -282,6 +381,10 @@
 
 .animation-delay-900 {
   animation-delay: 0.9s;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1s;
 }
 
 /* Transiciones suaves para interacciones */
